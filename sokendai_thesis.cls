@@ -169,7 +169,8 @@
   linktocpage,
   colorlinks=true,
   citecolor=forest,
-  linkcolor=redorange,
+%  linkcolor=redorange,
+  linkcolor=steelblue,
   urlcolor=steelblue,
   setpagesize=false
 }
