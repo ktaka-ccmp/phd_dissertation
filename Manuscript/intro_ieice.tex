@@ -1,0 +1,80 @@
+\section{Introduction}
+
+Recently, Linux containers have drawn a significant amount of attention because they are lightweight, portable, and reproducible.
+Linux containers are generally more lightweight than virtual machine (VM) clusters, because the containers share the kernel with the host operating system (OS), even though they maintain separate execution environments.
+They are generally portable because the process execution environments are archived into tar files,
+so whenever one attempts to run a container, the exact same file systems are restored from the archives
+even when totally different data centers are used.
+This means that containers can provide reproducible and portable execution environments.
+%
+For the same reasons, Linux containers are attractive for web services as well,
+and it is expected that web services consisting of container clusters would be
+capable of being migrated easily for a variety of purposes. For example disaster recovery,
+cost performance improvements, legal compliance, and shortening the geographical distance to customers
+are the main concerns for web service providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
+%
+
+Kubernetes\cite{K8s2017}, which is one of the most popular container cluster management systems, 
+enables easy deployment of container clusters.
+Since Kubernetes hides the differences in the base environments, users can easily deploy a web service on different 
+cloud providers or on on-premise data centers, without adjusting the container cluster configurations to the new environment. 
+This allows a user to easily migrate a web service consisting of a container cluster even to the other side of the world as follows: 
+A user starts the container cluster in the new location, route the traffic there, 
+then stop the old container cluster at his or her convenience.
+This is a typical web service migration scenario.
+
+However, this scenario only works when the user migrates a container cluster among major cloud providers including Google Cloud Platform (GCP), 
+Amazon Web Services (AWS), and Microsoft Azure.
+Kubernetes does not provide generic ways to route the traffic from the internet into container cluster running in the Kubernetes and is 
+heavily dependent on cloud load balancers, which is external load balancers that are set up on the fly by cloud providers through their application protocol interfaces (APIs).
+%
+These cloud load balancers distribute incoming traffic to every server that hosts containers.
+The traffic is then distributed again to destination containers using iptables destination 
+network address translation (DNAT)\cite{MartinA.Brown2017,Marmol2015} rules in a round-robin manner. 
+The problem happens in the environment with a load balancer that is not supported by the Kubernetes, 
+e.g. in an on-premise data center with a bare metal load balancer. 
+In such environments, the user needs to manually configure 
+the static route for inbound traffic in an ad-hoc manner. 
+Since the Kubernetes fails to provide a uniform environment from a container cluster viewpoint,
+migrating container clusters among the different environments will always be a burden.
+
+In order to solve this problem by eliminating the dependency on cloud load balancers,
+we have proposed a containerized software load balancer that is run by Kubernetes as  
+a part of web service container clusters in the previous work\cite{takahashi2018portable}.
+It enables a user to deploy a web service in different environments without modification easily 
+because the web service itself includes load balancers.
+%
+We containerized Linux kernel's Internet Protocol Virtual Server (IPVS)\cite{Zhang2000} 
+Layer 4 load balancer using an existing Kubernetes ingress\cite{K8sIngress2017} framework, as a proof of concept.
+%
+%
+We also proved that our approach does not significantly degrade the performance,
+by comparing the performance of our proposed load balancer with those of
+iptables DNAT load balancer and the Nginx Layer 7 load balancing.
+%
+The results indicated that the proposed load balancer could improve the portability of container clusters without performance degradation compared with the existing load balancer.
+
+However, the way to route traffic from the Internet to load balancers while keeping redundancy has not been discussed in our previous work, even though the redundancy is always needed to improve the availability of services in modern systems.
+This is because, standard Layer 2 redundancy protocols, e.g., Virtual Router Redundancy Protocol(VRRP)\cite{hinden2004virtual}
+or OSPF\cite{moy1997ospf}, which uses multicast, cannot be used in many network environments for containers.
+Furthermore, providing uniform methods independent of the infrastructures such as various cloud environments and the on-premise data center is much more difficult.
+
+In this paper, we extend the previous work and propose a software load balancer architecture with Equal Cost Multi-Path(ECMP)\cite{thaler2000multipath} redundancy by running a Border Gateway Protocol(BGP) agent container together with ipvs container.
+Although major cloud providers do not currently provide BGP peering service for their users, the authors expect they start such service, once this approach is proven to be beneficial.
+Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible at least in on-premise data centers.
+For the cloud environment without BGP peering service, we can still launch our proposed load balancer without ECMP redundancy by sending out API request to automatically set up a route to the load balancer, from inside the ipvs container.
+
+In order to demonstrate the feasibility of the proposed load balancer, we containerize an open source BGP software, exabgp\cite{exa-networks_2018}, and also containerize Linux kernel's ipvs load balancer. Then we launch them as a single pod, which is a group of containers that share a single net namespace using Kubernetes. We launch multiple of such pods and form a cluster of load balancers.
+We demonstrate the functionality and evaluate preliminary performance.
+
+The contributions of this paper are as follows:
+Although there have been studies regarding redundant software load balancers especially from the major cloud providers\cite{eisenbud2016maglev,patel2013ananta}, their load balancers are only usable within their respective cloud infrastructures.
+This paper aims to provide a redundant software load balancer architecture for those environments that do not have load balancers supported by Kuberenetes.
+Since proposed load balancer architecture uses nothing but existing Open Source Software(OSS) and standard Linux boxes, users can build a cluster of redundant load balancers in their environment.
+
+The rest of the paper is organized as follows.
+Section \ref{Related Work} highlights related work that deals specifically with container cluster migration,
+software load balancer containerization, and load balancer related tools within the context of the container technology.
+Section \ref{Proposed Architecture} discusses problems of the existing architecture and proposes our solutions.
+In Section \ref{Implementation}, we explain experimental system in detail.
+Then, we show our experimental results and discuss obtained characteristics in Section~\ref{Evaluation}, which is followed by a summary of our work in Section~\ref{Conclusions}.

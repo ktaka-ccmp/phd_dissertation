@@ -1,0 +1,12 @@
+\section{Conclusions}\label{Conclusions}
+
+In this paper, we proposed a portable load balancer with ECMP redundancy for the Kubernetes cluster systems that is aimed at facilitating migration of container clusters for web services.
+We implemented an experimental web cluster system with multiple of load balancers and web servers using Kubernetes and OSSs on top of standard Linux boxes to prove the functionality of the proposed architecture.
+We conducted performance measurements and found that the ipvs based load balancer in container functioned properly both in on-premise datacenter and cloud environments while it showed the comparable performance levels as the existing iptables DNAT based load balancer.
+We also carried out expriments to verify the feasibility of ECMP redundancy in on-premise data center, and revealed that it functions properly with linear scalability up to four load balancers.
+The current limitations of this study are; 
+1) Although our proposed architecture is feasible where users can set up iBGP peer connections to upstream routers, currently major cloud providers do not seem to provide such services.
+2) ...
+These should be addressed in the future work.
+For other future work we plan to improve performance of a single software load balancer on standard Linux box using Xpress Data Plane(XDP) technology. 
+

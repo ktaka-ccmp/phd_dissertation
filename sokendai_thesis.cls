@@ -243,7 +243,7 @@ in partial fulfillment of the requirements for the degree of
 
 \begin{spacing}{2}
 \centering
-{\large SOKENDAI (The Graduate University for Advanced Studies)}
+{\large The Graduate University for Advanced Studies (SOKENDAI)}
 \par
 {\large \@date}
 \par
@@ -251,7 +251,7 @@ in partial fulfillment of the requirements for the degree of
 
 \thispagestyle{empty}
 
-%% Committee
+Committee
 \newpage
 \begin{center}
 {\Large \bfseries Committee}
@@ -265,7 +265,6 @@ in partial fulfillment of the requirements for the degree of
   \end{tabular}
 \end{center}
 \thispagestyle{empty}
-
 
 }
 
