@@ -20,19 +20,15 @@ The following subsections explain the evaluation in detail.
 
 \subsection{Basic functionality and portability}
 
-\begin{figure}[tb]
+\begin{figure}[t]
+  \includegraphics[width=0.9\columnwidth]{Figs/lb_single_schem}
+  \caption{}
+  \label{fig:lb_single_schem}
+\end{figure}
 
-  \begin{subfigure}[t]{\columnwidth}
-    \includegraphics[width=0.9\columnwidth]{Figs/lb_single_schem}
-    \caption{}
-    \label{fig:lb_single_schem}
-  \end{subfigure}
+\begin{figure}[t]
 
-  \par\bigskip
-
-  \begin{subfigure}[t]{\columnwidth}
-
-\centering
+  \centering
 \begin{Verbatim}[commandchars=\\\{\}]
 ───────────────────────────────────────────────────────
 [Command line]
@@ -54,9 +50,9 @@ Transfer/sec:     38.86MB
 
     \caption{}
     \label{fig:bench_example}
-  \end{subfigure}
+\end{figure}
 
-  \begin{subfigure}[t]{\columnwidth}
+\begin{figure}[t]
 \begin{Verbatim}[commandchars=\\\{\}]
 ───────────────────────────────────────────────────────
 [Hardware Specification]
@@ -78,13 +74,8 @@ Transfer/sec:     38.86MB
 \end{Verbatim}
     \caption{}
     \label{fig:hw_sw_spec}
-  \end{subfigure}
-
-  \caption{
-    (a) Benchmark setup. (b) Benchmark command line and output example. (c) HW SW spec.
-  }
-  \label{fig:benchmark-schem}
 \end{figure}
+
 
 Throughput measurements were carried out in order to examine the basic functionality of the containerized ipvs load balancer.
 Fig.~\ref{fig:benchmark-schem} shows the schematic diagram of the throughput measurement and summarizes experimental conditions.
@@ -103,38 +94,26 @@ Fig.~\ref{fig:benchmark-schem}~(\subref{fig:hw_sw_spec}) shows hardware and soft
 We used a total of eight servers; six servers for Nodes, one for the load balancer and one for the benchmark client, with all having the same hardware specifications.
 The software versions used for Kubernetes, web server and load balancer {\em pods} are also summarized in the figure.
 
-\begin{figure}[h]
-
-\begin{subfigure}[t]{\columnwidth}
+\begin{figure}[t]
   \includegraphics[width=0.9\columnwidth]{Figs/ipvs-iptables-nginx}
   \caption{Performance of the load balancer container.}
   \label{fig:ipvs-iptables-nginx}
-\end{subfigure}
+\end{figure}
 
-  \par\bigskip
 
-  \begin{subfigure}[t]{\columnwidth}
+\begin{figure}[t]
     \includegraphics[width=0.9\columnwidth]{Figs/gcp_all_ieice}
     \caption{GCP}
     \label{fig:gcp_all_ieice}
-  \end{subfigure}
+\end{figure}
 
-  \par\bigskip
-
-  \begin{subfigure}[t]{\columnwidth}
+\begin{figure}[t]
     \includegraphics[width=0.9\columnwidth]{Figs/aws_c4_ieice}
     \caption{AWS with Node x 6, Client x 1, Load balancer x 1. Custom instance. }
     \label{fig:aws_c4_ieice}
-  \end{subfigure}
-
-  \caption{Performance of the proposed load balancer in Cloud environment.
-(a) GCP: Web: 
-}
-  \label{fig:ipvs_performance}
-
 \end{figure}
 
-\interfootnotelinepenalty=10000
+%\interfootnotelinepenalty=10000
 
 Fig.~\ref{fig:ipvs_performance}~(\subref{fig:ipvs-iptables-nginx}) shows the throughput of the proposed ipvs container load balancer.
 The performance of the nginx and the iptables DNAT as the load balancers are also presented for comparison.
@@ -164,15 +143,13 @@ The ECMP technique is expected to make the load balancers redundant and scalable
 We examined the behavior of the ECMP routing table updates, by changing the number of the load balancers.
 After that, in order to explore the scalability, we also measured the throughput from a benchmark client with ECMP routes when multiple of the ipvs container load balancers are deployed.
 
-\begin{figure}[h]
-
-\begin{subfigure}[b]{\columnwidth}
+\begin{figure}[b]
     \includegraphics[width=0.9\columnwidth]{Figs/lb_ecmp_schem}
     \caption{}
     \label{fig:lb_ecmp_schem}
-\end{subfigure}
+\end{figure}
 
-  \begin{subfigure}[t]{\columnwidth}
+\begin{figure}[t]
 \begin{Verbatim}[commandchars=\\\{\}]
 ───────────────────────────────────────────────────────
 [Hardware Specification]
@@ -199,12 +176,6 @@ After that, in order to explore the scalability, we also measured the throughput
 \end{Verbatim}
     \caption{}
     \label{fig:ecmp-hw_sw_spec}
-  \end{subfigure}
-
-  \caption{
-    (a) Benchmark setup. (b) Benchmark command line and output example. (c) HW SW spec.
-  }
-  \label{fig:ecmp-benchmark-schem}
 \end{figure}
 
 Fig.~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experimental setup and also summarizes hardware and software specifications.
@@ -300,33 +271,24 @@ Fig.~\ref{fig:ecmp_scalability}~(\subref{fig:ecmp_delay_histgram_ieice}) shows h
 As we can see from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
 We can conclude that ECMP routing update in our proposed architecture is quick enough.
 
-\begin{figure}[tb]
 
-  \begin{subfigure}[t]{\columnwidth}
+  \begin{figure}[t]
     \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_lb_cubic_ieice}
     \caption{Caption 1}
     \label{fig:ecmp_lb_cubic_ieice}
-  \end{subfigure}
+  \end{figure}
 
-  \par\bigskip
-
-  \begin{subfigure}[t]{\columnwidth}
+  \begin{figure}[t]
     \includegraphics[width=0.98\columnwidth,left]{Figs/ecmp_response_ieice}
     \caption{Caption 2}
     \label{fig:ecmp_response_ieice}
-  \end{subfigure}
+  \end{figure}
 
-  \par\bigskip
-
-  \begin{subfigure}[t]{\columnwidth}
+  \begin{figure}[t]
     \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_delay_histgram_ieice}
     \caption{Caption 2}
     \label{fig:ecmp_delay_histgram_ieice}
-  \end{subfigure}
+  \end{figure}
 
-  \caption{Scalability of portable load balancer with ECMP redundancy.}
-  \label{fig:ecmp_scalability}
-
-\end{figure}
 
 \subsection{Resource Consumption}

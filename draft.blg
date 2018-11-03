@@ -1,0 +1,86 @@
+This is BibTeX, Version 0.99d (TeX Live 2016/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: draft.aux
+A level-1 auxiliary file: Manuscript/abstract.aux
+The style file: unsrt.bst
+Database file #1: Bib/reference.bib
+Warning--entry type for "K8s2017" isn't style-file defined
+--line 22 of file Bib/reference.bib
+Warning--entry type for "K8sFederation2017" isn't style-file defined
+--line 38 of file Bib/reference.bib
+Warning--entry type for "K8sIngress2017" isn't style-file defined
+--line 46 of file Bib/reference.bib
+Warning--entry type for "Pleshakov2016" isn't style-file defined
+--line 72 of file Bib/reference.bib
+Warning--entry type for "NginxInc2016" isn't style-file defined
+--line 81 of file Bib/reference.bib
+Warning--string name "july" is undefined
+--line 84 of file Bib/reference.bib
+Warning--entry type for "Prashanth2016" isn't style-file defined
+--line 90 of file Bib/reference.bib
+Warning--entry type for "ACassen2016" isn't style-file defined
+--line 98 of file Bib/reference.bib
+Warning--entry type for "Sibiryov2015" isn't style-file defined
+--line 105 of file Bib/reference.bib
+Warning--entry type for "DockerCoreEngineering2016" isn't style-file defined
+--line 124 of file Bib/reference.bib
+Warning--string name "june" is undefined
+--line 130 of file Bib/reference.bib
+Warning--entry type for "Glozer2016" isn't style-file defined
+--line 194 of file Bib/reference.bib
+Warning--I didn't find a database entry for "takahashi2018portable"
+Warning--I didn't find a database entry for "thaler2000multipath"
+Warning--I didn't find a database entry for "exa-networks_2018"
+Warning--I didn't find a database entry for "coreos_2018"
+Warning--I didn't find a database entry for "project_calico"
+Warning--I didn't find a database entry for "rfc4456"
+Warning--I didn't find a database entry for "ip-sysctl"
+Warning--I didn't find a database entry for "rfc7911"
+Warning--I didn't find a database entry for "osrg_gobgp_zebra"
+Warning--empty journal in hinden2004virtual
+Warning--empty journal in moy1997ospf
+Warning--can't use both volume and number fields in al2008scalable
+Warning--empty school in Aaltodoc:http://urn.fi/URN:NBN:fi:aalto-201611025433
+Warning--empty institution in rekhter2005border
+You've used 32 entries,
+            1791 wiz_defined-function locations,
+            606 strings with 7220 characters,
+and the built_in function-call counts, 5199 in all, are:
+= -- 393
+> -- 235
+< -- 6
++ -- 97
+- -- 65
+* -- 206
+:= -- 807
+add.period$ -- 79
+call.type$ -- 32
+change.case$ -- 34
+chr.to.int$ -- 0
+cite$ -- 37
+duplicate$ -- 236
+empty$ -- 615
+format.name$ -- 65
+if$ -- 1182
+int.to.chr$ -- 0
+int.to.str$ -- 32
+missing$ -- 11
+newline$ -- 144
+num.names$ -- 32
+pop$ -- 168
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 162
+stack$ -- 0
+substring$ -- 124
+swap$ -- 59
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 5
+while$ -- 45
+width$ -- 34
+write$ -- 287
+(There were 26 warnings)

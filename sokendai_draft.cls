@@ -22,7 +22,6 @@
 \ProvidesClass{sokendai_thesis}[2015/11/22 v1.4]
 \LoadClass[12pt,a4paper,twoside]{book}
 
-
 % =====================================================
 %  Packages
 % =====================================================
@@ -88,7 +87,7 @@
 %\doublespacing % double space
 %\renewcommand{\baselinestretch}{1.2}
 
-\usepackage[hmarginratio=1:1]{geometry}
+\usepackage[top=2cm,bottom=3cm,textwidth=17cm,hmarginratio=1:1]{geometry}
 
 
 % =====================================================
@@ -251,7 +250,6 @@ in partial fulfillment of the requirements for the degree of
 
 \thispagestyle{empty}
 
-Committee
 \newpage
 \begin{center}
 {\Large \bfseries Committee}

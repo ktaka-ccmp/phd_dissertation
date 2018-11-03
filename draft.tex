@@ -1,4 +1,22 @@
-\documentclass{sokendai_thesis} % for final version
+\documentclass{sokendai_draft} % for final version
+
+%------------------------------------
+\usepackage{csquotes}
+%\usepackage[hyphens]{url}
+
+\usepackage{caption}
+\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{fancyvrb}
+
+\usepackage[export]{adjustbox}
+\usepackage{booktabs}
+
+%\usepackage{pmboxdraw}
+%------------------------------------
+
 
 \newcommand{\Order}{\mathit{O}} % for computational complexity
 
@@ -28,8 +46,7 @@
 %-----------------------------------------------------------
 
 \bibliographystyle{unsrt}
-%\bibliography{Bib/reference}
-\bibliography{Bib/bibliography}
+\bibliography{Bib/reference}
 
 \begin{appendices}
 
