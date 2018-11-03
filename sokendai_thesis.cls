@@ -252,19 +252,19 @@ in partial fulfillment of the requirements for the degree of
 \thispagestyle{empty}
 
 %% Committee
-%\newpage
-%\begin{center}
-%{\Large \bfseries Committee}
-%\end{center}
-%
-%\begin{center}
-%  \begin{tabular}{ll}
-%    AAA BBB (Chair)      & National Institute of Informatics / Sokendai \\
-%    CCC DDD              & EEE University \\
-%    FFF GGG              & National Institute of Informatics / Sokendai
-%  \end{tabular}
-%\end{center}
-%\thispagestyle{empty}
+\newpage
+\begin{center}
+{\Large \bfseries Committee}
+\end{center}
+
+\begin{center}
+  \begin{tabular}{ll}
+    AAA BBB (Chair)      & National Institute of Informatics / Sokendai \\
+    CCC DDD              & EEE University \\
+    FFF GGG              & National Institute of Informatics / Sokendai
+  \end{tabular}
+\end{center}
+\thispagestyle{empty}
 
 
 }

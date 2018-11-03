@@ -1,0 +1,64 @@
+\chapter{Related work}\label{chapter:related}
+
+\graphicspath{{Manuscript/Figs/}}
+
+\section{Related Work}\label{Related Work}
+
+This section highlights related work, especially that dealing with container cluster migration, 
+software load balancer containerization, load balancer tools within the context of the container technology and scalable load balancer in the cloud providers.
+
+\paragraph{\bf Container cluster migration:}
+
+Kubernetes developers are trying to add federation\cite{K8sFederation2017} capability for handling situations 
+where multiple Kubernetes clusters\footnote{The {\em Kubernetes cluster} refers to a server cluster 
+controlled by the Kubernetes container management system, in this paper.} 
+are deployed on multiple cloud providers or on-premise data centers, 
+and are managed via the Kubernetes federation API server (federation-apiserver). 
+However, how each Kubernetes cluster is run on different types of cloud providers
+and/or on-premise data centers, especially when the load balancers of such environments are not supported by Kubernetes, 
+seems beyond the scope of that project. 
+The main scope of this paper is to make Kubernetes usable in environments 
+without supported load balancers by providing a containerized software load balancer.
+
+\paragraph{\bf Software load balancer containerization:}
+As far as load balancer containerization is concerned, the following related work has been identified:
+Nginx-ingress\cite{Pleshakov2016,NginxInc2016} utilizes the ingress\cite{K8sIngress2017} capability of Kubernetes, 
+to implement containerized Nginx proxy as a load balancer. Nginx itself is famous as a high-performance web server program
+that also has the functionality of a Layer-7 load balancer. Nginx is capable of handling Transport Layer Security(TLS) encryption, 
+as well as Uniform Resource Identifier(URI) based switching. However, the flip side of Nginx is that it is much slower than Layer-4 switching.
+We compared the performance between Nginx as a load balancer and our proposed load balancer in this paper.
+%
+Meanwhile, the kube-keepalived-vip\cite{Prashanth2016} project is trying to use Linux kernel's IPVS\cite{Zhang2000} 
+load balancer capabilities by containerizing the keepalived\cite{ACassen2016}.
+The kernel IPVS function is set up in the host OS's net name spaces and is shared among multiple web services,
+as if it is part of the Kubernetes cluster infrastructure.
+Our approach differs in that the IPVS rules are set up in container's net name spaces 
+and function as a part of the web service container cluster itself.
+The load balancers are configurable one by one, and are  movable with the cluster once the migration is needed.
+The kube-keepalived-vip's approach lacks flexibility and portability whereas ours provide them.
+%
+The swarm mode of the Docker\cite{DockerCoreEngineering2016,DockerInc2017} also uses IPVS for internal load balancing,
+but it is also considered as part of Docker swarm infrastructure, 
+and thus lacks the portability that our proposal aims to provide.
+
+\paragraph{\bf Load balancer tools in the container context:}
+There are several other projects where efforts have been made to utilize IPVS in the context of container environment.
+For example, GORB\cite{Sibiryov2015} and clusterf\cite{Aaltodoc:http://urn.fi/URN:NBN:fi:aalto-201611025433} are daemons 
+that setup IPVS rules in the kernel inside the Docker container. 
+They utilize running container information stored in key-value storages
+like Core OS etcd\cite{CoreOSEtcd} and HashiCorp's Consul\cite{HashiCorpConsul}. 
+Although these were usable to implement a containerized load balancer in our proposal, we did not use them, 
+since Kubernetes ingress framework already provided the methods to retrieve running container information through standard API.
+
+\paragraph{\bf Cloud load balancers:}
+
+As far as the cloud load balancers are concerned, two articles have been identified.
+Google's maglev\cite{eisenbud2016maglev} is a software load balancer used in Google Cloud Platform(GCP)\cite{Voellm2013}.
+Maglev uses modern technologies including per flow ECMP and kernel bypass for userspace packet processing.
+Maglev serves as the GCP's load balancer that is used by the Kubernetes.
+Maglev can be solely used in GCP, and the users need open source software load balancer that is runnable even in on-premise data centers.
+Microsoft's Ananta\cite{patel2013ananta} is another software load balancer implementation using ECMP and windows network stack.
+Ananta can be solely used in Microsoft's Azure cloud infrastructure\cite{patel2013ananta}.
+The proposed load balancer by the author is different in that it is aimed to be used in every cloud provider and on-premise data centers.
+
+
