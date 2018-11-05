@@ -1,36 +1,96 @@
-Nowadays, a great number of peeple in the world spend a day without using some kind of devices, including smart phones, TV sets and personal computers(PCs) etc. that connect to the internet and retrieve data.
-For example they use smart phones to lookup weather, news, mails, social media and somtimes to play games etc.
+%\section{Introduction}
 
-These are generally utilizing application on the client(smart phones, PCs, etc.) and programs on the severs in some places that is connected to the Internet.
+Nowadays, a great number of people in the world can not spend a day without using some kind of devices, including smartphones, TV sets and personal computers(PCs), etc. that connect to the internet and retrieve data.
+For example, they use smartphones to look up weather, news, emails, social media and sometimes to play games, etc.
+
+These are generally utilizing an application on the client(smartphones, PCs, etc.) and programs on the servers in data centers that are connected to the Internet.
 The client applications can retrieve needed data from the server programs anytime from all over the world.
 
 Among the ways to realize such services, there is a popular technology called a web technology where the data is retrieved from servers using Hyper Text Transfer Protocols(HTTP).
-Those servers are usually loacated in a datacenter on the Internet and multiple of them coroperte to fullfill need of the clients at the other end of the Intarnet. 
+Those servers are usually located in a data center on the Internet and multiple of them cooperate to fulfill the need of the clients at the other end of the Internet.
 
-Fig. xxx shows schematic diagram of one of the most popular ways to realize such services. 
-There are several servers, which are essentially computers that work together to respond to the requests from the clients a 
+Fig. xxx shows schematic diagram of one of the most popular ways to realize such services.
+There are several servers that are essentially computers that work together to respond to requests from clients, and load balancers that are responsible for distributing requests from the clients over the internet to multiple web servers.
+Those servers are often purchased by service providers and located in server housing facilities called data centers.
 
+The emergence of Cloud Computing made it easy for us to deploy such services easier than before.
+Cloud providers utilized virtual machines(VM) and enabled them to charge their customers with finer granularities in pay-as-you-go bases.
+This lowered total cost of ownership and initial cost spent on infrastructures to start a service.
+It also shortened the time to start a service from the inception of the project.  
 
+More recently, Linux containers have drawn a significant amount of attention because they are lightweight, portable, and reproducible.
+Linux containers are generally more lightweight than virtual machines(VMs), because the containers share the kernel with the host operating system (OS), even though they maintain separate execution environments.
+They are generally portable because the process execution environments are archived into tar files,
+so whenever one attempts to run a container, the exact same file systems are restored from the archives
+even when totally different data centers are used.
+This means that containers can provide reproducible and portable execution environments.
+%
+For the same reasons, Linux containers are attractive for web services as well,
+and it is expected that web services consisting of container clusters would be
+capable of being migrated easily for a variety of purposes. For example disaster recovery,
+cost performance improvements, legal compliance, and shortening the geographical distance to customers
+are the main concerns for web service providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
+%
+As for another issue regarding web services,
+there are also needs to use multiple of cloud providers or on-premise data centers seamlessly, which spread across the world, to prepare for the disaster, to lower the cost or to comply with the legal requirement.
+Linux container technology\cite{menage2007adding} facilitates these usages by providing container cluster management system as a middleware,
+where one can deploy a web service that consists of a cluster of containers without modification even on different infrastructures.
 
+Kubernetes\cite{K8s2017}, which is one of the most popular container cluster management systems, 
+enables easy deployment of container clusters.
+Since Kubernetes hides the differences in the base environments, users can easily deploy a web service on different 
+cloud providers or on on-premise data centers, without adjusting the container cluster configurations to the new environment. 
+This allows a user to easily migrate a web service consisting of a container cluster even to the other side of the world as follows: 
+A user starts the container cluster in the new location, route the traffic there, 
+then stop the old container cluster at his or her convenience.
+This is a typical web service migration scenario.
 
+However, this scenario only works when the user migrates a container cluster among major cloud providers including Google Cloud Platform (GCP), 
+Amazon Web Services (AWS), and Microsoft Azure.
+Kubernetes does not provide generic ways to route the traffic from the internet into container cluster running in the Kubernetes and is 
+heavily dependent on cloud load balancers, which is external load balancers that are set up on the fly by cloud providers through their application protocol interfaces (APIs).
 
-Recently, launching web services on cloud computing infrastructure is getting more popular.
-Launching web services on the cloud is easier than launching them on on-premise data centers.
-A web service on the cloud becomes scalable, which means it can accommodate a large amount of traffic from the Internet by increasing the number of web servers, on demand.
 To distribute high volume traffic from the Internet to thousands of web servers load balancers are often used.
 Major cloud providers have developed software load balancers\cite{eisenbud2016maglev,patel2013ananta} as part of their infrastructures, which they claim to have a high-performance level and scalability.
 In the case of on-premise data centers, one can use proprietary hardware load balancers.
 The actual implementation and the performance level of those existing load balancers are very different.
 
-As for another issue regarding web services,
-there are also needs to use multiple of cloud providers or on-premise data centers seamlessly, which spread across the world, to prepare for the disaster, to lower the cost or to comply with the legal requirement.
-Linux container technology\cite{menage2007adding} facilitates these usages by providing container cluster management system as a middleware,
-where one can deploy a web service that consists of a cluster of containers without modification even on different infrastructures.
-However, in reality, it is difficult to do so, because existing load balancers are very different and are not included in the container cluster management system.
-Therefore, users should always manually adjust their web services to the infrastructure.
+%
+These cloud load balancers distribute incoming traffic to every server that hosts containers.
+The traffic is then distributed again to destination containers using iptables destination 
+network address translation (DNAT)\cite{MartinA.Brown2017,Marmol2015} rules in a round-robin manner. 
+The problem happens in the environment with a load balancer that is not supported by the Kubernetes, 
+e.g. in an on-premise data center with a bare metal load balancer. 
+In such environments, the user needs to manually configure 
+the static route for inbound traffic in an ad-hoc manner. 
+Since the Kubernetes fails to provide a uniform environment from a container cluster viewpoint,
+migrating container clusters among the different environments will always be a burden.
 
-In short, there exist several software load balancers that are specific to cloud vendors and on-premise data centers.
-The differences among them are the major obstacles to provide uniform container cluster platform, which is necessary to realize web service migration across the different cloud providers and on-premise data centers.
+In order to solve this problem by eliminating the dependency on cloud load balancers,
+we have proposed a containerized software load balancer that is run by Kubernetes as  
+a part of web service container clusters in the previous work\cite{takahashi2018portable}.
+It enables a user to deploy a web service in different environments without modification easily 
+because the web service itself includes load balancers.
+%
+We containerized Linux kernel's Internet Protocol Virtual Server (IPVS)\cite{Zhang2000} 
+Layer 4 load balancer using an existing Kubernetes ingress\cite{K8sIngress2017} framework, as a proof of concept.
+%
+%
+We also proved that our approach does not significantly degrade the performance,
+by comparing the performance of our proposed load balancer with those of
+iptables DNAT load balancer and the Nginx Layer 7 load balancing.
+%
+The results indicated that the proposed load balancer could improve the portability of container clusters without performance degradation compared with the existing load balancer.
+
+However, the way to route traffic from the Internet to load balancers while keeping redundancy has not been discussed in our previous work, even though the redundancy is always needed to improve the availability of services in modern systems.
+This is because, standard Layer 2 redundancy protocols, e.g., Virtual Router Redundancy Protocol(VRRP)\cite{hinden2004virtual}
+or OSPF\cite{moy1997ospf}, which uses multicast, cannot be used in many network environments for containers.
+Furthermore, providing uniform methods independent of the infrastructures such as various cloud environments and the on-premise data center is much more difficult.
+
+In this paper, we extend the previous work and propose a software load balancer architecture with Equal Cost Multi-Path(ECMP)\cite{thaler2000multipath} redundancy by running a Border Gateway Protocol(BGP) agent container together with ipvs container.
+Although major cloud providers do not currently provide BGP peering service for their users, the authors expect they start such service, once this approach is proven to be beneficial.
+Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible at least in on-premise data centers.
+For the cloud environment without BGP peering service, we can still launch our proposed load balancer without ECMP redundancy by sending out API request to automatically set up a route to the load balancer, from inside the ipvs container.
 
 To address this problem, we propose a portable and scalable software load balancer that can be used in any environment including cloud providers and in on-premise data centers.
 We can include this load balancer as a part of a container cluster management system, e.g., Kubernetes\cite{K8s2017}, which acts as a common middleware on which web services run.
@@ -41,15 +101,24 @@ We will implement the proposed software load balancer using following technologi
 In order to make the load balancer's performance level to meet the need for 10Gbps network speed, a software load balancer that better performs than ipvs is required.
 We also implement the novel load balancer using eXpress Data Plane(XDP) technology\cite{bertin2017xdp}.
 
+In order to demonstrate the feasibility of the proposed load balancer, we containerize an open source BGP software, exabgp\cite{exa-networks_2018}, and also containerize Linux kernel's ipvs load balancer. Then we launch them as a single pod, which is a group of containers that share a single net namespace using Kubernetes. We launch multiple of such pods and form a cluster of load balancers.
+We demonstrate the functionality and evaluate preliminary performance.
+
+The contributions of this paper are as follows:
+Although there have been studies regarding redundant software load balancers especially from the major cloud providers\cite{eisenbud2016maglev,patel2013ananta}, their load balancers are only usable within their respective cloud infrastructures.
+This paper aims to provide a redundant software load balancer architecture for those environments that do not have load balancers supported by Kuberenetes.
+Since proposed load balancer architecture uses nothing but existing Open Source Software(OSS) and standard Linux boxes, users can build a cluster of redundant load balancers in their environment.
+
 The outcome of our study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
 Moreover, the result of our study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe, as if it were a single computer on which their web services run.
 
 The rest of the paper is organized as follows.
-Section \ref{Related Work} highlights work that deals specifically with container cluster migration, 
-software load balancer containerization, and load balancer related tools within the context of the container technology. 
-Section \ref{Architecture} will explain existing architecture problems and propose our solutions.
-In Section \ref{Experiments}, experimental results for containerized ipvs are discussed,  
-which is followed by a summary of our work in Section~\ref{Conclusions}.
+Section \ref{Related Work} highlights related work that deals specifically with container cluster migration,
+software load balancer containerization, and load balancer related tools within the context of the container technology.
+Section \ref{Proposed Architecture} discusses problems of the existing architecture and proposes our solutions.
+In Section \ref{Implementation}, we explain experimental system in detail.
+Then, we show our experimental results and discuss obtained characteristics in Section~\ref{Evaluation}, which is followed by a summary of our work in Section~\ref{Conclusions}.
+
 
 
 

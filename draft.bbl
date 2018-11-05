@@ -1,8 +1,28 @@
 \begin{thebibliography}{10}
 
+\bibitem{menage2007adding}
+Paul~B Menage.
+\newblock Adding generic process containers to the linux kernel.
+\newblock In {\em Proceedings of the Linux Symposium}, volume~2, pages 45--57.
+  Citeseer, 2007.
+
 \bibitem{K8s2017}
 The~Kubernetes Authors.
 \newblock Kubernetes | production-grade container orchestration, 2017.
+
+\bibitem{eisenbud2016maglev}
+Daniel~E Eisenbud, Cheng Yi, Carlo Contavalli, Cody Smith, Roman Kononov, Eric
+  Mann-Hielscher, Ardas Cilingiroglu, Bin Cheyney, Wentao Shang, and
+  Jinnah~Dylan Hosein.
+\newblock Maglev: A fast and reliable software network load balancer.
+\newblock In {\em NSDI}, pages 523--535, 2016.
+
+\bibitem{patel2013ananta}
+Parveen Patel, Deepak Bansal, Lihua Yuan, Ashwin Murthy, Albert Greenberg,
+  David~A Maltz, Randy Kern, Hemant Kumar, Marios Zikos, Hongyu Wu, et~al.
+\newblock Ananta: Cloud scale load balancing.
+\newblock {\em ACM SIGCOMM Computer Communication Review}, 43(4):207--218,
+  2013.
 
 \bibitem{MartinA.Brown2017}
 {Martin A. Brown}.
@@ -31,26 +51,6 @@ Robert Hinden.
 John Moy.
 \newblock Ospf version 2.
 \newblock 1997.
-
-\bibitem{eisenbud2016maglev}
-Daniel~E Eisenbud, Cheng Yi, Carlo Contavalli, Cody Smith, Roman Kononov, Eric
-  Mann-Hielscher, Ardas Cilingiroglu, Bin Cheyney, Wentao Shang, and
-  Jinnah~Dylan Hosein.
-\newblock Maglev: A fast and reliable software network load balancer.
-\newblock In {\em NSDI}, pages 523--535, 2016.
-
-\bibitem{patel2013ananta}
-Parveen Patel, Deepak Bansal, Lihua Yuan, Ashwin Murthy, Albert Greenberg,
-  David~A Maltz, Randy Kern, Hemant Kumar, Marios Zikos, Hongyu Wu, et~al.
-\newblock Ananta: Cloud scale load balancing.
-\newblock {\em ACM SIGCOMM Computer Communication Review}, 43(4):207--218,
-  2013.
-
-\bibitem{menage2007adding}
-Paul~B Menage.
-\newblock Adding generic process containers to the linux kernel.
-\newblock In {\em Proceedings of the Linux Symposium}, volume~2, pages 45--57.
-  Citeseer, 2007.
 
 \bibitem{al2008scalable}
 Mohammad Al-Fares, Alexander Loukissas, and Amin Vahdat.
@@ -110,11 +110,6 @@ Inc CoreOS.
 \bibitem{HashiCorpConsul}
 HashiCorp.
 \newblock {Consul by HashiCorp}.
-
-\bibitem{rekhter2005border}
-Yakov Rekhter, Tony Li, and Susan Hares.
-\newblock A border gateway protocol 4 (bgp-4).
-\newblock Technical report, 2005.
 
 \bibitem{ktaka_ccmp_2017_826894}
 ktaka ccmp.

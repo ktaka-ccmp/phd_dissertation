@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2016/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2018)
 Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: draft.aux
 A level-1 auxiliary file: Manuscript/abstract.aux
@@ -41,37 +41,36 @@ Warning--empty journal in hinden2004virtual
 Warning--empty journal in moy1997ospf
 Warning--can't use both volume and number fields in al2008scalable
 Warning--empty school in Aaltodoc:http://urn.fi/URN:NBN:fi:aalto-201611025433
-Warning--empty institution in rekhter2005border
-You've used 32 entries,
+You've used 31 entries,
             1791 wiz_defined-function locations,
-            606 strings with 7220 characters,
-and the built_in function-call counts, 5199 in all, are:
-= -- 393
-> -- 235
+            602 strings with 7120 characters,
+and the built_in function-call counts, 5046 in all, are:
+= -- 381
+> -- 224
 < -- 6
-+ -- 97
-- -- 65
-* -- 206
-:= -- 807
-add.period$ -- 79
-call.type$ -- 32
-change.case$ -- 34
++ -- 93
+- -- 62
+* -- 197
+:= -- 777
+add.period$ -- 76
+call.type$ -- 31
+change.case$ -- 32
 chr.to.int$ -- 0
-cite$ -- 37
-duplicate$ -- 236
-empty$ -- 615
-format.name$ -- 65
-if$ -- 1182
+cite$ -- 35
+duplicate$ -- 230
+empty$ -- 603
+format.name$ -- 62
+if$ -- 1151
 int.to.chr$ -- 0
-int.to.str$ -- 32
+int.to.str$ -- 31
 missing$ -- 11
-newline$ -- 144
-num.names$ -- 32
-pop$ -- 168
+newline$ -- 139
+num.names$ -- 31
+pop$ -- 165
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 162
+skip$ -- 161
 stack$ -- 0
 substring$ -- 124
 swap$ -- 59
@@ -79,8 +78,8 @@ text.length$ -- 6
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 5
-while$ -- 45
-width$ -- 34
-write$ -- 287
-(There were 26 warnings)
+warning$ -- 4
+while$ -- 44
+width$ -- 33
+write$ -- 277
+(There were 25 warnings)
