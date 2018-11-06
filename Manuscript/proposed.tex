@@ -1,25 +1,52 @@
-\section{Overall Architecture}
+\section{Architecture}
+
+This chapter discusses the load balancer architecure.
+How they are implemented and how redandancy is realized.
+
+The porblems of Kubernetes architecture in Figure~\ref{fig:K8sProposed} have been the followings;
+1) There are environments with load balancers whoes APIs are not supported by Kubernetes.
+2) Incomming traffic are distributed twice, once at the load balancer and once at the every node.
+
+There are several possible ways to solve these problems.
+a) Make Kubernetes support all of exisiting load balancer hardwares that could be used in on-premise data centers.
+b) Force users to buy new load balancer that is supported by Kubernetes.
+c) Provide software load balancers and make them supported by Kubernetes.
+d) Provide software load balancers as a part of container cluters.
+
+The a) is impossible. The b) does not improve usability of container cluster since specific hardwares are always needed.
+The c) and d) are viable solutions since they are realized using commodity hardware.
+
+We do not know how many load balancers are needed for a specific web service.
+We also do not know how many of the services are deployed in a data center.
+Therefore a cluster of load balancers should be elastice, i.e. it should change the capacity on demand.
+And we also should be able to deploy many of load balancer cluster on demand.
+It would be better if we could share the same server pool with web servers, since capacity planning for hardwares to host load balancer clustes may be difficult.
+
+For such application needs the container cluster seems best suited.
+Therefore the author proposes the architecture where a cluster of load balancers are also deployed as a cluster of containers.
 
 \begin{figure}
-\includegraphics[width=\columnwidth]{Figs/K8sProposed}
-\caption{Kubernetes cluster with proposed load balancer.}
-\label{fig:K8sProposed}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/K8sProposed}
+  \caption{Kubernetes cluster with proposed load balancer.}
+  \label{fig:K8sProposed}
 \end{figure}
 
-Figure~\ref{fig:K8sProposed} shows the proposed  Kubernetes cluster architecture, 
+Figure~\ref{fig:K8sProposed} shows the proposed laod balancer architecture for Kubernetes,
 which has the following characteristics:
 1) Each load balancer itself is run as a {\em pod} by Kubernetes. 
-2) Load balancer configurations are dynamically updated based on information about running {\em pods}.
-3) There exist multiple load balancers for redundancy. 
+2) Balancing tables are dynamically updated based on information about running {\em pods}.
+3) There exist multiple load balancers for redundancy.
+4) The routes to load balancers in the upstream router are updated dynamically.
 The proposed load balancer can resolve the conventional architecture problems, as follows:
-Since the load balancer itself is containerized, the load balancer can run in any environment including on-premise data centers, 
-even without external load balancers that is supported by Kubernetes.
+Since the load balancer itself is containerized, the load balancer can run in any environment including on-premise data centers, even without external load balancers that is supported by Kubernetes.
+Load balancers can share the server pool with web containers.
 The incoming traffic is directly distributed to designated {\em pods} by the load balancer. 
 It makes the administration, e.g. finding malfunctions, easier.
 
-\section{Portability}
+\section{Portable Load Balancer}
 
-We designed the proposed load balancer using three components, ipvs, keepalived, and a controller. 
+The proposed load balancer uses three components, ipvs, keepalived, and a controller. 
 These components are placed in a Docker container image.
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later, 
 to distribute incoming Transmission Control Protocol(TCP) traffic to 
@@ -40,15 +67,13 @@ using this framework.
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container.
 We propose redundant architecture using ECMP for load balancer containers usable especially in on-premise data centers.
-We first explain present the proposed architecture with ECMP redundancy in \ref{Redundancy with ECMP}, then  present an alternative architecture using VRRP as a comparison in \ref{Redundancy with VRRP}, which we think is not as good as the architecture using ECMP.
-Also the cloud env case. 
+We first explain the proposed architecture with ECMP redundancy in \ref{Redundancy with ECMP}, then  present an alternative architecture using VRRP as a comparison in \ref{Redundancy with VRRP}, which we think is not as good as the architecture using ECMP.
 
 \subsection{ECMP}\label{Subsec:Redundancy with ECMP}
 
 \begin{figure}[tb]
-\begin{center}
-\includegraphics[width=\columnwidth]{Figs/ecmp.png}
-\end{center}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ecmp.png}
 \caption{
   The proposed architecture of load balancer redundancy with ECMP. %\\ %\par 
   The traffic from the internet is distributed by the upstream router to multiple of lb pods using hash-based ECMP and then distributed by the lb pods to web pods using Linux kernel's ipvs.
@@ -87,9 +112,8 @@ Although not shown in the Fig.~\ref{fig:ecmp}, we could also place another route
 \subsection{VRRP}\label{Subsec:Redundancy with VRRP}
 
 \begin{figure}[tb]
-\begin{center}
-\includegraphics[width=\columnwidth]{Figs/vrrp.png}
-\end{center}
+\centering
+\includegraphics[width=0.8\columnwidth]{Figs/vrrp.png}
 \caption{
   An alternative redundant load balancer architecture using VRRP. \\ %\par 
   The traffic from the internet is forwarded by the upstream router to a active lb node and then distributed by the lb pods to web pods using Linux kernel's ipvs.
@@ -124,4 +148,6 @@ Therefore we believe the ECMP redundancy is better than VRRP in our use cases.
 \subsection{Kubernetes}
 
 In the Cloud environment BGP peering services are not offered.
-I such cases, LB should update the route of cloud infrastructure.
+In such cases, a Load balancer should update the routing table of cloud infrastructure.
+
+

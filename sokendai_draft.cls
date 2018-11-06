@@ -19,8 +19,8 @@
 % =========================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{sokendai_thesis}[2015/11/22 v1.4]
-\LoadClass[12pt,a4paper,twoside]{book}
+\ProvidesClass{sokendai_draft}[2015/11/22 v1.4]
+\LoadClass[11pt,a4paper,oneside]{book}
 
 % =====================================================
 %  Packages
@@ -78,16 +78,17 @@
 \usepackage[final, stretch=60, shrink=20]{microtype}
 
 
+
 % =====================================================
 %  Page Layout
 % =====================================================
 
 \usepackage{setspace}
 \onehalfspacing % one and half space
-%\doublespacing % double space
+%\doublespacing % double spaxdce
 %\renewcommand{\baselinestretch}{1.2}
 
-\usepackage[top=2cm,bottom=3cm,textwidth=17cm,hmarginratio=1:1]{geometry}
+\usepackage[top=2cm,bottom=2cm,textwidth=17cm,hmarginratio=1:1]{geometry}
 
 
 % =====================================================
@@ -138,6 +139,7 @@
 
 %Options: Sonny, Lenny, Glenn, Conny, Rejne, Bjarne, Bjornstrup
 %\usepackage[Lenny]{fncychap}
+%\usepackage[Bjornstrup]{fncychap}
 
 % Options:
 \usepackage[palatino]{quotchap}
@@ -149,7 +151,6 @@
 % Go along with these packages
 \usepackage[nottoc]{tocbibind}
 \usepackage[title,titletoc]{appendix}
-
 
 % =====================================================
 %  Clickable PDF
@@ -304,7 +305,10 @@ in partial fulfillment of the requirements for the degree of
 %            - \mytodo{This is a todo note at margin}
 %
 
+\usepackage{titlesec}
+           
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries\filleft}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
 
-
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}
 
 

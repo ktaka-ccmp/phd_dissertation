@@ -38,20 +38,6 @@ Wensong Zhang.
 \newblock {Linux virtual server for scalable network services}.
 \newblock {\em Ottawa Linux Symposium}, 2000.
 
-\bibitem{K8sIngress2017}
-The~Kubernetes Authors.
-\newblock Ingress resources | kubernetes, 2017.
-
-\bibitem{hinden2004virtual}
-Robert Hinden.
-\newblock Virtual router redundancy protocol (vrrp).
-\newblock 2004.
-
-\bibitem{moy1997ospf}
-John Moy.
-\newblock Ospf version 2.
-\newblock 1997.
-
 \bibitem{al2008scalable}
 Mohammad Al-Fares, Alexander Loukissas, and Amin Vahdat.
 \newblock A scalable, commodity data center network architecture.
@@ -63,6 +49,10 @@ Gilberto Bertin.
 \newblock Xdp in practice: integrating xdp into our ddos mitigation pipeline.
 \newblock In {\em Technical Conference on Linux Networking, Netdev}, volume~2,
   2017.
+
+\bibitem{K8sIngress2017}
+The~Kubernetes Authors.
+\newblock Ingress resources | kubernetes, 2017.
 
 \bibitem{K8sFederation2017}
 The~Kubernetes Authors.
@@ -111,6 +101,14 @@ Inc CoreOS.
 HashiCorp.
 \newblock {Consul by HashiCorp}.
 
+\bibitem{CoreOSFlannelBackend}
+Inc CoreOS.
+\newblock {Backend}.
+
+\bibitem{TomHerbert}
+{Tom Herbert} and {Willem de Bruijn}.
+\newblock {Scaling in the Linux Networking Stack}.
+
 \bibitem{ktaka_ccmp_2017_826894}
 ktaka ccmp.
 \newblock ktaka-ccmp/ipvs-ingress: Initial release, July 2017.
@@ -133,17 +131,14 @@ Alan Sill.
 Inc CoreOS.
 \newblock {flannel}.
 
-\bibitem{CoreOSFlannelBackend}
-Inc CoreOS.
-\newblock {Backend}.
-
-\bibitem{TomHerbert}
-{Tom Herbert} and {Willem de Bruijn}.
-\newblock {Scaling in the Linux Networking Stack}.
-
 \bibitem{jacobson1989tcpdump}
 Van Jacobson, Craig Leres, and S~McCanne.
 \newblock The tcpdump manual page.
 \newblock {\em Lawrence Berkeley Laboratory, Berkeley, CA}, 143, 1989.
+
+\bibitem{moy1997ospf}
+John Moy.
+\newblock Ospf version 2.
+\newblock 1997.
 
 \end{thebibliography}
