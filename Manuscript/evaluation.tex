@@ -1,5 +1,5 @@
 
-\section{Performance measurement}\label{Performance Measurement}
+\section{Single pod performance}
 
 We will now discuss the feasibility of the proposed load balancer by comparing 
 its performance with those of existing iptables DNAT and the Nginx based load balancers. 
@@ -21,9 +21,10 @@ The following subsections explain these in further detail.
 \subsection{Benchmark method}
 
 \begin{figure}
-\includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem}
-\caption{Benchmark setup}
-\label{fig:benchmark-schem}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem}
+  \caption{Benchmark setup}
+  \label{fig:benchmark-schem}
 \end{figure}
 
 We measured the performance of the load balancers using the wrk.
@@ -55,97 +56,42 @@ However, since we used small HTTP responses, we could purely measure the load ba
 
 The hardware we used had eight physical CPU cores and a NIC with 4 rx-queues.
 
-\begin{figure}
-\begin{minipage}{\columnwidth}
-\small
-\begin{Verbatim}[commandchars=\\\{\}]
-\underline{\textbf{Command line:}}
- wrk -c800 -t40 -d30s http://172.16.72.2:8888/
--c: concurrency, -t: # of thread, -d: duration
 
-\underline{\textbf{Output example:}}
- Running 30s test @ http://10.254.0.10:81/
-  40 threads and 800 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    15.82ms   41.45ms   1.90s    91.90%
-    Req/Sec     4.14k   342.26     6.45k    69.24%
-  4958000 requests in 30.10s, 1.14GB read
-  Socket errors: connect 0, read 0, write 0, timeout 1
-Requests/sec: 164717.63
-Transfer/sec:     38.86MB
-\end{Verbatim}
-\end{minipage}
-\caption{Example output of benchmark by wrk}
-\label{fig:benchmark example}
+\subsection{Results}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\columnwidth]{Figs/ipvs_3figs}
+  \caption{IPVS results}
+  \label{fig:IPVS3figs}
 \end{figure}
 
 \begin{figure}
-\begin{minipage}{0.9\columnwidth}
-\small
-\begin{Verbatim}[commandchars=\\\{\}]
-\underline{\textbf{Physical Machine Specification:}}
-  CPU: Intel(R) Xeon(R) CPU E5-2450 0 @ 2.10GHz
-  # of Physical Cores: 8
-  Hyper Threading: enabled
-  Memory: 32GB
-  NIC: Broadcom BCM5720 Gigabit Ethernet PCIe
-
-\underline{\textbf{Number of Physical Machines:}}
-  Master: 1
-  Node: 7
-  Client: 1
-
-\underline{\textbf{Node Software version:}}
-  OS: Debian 8.7 (Jessie)
-  Kernel: \footnotesize{3.16.0-4-amd64 #1 SMP Debian 3.16.39-1 (2016-12-30)}
-  Kubernetes v1.5.2
-  flannel v0.7.0
-  etcd version: 3.0.15
-
-\underline{\textbf{Load balancer Software version:}}
-  Keepalived: v1.3.2 (12/03,2016)
-  Nginx: nginx/1.11.1
-
-\underline{\textbf{Worker Pod Software version:}}
-  nginx : nginx/1.13.0 
-\end{Verbatim}
-\end{minipage}
-\caption{Hardware and software configuration}
-\label{fig:Hardware and software configuration}
-\end{figure}
-
-
-
-\section{Result and Discussion}\label{Result and Discussion}
-
-\begin{figure}
-\includegraphics[width=0.6\columnwidth]{Figs/ipvs_3figs}
-\caption{IPVS results}
-\label{fig:IPVS3figs}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/performance_limitation}
+  \caption{Performance limitation due to 1Gbps bandwidth}
+  \label{fig:performance_limitation}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.8\columnwidth]{Figs/performance_limitation}
-\caption{Performance limitation due to 1Gbps bandwidth}
-\label{fig:performance_limitation}
+  \centering
+  \includegraphics[width=0.6\columnwidth]{Figs/iptables_3figs}
+  \caption{iptables results}
+  \label{fig:iptabls3figs}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.6\columnwidth]{Figs/iptables_3figs}
-\caption{iptables results}
-\label{fig:iptabls3figs}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs-iptables-nginx_2figs}
+  \caption{IPVS and iptables comparison}
+  \label{fig:IPVS-iptables-nginx_2figs}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.8\columnwidth]{Figs/ipvs-iptables-nginx_2figs}
-\caption{IPVS and iptables comparison}
-\label{fig:IPVS-iptables-nginx_2figs}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
-\caption{Latency cumulative distribution function}
-\label{fig:latency_cdf_rps_40pods}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
+  \caption{Latency cumulative distribution function}
+  \label{fig:latency_cdf_rps_40pods}
 \end{figure}
 
 
@@ -156,13 +102,14 @@ host-gw (Figure~\ref{fig:IPVS3figs}(a)), vxlan (Figure~\ref{fig:IPVS3figs}(b)) a
 The following RSS and RPS setting were compared: 
 
 \begin{center}
-\begin{minipage}{0.8\columnwidth}
+  \centering
+  \begin{minipage}{0.8\columnwidth}
 \begin{verbatim}
 (RSS, RPS) = (off, off)
            = (on , off)
            = (off, on )
 \end{verbatim}
-\end{minipage}
+  \end{minipage}
 \end{center}
 
 Except for the udp cases, we can see the trend in which the throughput linearly increases 
@@ -216,7 +163,7 @@ The latencies are a little bit smaller for IPVS, however we consider the differe
 For example, the median value at 160K[req/s] load for IPVS and iptables DNAT are, 1.1 msec and 1.2 msec, respectively.
 So, we can conclude our proposed load balancer showed no performance degradation while providing potability.
 
-\section{Evaluation\_ieice}\label{Evaluation}
+\section{Redundancy and scalability}
 
 In order to verify the feasibility of the proposed load balancer architecture, we evaluated it with the following criteria;
 (1) Basic functionality and Portability:
@@ -228,7 +175,6 @@ We also evaluated the performance level by changing the number of load balancers
 
 The following subsections explain the evaluation in detail.
 
-
 %(3) Resource comsumption.
 %We examined the basic performance of the our proposed load balancer container and the basic function of the ECMP redundancy using cluster of physical servers in on-premise data center.
 %As for the performance, we measured throughput of the load balancer container and found that it was at least as good as existing software load balancer using Linux. 
@@ -239,60 +185,65 @@ The following subsections explain the evaluation in detail.
 \subsection{Basic functionality and portability}
 
 \begin{figure}[t]
-  \includegraphics[width=0.9\columnwidth]{Figs/lb_single_schem}
+  \centering
+  \includegraphics[width=0.7\columnwidth]{Figs/lb_single_schem}
   \caption{}
   \label{fig:lb_single_schem}
 \end{figure}
 
-\begin{figure}[t]
-
+\begin{table}[]
   \centering
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
-[Command line]
- wrk -c800 -t40 -d30s http://172.16.72.2:8888/
--c: concurrency, -t: # of thread, -d: duration
+  \begin{tabular}{l}
+    \hline
+    \begin{minipage}{12cm}
+      \begin{verbatim}
 
-[Output example]
- Running 30s test @ http://10.254.0.10:81/
-  40 threads and 800 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency    15.82ms   41.45ms   1.90s    91.90%
-    Req/Sec     4.14k   342.26     6.45k    69.24%
-  4958000 requests in 30.10s, 1.14GB read
-  Socket errors: connect 0, read 0, write 0, timeout 1
-Requests/sec: 164717.63
-Transfer/sec:     38.86MB
-───────────────────────────────────────────────────────
-\end{Verbatim}
+[Command line] 
+ wrk -c800 -t40 -d30s http://172.16.72.2:8888/ 
+-c: concurrency, -t: # of thread, -d: duration 
 
-    \caption{}
-    \label{fig:bench_example}
-\end{figure}
+[Output example] 
+ Running 30s test @ http://10.254.0.10:81/ 
+  40 threads and 800 connections 
+  Thread Stats   Avg      Stdev     Max   +/- Stdev 
+    Latency    15.82ms   41.45ms   1.90s    91.90\% 
+    Req/Sec     4.14k   342.26     6.45k    69.24\% 
+  4958000 requests in 30.10s, 1.14GB read 
+  Socket errors: connect 0, read 0, write 0, timeout 1 
+Requests/sec: 164717.63 
+Transfer/sec:     38.86MB 
+      \end{verbatim}
+    \end{minipage}
+   \\ \hline
+  \end{tabular}
+  \caption{}
+  \label{tab:bench_example}
+\end{table}
 
-\begin{figure}[t]
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
-[Hardware Specification]
-  CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) 
-  Memory: 32GB
-  NIC: Broadcom BCM5720 Giga bit 
- (Node x 6, LB x 1, Client x 1)
-
-[Node Software]
-  OS: Debian 8.7, linux-3.16.0-4-amd64
-  Kubernetes v1.10.6
-  flannel v0.7.0
-  etcd version: 3.0.15
-
-[Container Software]
-  Keepalived: v1.3.2 (12/03,2016)
-  nginx : 1.15.4(web server) 
-───────────────────────────────────────────────────────
-\end{Verbatim}
-    \caption{}
-    \label{fig:hw_sw_spec}
-\end{figure}
+\begin{table}[]
+  \centering
+  \begin{tabular}{ll}
+    \hline \\
+    \multicolumn{2}{l}{[Hardware Specification]}   \\
+    & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
+    & Memory: 32GB \\
+    & NIC: Broadcom BCM5720 Giga bit \\
+    & (Node x 6, LB x 1, Client x 1) \\
+    & \\
+    \multicolumn{2}{l}{[Node Software]}  \\
+    & OS: Debian 8.7, linux-3.16.0-4-amd64 \\
+    & Kubernetes v1.10.6 \\
+    & flannel v0.7.0 \\
+    & etcd version: 3.0.15 \\
+    & \\
+    \multicolumn{2}{l}{[Container Software]}   \\
+    & Keepalived: v1.3.2 (12/03,2016) \\
+    & nginx : 1.11.1(load balancer), 1.13.0(web server) \\
+    \\ \hline
+  \end{tabular}
+  \caption{}
+  \label{tab:hw_sw_spec}
+\end{table}
 
 
 Throughput measurements were carried out in order to examine the basic functionality of the containerized ipvs load balancer.
@@ -367,34 +318,35 @@ After that, in order to explore the scalability, we also measured the throughput
     \label{fig:lb_ecmp_schem}
 \end{figure}
 
-\begin{figure}[t]
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
-[Hardware Specification]
-  CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) 
-  Memory: 32GB
-  NIC: Broadcom BCM5720 Giga bit 
- (Node x 6, Client x 1)
-
-  CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) 
-  Memory: 32GB
-  NIC: Intel X550
- (LB x 1)
-  
-[Node Software]
-  OS: Debian 9.5, linux-4.16.8
-  Kubernetes v1.5.2
-  flannel v0.7.0
-  etcd version: 3.0.15
-
-[Container Software]
-  Keepalived: v1.3.2 (12/03,2016)
-  nginx : 1.11.1(load balancer), 1.13.0(web server) 
-───────────────────────────────────────────────────────
-\end{Verbatim}
-    \caption{}
-    \label{fig:ecmp-hw_sw_spec}
-\end{figure}
+\begin{table}[]
+  \centering
+  \begin{tabular}{ll}
+    \hline \\
+    \multicolumn{2}{l}{[Hardware Specification]}   \\
+    & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
+    & Memory: 32GB \\
+    & NIC: Broadcom BCM5720 Giga bit \\
+    & (Node x 6, Client x 1) \\
+    & \\
+    & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
+    & Memory: 32GB \\
+    & NIC: Intel X550 \\
+    & (Load Balancer x 1) \\
+    & \\
+    \multicolumn{2}{l}{[Node Software]}  \\
+    & OS: Debian 9.5, linux-4.16.8 \\
+    & Kubernetes v1.5.2 \\
+    & flannel v0.7.0 \\
+    & etcd version: 3.0.15 \\
+    & \\
+    \multicolumn{2}{l}{[Container Software]}   \\
+    & Keepalived: v1.3.2 (12/03,2016) \\
+    & nginx : 1.15.4(web server) \\
+    \\ \hline
+  \end{tabular}
+  \caption{}
+  \label{tab:ecmp-hw_sw_spec}
+\end{table}
 
 Fig.~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experimental setup and also summarizes hardware and software specifications.
 Notable differences from the previous throughput experiment in Fig.~\ref{fig:benchmark-schem} are as follows;
@@ -403,57 +355,57 @@ Notable differences from the previous throughput experiment in Fig.~\ref{fig:ben
 3) The NIC of the benchmark client has been changed to 10 Gbps card since now we have multiple of ipvs container load balancers that are capable of filling up 1 Gbps bandwidth.
 4) Some of the software have been updated to the most recent versions at the time of the experiment.
 
-\begin{figure}[h]
 
-\begin{subfigure}[t]{\columnwidth}
-\centering
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
-10.1.1.0/24 via 10.0.0.106 \textbackslash 
-                        dev eth0 proto zebra metric 20
-───────────────────────────────────────────────────────
-\end{Verbatim}
-\caption{Routing table entry with single load balancer pod.}
-\label{fig:single}
-\end{subfigure}
-\par\bigskip
+\begin{table}[h]
 
-\begin{subfigure}[t]{\columnwidth}
-\centering
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
-10.1.1.0/24 proto zebra metric 20
-        nexthop via 10.0.0.105  dev eth0 weight 1
-        nexthop via 10.0.0.106  dev eth0 weight 1
-        nexthop via 10.0.0.107  dev eth0 weight 1
-───────────────────────────────────────────────────────
-\end{Verbatim}
-\caption{Routing table entry with three load balancer pods.}
-\label{fig:three}
-\end{subfigure}
-\par\bigskip
+  \begin{subtable}{.9\textwidth}
+  \centering
+  \begin{tabular}{l}
+    \hline 
+    10.1.1.0/24 via 10.0.0.106 dev eth0 proto zebra metric 20 \\
+    \hline
+  \end{tabular}
+  \caption{}
+  \label{tab:single}
+\end{subtable}
 
-\begin{subfigure}[t]{\columnwidth}
-\centering
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
-10.1.1.0/24 pro to zebra metric 20
-        nexthop via 10.0.0.107  dev eth0 weight 1
-        nexthop via 10.0.0.105  dev eth0 weight 1
-        nexthop via 10.0.0.106  dev eth0 weight 1
-10.1.2.0/24 proto zebra metric 20
-        nexthop via 10.0.0.107  dev eth0 weight 1
-        nexthop via 10.0.0.106  dev eth0 weight 1
-───────────────────────────────────────────────────────
-\end{Verbatim}
-\caption{Routing table entry with two services with two, three load balancer pods respectively.}
-\label{fig:double_svc}
-\end{subfigure}
-\par\bigskip
+\begin{subtable}{.9\textwidth}
+  \centering
+  \begin{tabular}{ll}
+    \hline
+    \multicolumn{2}{l}{10.1.1.0/24 proto zebra metric 20 } \\
+    \hspace{15 mm}
+    & nexthop via 10.0.0.105  dev eth0 weight 1 \\
+    & nexthop via 10.0.0.106  dev eth0 weight 1 \\
+    & nexthop via 10.0.0.107  dev eth0 weight 1 \\
+    \hline
+  \end{tabular}
+  \caption{}
+  \label{tab:single}
+\end{subtable}
+
+\begin{subtable}{.9\textwidth}
+  \centering
+  \begin{tabular}{ll}
+    \hline
+    \multicolumn{2}{l}{10.1.1.0/24 pro to zebra metric 20 } \\
+    \hspace{15 mm}
+    & nexthop via 10.0.0.107  dev eth0 weight 1 \\
+    & nexthop via 10.0.0.105  dev eth0 weight 1 \\
+    & nexthop via 10.0.0.106  dev eth0 weight 1 \\
+    \multicolumn{2}{l}{10.1.2.0/24 proto zebra metric 20 } \\
+    \hspace{15 mm}
+    & nexthop via 10.0.0.107  dev eth0 weight 1 \\
+    & nexthop via 10.0.0.106  dev eth0 weight 1 \\
+    \hline
+  \end{tabular}
+  \caption{}
+  \label{tab:double_svc}
+\end{subtable}
 
 \caption{ECMP routing tables.}
-\label{fig:exabgp_routing_table}
-\end{figure}
+\label{tab:exabgp_routing_table}
+\end{table}
 
 First, we examined ECMP functionality by watching the routing table on the benchmark client.
 Fig.~\ref{fig:exabgp_routing_table}~(\subref{fig:single}) shows the routing table entry on the router when a single load balancer pod exists.
@@ -490,23 +442,23 @@ As we can see from the figure, most of the delays are within 6 seconds, and the 
 We can conclude that ECMP routing update in our proposed architecture is quick enough.
 
 
-  \begin{figure}[t]
-    \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_lb_cubic_ieice}
-    \caption{Caption 1}
-    \label{fig:ecmp_lb_cubic_ieice}
-  \end{figure}
+\begin{figure}[t]
+  \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_lb_cubic_ieice}
+  \caption{Caption 1}
+  \label{fig:ecmp_lb_cubic_ieice}
+\end{figure}
 
-  \begin{figure}[t]
-    \includegraphics[width=0.98\columnwidth,left]{Figs/ecmp_response_ieice}
-    \caption{Caption 2}
-    \label{fig:ecmp_response_ieice}
-  \end{figure}
+\begin{figure}[t]
+  \includegraphics[width=0.98\columnwidth,left]{Figs/ecmp_response_ieice}
+  \caption{Caption 2}
+  \label{fig:ecmp_response_ieice}
+\end{figure}
 
-  \begin{figure}[t]
-    \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_delay_histgram_ieice}
-    \caption{Caption 2}
-    \label{fig:ecmp_delay_histgram_ieice}
-  \end{figure}
+\begin{figure}[t]
+  \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_delay_histgram_ieice}
+  \caption{Caption 2}
+  \label{fig:ecmp_delay_histgram_ieice}
+\end{figure}
 
 
 \subsection{Resource Consumption}

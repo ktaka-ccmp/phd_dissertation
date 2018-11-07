@@ -101,14 +101,6 @@ Inc CoreOS.
 HashiCorp.
 \newblock {Consul by HashiCorp}.
 
-\bibitem{CoreOSFlannelBackend}
-Inc CoreOS.
-\newblock {Backend}.
-
-\bibitem{TomHerbert}
-{Tom Herbert} and {Willem de Bruijn}.
-\newblock {Scaling in the Linux Networking Stack}.
-
 \bibitem{ktaka_ccmp_2017_826894}
 ktaka ccmp.
 \newblock ktaka-ccmp/ipvs-ingress: Initial release, July 2017.
@@ -117,6 +109,14 @@ ktaka ccmp.
 {Bert Hubert}, {Gregory Maxwell}, {Remco van Mook}, {Martijn van Oosterhout},
   {Paul B Schroeder}, and {Jasper Spaans}.
 \newblock {Linux Advanced Routing {\&} Traffic Control HOWTO}, 2002.
+
+\bibitem{CoreOSFlannelBackend}
+Inc CoreOS.
+\newblock {Backend}.
+
+\bibitem{TomHerbert}
+{Tom Herbert} and {Willem de Bruijn}.
+\newblock {Scaling in the Linux Networking Stack}.
 
 \bibitem{Glozer2016}
 Will Glozer.

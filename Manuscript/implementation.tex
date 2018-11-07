@@ -70,37 +70,39 @@ and adding CAP\_NET\_ADMIN capability to the container to allow keepalived to ma
 For the former case, we also needed to mount the \enquote{/lib/module} of the node's file system on the container's file system.
 
 \begin{figure}
+  \centering
 \begin{minipage}{0.7\columnwidth}
-\begin{verbatim}
-virtual_server fwmark 1 {
-  delay_loop 5
-  lb_algo lc
-  lb_kind NAT
-  protocol TCP
-  real_server 172.16.21.2 80 {
-    uthreshold 20000
-    TCP_CHECK {
-      connect_timeout 5
-      connect_port 80
+\begin{lstlisting}[frame=single]
+  virtual_server fwmark 1 {
+    delay_loop 5
+    lb_algo lc
+    lb_kind NAT
+    protocol TCP
+    real_server 172.16.21.2 80 {
+      uthreshold 20000
+      TCP_CHECK {
+        connect_timeout 5
+        connect_port 80
+      }
+    }
+    real_server 172.16.80.2 80 {
+      uthreshold 20000
+      TCP_CHECK {
+        connect_timeout 5
+        connect_port 80
+      }
     }
   }
-  real_server 172.16.80.2 80 {
-    uthreshold 20000
-    TCP_CHECK {
-      connect_timeout 5
-      connect_port 80
-    }
-  }
-}
-\end{verbatim}
+\end{lstlisting}
 \end{minipage}
 \caption{An example of ipvs.conf}
 \label{fig:ipvs.conf}
 \end{figure}
 
 \begin{figure}
-\begin{minipage}{\columnwidth}
-\small
+  \centering
+%\begin{minipage}{\columnwidth}
+\rule{\columnwidth}{0.4pt}
 \begin{verbatim}
 # kubectl exec -it IPVS-controller-4117154712-kv633 -- IPVSadm -L
 IP Virtual Server version 1.2.1 (size=4096)
@@ -110,7 +112,8 @@ FWM  1 lc
   -> 172.16.21.2:80      Masq    1      0          0         
   -> 172.16.80.2:80      Masq    1      0          0
 \end{verbatim}
-\end{minipage}
+\rule{\columnwidth}{0.4pt}
+%\end{minipage}
 \caption{Example of IPVS balancing rules}
 \label{fig:IPVS rule}
 \end{figure}
@@ -136,26 +139,21 @@ the least connection(lc)\cite{Zhang2000} balancing algorithm.
 
   \par\bigskip
 
-  \begin{subfigure}[t]{\columnwidth}
-
-\centering
-\begin{Verbatim}[commandchars=\\\{\}]
-───────────────────────────────────────────────────────
- [BGP announcement]
-     route 10.1.1.0/24 next-hop 10.0.0.106 
-
- [Routing in node net namespace]
-     ip netns exec node \textbackslash
-             ip route replace 10.1.1.0/24 dev docker0
-      
- [Accept as local]
-     ip route add local 10.1.1.0/24 dev eth0 
-───────────────────────────────────────────────────────
-\end{Verbatim}
-
+  \begin{subtable}{.9\textwidth}
+    \centering
+    \begin{tabular}{l}
+      \hline 
+      \multicolumn{1}{l}{[BGP announcement]} \\
+      \hspace{15 mm} route 10.1.1.0/24 next-hop 10.0.0.106 \\
+      \multicolumn{1}{l}{[Routing in node net namespace]} \\
+      \hspace{15 mm} ip netns exec node ip route replace 10.1.1.0/24 dev docker0 \\
+      \multicolumn{1}{l}{[Accept as local]} \\
+      \hspace{15 mm} ip route add local 10.1.1.0/24 dev eth0 \\
+      \hline
+    \end{tabular}
     \caption{}
-    \label{fig:exabgp_setting}
-  \end{subfigure}
+    \label{tab:single}
+  \end{subtable}
 
   \caption{
     (a) Network path by the exabgp container. (b) Required settings in the exabgp container.
