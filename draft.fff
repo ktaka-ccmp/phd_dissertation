@@ -15,6 +15,19 @@
 \efloatseparator
  
 \begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
+\caption{
+  The network architecture of an exemplified container cluster system. %\\ %\par
+  A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
+  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
+  and the distributed to web pods using the overlay network.
+}
+\label{fig:overlay}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/ecmp.png}
 \caption{
@@ -139,19 +152,6 @@ FWM  1 lc
     (a) Network path by the exabgp container. (b) Required settings in the exabgp container.
   }
   \label{fig:exabgp}
-\end{figure}
-\efloatseparator
- 
-\begin{figure}[tb]
-\centering
-\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
-\caption{
-  The network architecture of an exemplified container cluster system. %\\ %\par
-  A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
-  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
-  and the distributed to web pods using the overlay network.
-}
-\label{fig:overlay}
 \end{figure}
 \efloatseparator
  

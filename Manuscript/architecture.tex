@@ -31,7 +31,7 @@ These include the bare metal load balancers for on-premise data centers.
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, which would make it very difficult to find out which node was malfunctioning.   
 
-Regarding the first proble, if there is no load balancer that is not supoorted by Kubernetes, users might be able to set up the routing manually depending on the infrastructure.
+Regarding the first problem, if there is no load balancer that is not supoorted by Kubernetes, users might be able to set up the routing manually depending on the infrastructure.
 The traffic would be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
 However, this approach significantly degrades the portability of container clusters.
 
@@ -41,30 +41,30 @@ that is deployable in any environment even if there are no external load balance
 
 \section{Proposed Architecture}
 
-This chapter discusses the load balancer architecure.
-How they are implemented and how redandancy is realized.
+This chapter discusses the load balancer architecture.
+How they are implemented and how redundancy is realized.
 
-The porblems of Kubernetes architecture in Figure~\ref{fig:K8sProposed} have been the followings;
-1) There are environments with load balancers whoes APIs are not supported by Kubernetes.
-2) Incomming traffic are distributed twice, once at the load balancer and once at the every node.
+The problems of Kubernetes architecture in Figure~\ref{fig:K8sProposed} have been the followings;
+1) There are environments with load balancers whose APIs are not supported by Kubernetes.
+2) Incoming traffic is distributed twice, once at the load balancer and once at every node.
 
 There are several possible ways to solve these problems.
-a) Make Kubernetes support all of exisiting load balancer hardwares that could be used in on-premise data centers.
-b) Force users to buy new load balancer that is supported by Kubernetes.
+a) Make Kubernetes support all of the existing load balancer hardware that could be used in on-premise data centers.
+b) Force users to buy new hardware load balancer that is supported by Kubernetes.
 c) Provide software load balancers and make them supported by Kubernetes.
-d) Provide software load balancers as a part of container cluters.
+d) Provide software load balancers as a part of container clusters.
 
-The a) is impossible. The b) does not improve usability of container cluster since specific hardwares are always needed.
-The c) and d) are viable solutions since they are realized using commodity hardware.
+The a) is impossible. The b) does not improve the usability of the container cluster since the specific hardware is always needed.
+The c) and d) are viable solutions since they can be realized using commodity hardware.
 
 We do not know how many load balancers are needed for a specific web service.
 We also do not know how many of the services are deployed in a data center.
-Therefore a cluster of load balancers should be elastice, i.e. it should change the capacity on demand.
-And we also should be able to deploy many of load balancer cluster on demand.
-It would be better if we could share the same server pool with web servers, since capacity planning for hardwares to host load balancer clustes may be difficult.
+Therefore a cluster of load balancers should be elastic, i.e., it should change the capacity on demand.
+Also, we also should be able to deploy many of load balancer cluster on demand.
+It would be better if we could share the same server pool with web servers, since capacity planning for hardware to host load balancer clusters may be difficult.
 
 For such application needs the container cluster seems best suited.
-Therefore the author proposes the architecture where a cluster of load balancers are also deployed as a cluster of containers.
+Therefore the author proposes the architecture, d) where a cluster of load balancers are also deployed as a cluster of containers.
 
 \begin{figure}
   \centering
@@ -83,12 +83,13 @@ The proposed load balancer can resolve the conventional architecture problems, a
 Since the load balancer itself is containerized, the load balancer can run in any environment including on-premise data centers, even without external load balancers that is supported by Kubernetes.
 Load balancers can share the server pool with web containers.
 The incoming traffic is directly distributed to designated {\em pods} by the load balancer. 
-It makes the administration, e.g. finding malfunctions, easier.
+It makes the administration, e.g. finding malfunctions, easier than the conventional architecture.
 
 \section{Portable Load Balancer}
 
-The proposed load balancer uses three components, ipvs, keepalived, and a controller. 
-These components are placed in a Docker container image.
+In order to implement a software load balancer that is runnable in any environment, ipvs is containerized.  
+I addition to that the proposed load balancer uses two other components, keepalived, and a controller. 
+These components are placed in a single Docker container image.
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later, 
 to distribute incoming Transmission Control Protocol(TCP) traffic to 
 {\em real servers}\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
@@ -101,14 +102,49 @@ It is often used together with ipvs to facilitate ease of use.
 The controller is a daemon that periodically monitors the {\em pod} information on the master, 
 and it performs various actions when such information changes.
 Kubernetes provides ingress controller framework as the Go Language(Golang) package to implement the controllers. 
-We have implemented a controller program that feeds {\em pod} state changes to keepalived 
+We implement a controller program that feeds {\em pod} state changes to keepalived 
 using this framework. 
 
 \section{Routing and Redundancy}
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container.
 We propose redundant architecture using ECMP for load balancer containers usable especially in on-premise data centers.
-We first explain the proposed architecture with ECMP redundancy in \ref{Redundancy with ECMP}, then  present an alternative architecture using VRRP as a comparison in \ref{Redundancy with VRRP}, which we think is not as good as the architecture using ECMP.
+We first explain overlay network briefly in \ref{Overlay network} as background, then present the proposed architecture with ECMP redundancy in \ref{Redundancy with ECMP}. 
+We also present an alternative architecture using VRRP as a comparison in \ref{Redundancy with VRRP}, which we think is not as good as the architecture using ECMP. 
+
+\subsection{Overlay Network}\label{sec:overlay_network}
+
+In order to discuss load balancer for container cluster, the knowledge of the overlay network is essential.
+We briefly explain an abstract concept of overlay network in this subsection.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
+\caption{
+  The network architecture of an exemplified container cluster system. %\\ %\par
+  A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
+  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
+  and the distributed to web pods using the overlay network.
+}
+\label{fig:overlay}
+\end{figure}
+
+Fig.~\ref{fig:overlay} shows schematic diagram of network architecture of a container cluster system. 
+Suppose we have a physical network(node network) with IP address range of 10.0.0.0/16 and an overlay network with IP address range of 172.16.0.0/16.
+The node network is the network for nodes to communicate with each other.
+The overlay network is the network setups for containers to communicate with each other.
+An overlay network typically consists of appropriate routing tables on nodes, and optionally of tunneling setup using ipip or vxlan.
+The upstream router usually belongs to the node network.
+When a container in the Fig.~\ref{fig:overlay} communicates with any of the nodes, it can use its IP address in 172.16.0.0/16 IP range as a source IP, since every node has proper routing table for the overlay network.
+When a container communicates with the upstream router that does not have routing information regarding the overlay network, the source IP address must be translated by Source Network Address Translation(SNAT) rules on the node the container resides.
+
+The SNAT caused a problem when we tried to co-host multiple load balancer containers for different services on a single node, and let them connect the upstream router directly.
+This was due to the fact that the BGP agent used in our experiment only used the source IP address of the connection to distinguish the BGP peer.
+The agent behaved as though different BGP connections from different containers belonged to a single BGP session because the source IP addresses were identical due to the SNAT.
+
+There many overlay network implementations.
+The author investigated two of the popular ones to see how it works.
+
 
 \subsection{ECMP}\label{Subsec:Redundancy with ECMP}
 

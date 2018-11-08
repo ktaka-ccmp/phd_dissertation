@@ -5,29 +5,29 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {7.1}{\ignorespaces Conventional architecture of a Kubernetes cluster.\relax }}{27}{figure.caption.3}
-\contentsline {figure}{\numberline {7.2}{\ignorespaces Kubernetes cluster with proposed load balancer.\relax }}{28}{figure.caption.4}
-\contentsline {figure}{\numberline {7.3}{\ignorespaces The proposed architecture of load balancer redundancy with ECMP. The traffic from the internet is distributed by the upstream router to multiple of lb pods using hash-based ECMP and then distributed by the lb pods to web pods using Linux kernel's ipvs. The ECMP routing table on the upstream router is populated using iBGP. \relax }}{29}{figure.caption.5}
-\contentsline {figure}{\numberline {7.4}{\ignorespaces An alternative redundant load balancer architecture using VRRP. The traffic from the internet is forwarded by the upstream router to a active lb node and then distributed by the lb pods to web pods using Linux kernel's ipvs. The active lb pod is selected using VRRP protocol. \relax }}{30}{figure.caption.6}
-\contentsline {figure}{\numberline {7.5}{\ignorespaces An experimental container cluster with proposed redundant software balancers. The master and nodes are configured as Kubernetes's master and nodes on top of conventional Linux boxes, respectively. The route reflector and the upstream router are also conventional Linux boxes. \relax }}{31}{figure.caption.7}
-\contentsline {figure}{\numberline {7.6}{\ignorespaces Implementation\relax }}{32}{figure.caption.8}
-\contentsline {figure}{\numberline {7.7}{\ignorespaces An example of ipvs.conf\relax }}{33}{figure.caption.9}
-\contentsline {figure}{\numberline {7.8}{\ignorespaces Example of IPVS balancing rules\relax }}{34}{figure.caption.10}
-\contentsline {figure}{\numberline {7.9}{\ignorespaces (a) Network path by the exabgp container. (b) Required settings in the exabgp container. \relax }}{35}{figure.caption.11}
-\contentsline {figure}{\numberline {7.10}{\ignorespaces The network architecture of an exemplified container cluster system. A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes). The traffic from the internet are forwarded to the lb pod by the upstream router using the node network, and the distributed to web pods using the overlay network. \relax }}{36}{figure.caption.12}
-\contentsline {figure}{\numberline {7.11}{\ignorespaces frame diagram\relax }}{37}{figure.caption.13}
-\contentsline {figure}{\numberline {7.12}{\ignorespaces RX/TX queues of the hardware\relax }}{38}{figure.caption.14}
-\contentsline {figure}{\numberline {7.13}{\ignorespaces Benchmark setup\relax }}{39}{figure.caption.15}
-\contentsline {figure}{\numberline {7.14}{\ignorespaces IPVS results\relax }}{40}{figure.caption.16}
-\contentsline {figure}{\numberline {7.15}{\ignorespaces Performance limitation due to 1Gbps bandwidth\relax }}{41}{figure.caption.17}
-\contentsline {figure}{\numberline {7.16}{\ignorespaces iptables results\relax }}{42}{figure.caption.18}
-\contentsline {figure}{\numberline {7.17}{\ignorespaces IPVS and iptables comparison\relax }}{43}{figure.caption.19}
-\contentsline {figure}{\numberline {7.18}{\ignorespaces Latency cumulative distribution function\relax }}{44}{figure.caption.20}
-\contentsline {figure}{\numberline {7.19}{\ignorespaces \relax }}{45}{figure.caption.21}
-\contentsline {figure}{\numberline {7.20}{\ignorespaces Performance of the load balancer container.\relax }}{46}{figure.caption.22}
-\contentsline {figure}{\numberline {7.21}{\ignorespaces GCP\relax }}{47}{figure.caption.23}
-\contentsline {figure}{\numberline {7.22}{\ignorespaces AWS with Node x 6, Client x 1, Load balancer x 1. Custom instance. \relax }}{48}{figure.caption.24}
-\contentsline {figure}{\numberline {7.23}{\ignorespaces \relax }}{49}{figure.caption.25}
-\contentsline {figure}{\numberline {7.24}{\ignorespaces Caption 1\relax }}{50}{figure.caption.26}
-\contentsline {figure}{\numberline {7.25}{\ignorespaces Caption 2\relax }}{51}{figure.caption.27}
-\contentsline {figure}{\numberline {7.26}{\ignorespaces Caption 2\relax }}{52}{figure.caption.28}
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Conventional architecture of a Kubernetes cluster.\relax }}{32}{figure.caption.3}
+\contentsline {figure}{\numberline {7.2}{\ignorespaces Kubernetes cluster with proposed load balancer.\relax }}{33}{figure.caption.4}
+\contentsline {figure}{\numberline {7.3}{\ignorespaces The network architecture of an exemplified container cluster system. A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes). The traffic from the internet are forwarded to the lb pod by the upstream router using the node network, and the distributed to web pods using the overlay network. \relax }}{34}{figure.caption.5}
+\contentsline {figure}{\numberline {7.4}{\ignorespaces The proposed architecture of load balancer redundancy with ECMP. The traffic from the internet is distributed by the upstream router to multiple of lb pods using hash-based ECMP and then distributed by the lb pods to web pods using Linux kernel's ipvs. The ECMP routing table on the upstream router is populated using iBGP. \relax }}{35}{figure.caption.6}
+\contentsline {figure}{\numberline {7.5}{\ignorespaces An alternative redundant load balancer architecture using VRRP. The traffic from the internet is forwarded by the upstream router to a active lb node and then distributed by the lb pods to web pods using Linux kernel's ipvs. The active lb pod is selected using VRRP protocol. \relax }}{36}{figure.caption.7}
+\contentsline {figure}{\numberline {7.6}{\ignorespaces An experimental container cluster with proposed redundant software balancers. The master and nodes are configured as Kubernetes's master and nodes on top of conventional Linux boxes, respectively. The route reflector and the upstream router are also conventional Linux boxes. \relax }}{37}{figure.caption.8}
+\contentsline {figure}{\numberline {7.7}{\ignorespaces Implementation\relax }}{38}{figure.caption.9}
+\contentsline {figure}{\numberline {7.8}{\ignorespaces An example of ipvs.conf\relax }}{39}{figure.caption.10}
+\contentsline {figure}{\numberline {7.9}{\ignorespaces Example of IPVS balancing rules\relax }}{40}{figure.caption.11}
+\contentsline {figure}{\numberline {7.10}{\ignorespaces (a) Network path by the exabgp container. (b) Required settings in the exabgp container. \relax }}{41}{figure.caption.12}
+\contentsline {figure}{\numberline {7.11}{\ignorespaces frame diagram\relax }}{42}{figure.caption.13}
+\contentsline {figure}{\numberline {7.12}{\ignorespaces RX/TX queues of the hardware\relax }}{43}{figure.caption.14}
+\contentsline {figure}{\numberline {7.13}{\ignorespaces Benchmark setup\relax }}{44}{figure.caption.15}
+\contentsline {figure}{\numberline {7.14}{\ignorespaces IPVS results\relax }}{45}{figure.caption.16}
+\contentsline {figure}{\numberline {7.15}{\ignorespaces Performance limitation due to 1Gbps bandwidth\relax }}{46}{figure.caption.17}
+\contentsline {figure}{\numberline {7.16}{\ignorespaces iptables results\relax }}{47}{figure.caption.18}
+\contentsline {figure}{\numberline {7.17}{\ignorespaces IPVS and iptables comparison\relax }}{48}{figure.caption.19}
+\contentsline {figure}{\numberline {7.18}{\ignorespaces Latency cumulative distribution function\relax }}{49}{figure.caption.20}
+\contentsline {figure}{\numberline {7.19}{\ignorespaces \relax }}{50}{figure.caption.21}
+\contentsline {figure}{\numberline {7.20}{\ignorespaces Performance of the load balancer container.\relax }}{51}{figure.caption.22}
+\contentsline {figure}{\numberline {7.21}{\ignorespaces GCP\relax }}{52}{figure.caption.23}
+\contentsline {figure}{\numberline {7.22}{\ignorespaces AWS with Node x 6, Client x 1, Load balancer x 1. Custom instance. \relax }}{53}{figure.caption.24}
+\contentsline {figure}{\numberline {7.23}{\ignorespaces \relax }}{54}{figure.caption.25}
+\contentsline {figure}{\numberline {7.24}{\ignorespaces Caption 1\relax }}{55}{figure.caption.26}
+\contentsline {figure}{\numberline {7.25}{\ignorespaces Caption 2\relax }}{56}{figure.caption.27}
+\contentsline {figure}{\numberline {7.26}{\ignorespaces Caption 2\relax }}{57}{figure.caption.28}

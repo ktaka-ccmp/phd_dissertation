@@ -22,7 +22,7 @@ We also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{
 In the actual production environment, proprietary hardware with the highest throughput is often deployed, but we could still test some of the required advanced functions by using a Linux box.
 
 Each load balancer pod consists of an exabgp container and an ipvs container.
-The ipvs container is responsible for distributing the traffic toward the IP address that a service uses, to web(nginx) server pods.
+The ipvs container is responsible for distributing the traffic toward the IP address that a service uses, to web server(nginx) pods.
 The ipvs container monitors the availability of web server pods and manages the load balancing rule appropriately.
 The exabgp container is responsible for advertising the route toward the IP address that a service uses, to the route reflector.
 The route reflector aggregates the routing information advertised by load balancer pods and advertise them to the upstream router.
@@ -49,7 +49,7 @@ Figure~\ref{fig:IPVS-ingress-schem} is a schematic diagram to show the dynamic r
 The right part of the figure shows the enlarged view of one of the nodes where the load balancer pod(LB2) is deployed.
 Two daemon programs, controller and keepalived, run in the container inside the LB2 pod are illustrated.
 The keepalived manages Linux kernel's IPVS rules depending on the ipvs.conf configuration file.
-It is also capable of health-checking the liveliness of {\em real server}, 
+It is also capable of health-checking the life of {\em real server}, 
 which is represented as a combination of the IP addresses and port numbers of the target {\em pods}. 
 If the health check to a {\em real server} fails, keepalived will remove that {\em real server} from the IPVS rules.
 

@@ -1,36 +1,3 @@
-\section{Overlay Network}\label{sec:overlay_network}
-
-In order to discuss load balancer for container cluster, the knowledge of the overlay network is essential.
-We briefly explain an abstract concept of overlay network in this section.
-
-\begin{figure}[tb]
-\centering
-\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
-\caption{
-  The network architecture of an exemplified container cluster system. %\\ %\par
-  A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
-  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
-  and the distributed to web pods using the overlay network.
-}
-\label{fig:overlay}
-\end{figure}
-
-Fig.~\ref{fig:overlay} shows schematic diagram of network architecture of a container cluster system. 
-Suppose we have a physical network(node network) with IP address range of 10.0.0.0/16 and an overlay network with IP address range of 172.16.0.0/16.
-The node network is the network for nodes to communicate with each other.
-The overlay network is the network setups for containers to communicate with each other.
-An overlay network typically consists of appropriate routing tables on nodes, and optionally of tunneling setup using ipip or vxlan.
-The upstream router usually belongs to the node network.
-When a container in the Fig.~\ref{fig:overlay} communicates with any of the nodes, it can use its IP address in 172.16.0.0/16 IP range as a source IP, since every node has proper routing table for the overlay network.
-When a container communicates with the upstream router that does not have routing information regarding the overlay network, the source IP address must be translated by Source Network Address Translation(SNAT) rules on the node the container resides.
-
-The SNAT caused a problem when we tried to co-host multiple load balancer containers for different services on a single node, and let them connect the upstream router directly.
-This was due to the fact that the BGP agent used in our experiment only used the source IP address of the connection to distinguish the BGP peer.
-The agent behaved as though different BGP connections from different containers belonged to a single BGP session because the source IP addresses were identical due to the SNAT.
-
-There many overlay network implementations.
-The author investigated two of the popular ones to see how it works.
-
 \subsection{Flannel}
 
 We used flannel to build the Kubernetes cluster used in our experiment.

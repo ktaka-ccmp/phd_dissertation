@@ -51,7 +51,7 @@ Kubernetes does not provide generic ways to route the traffic from the internet 
 In other words, Kubernetes is heavily dependent on cloud load balancers, which is external load balancers that are set up on the fly by cloud providers through their application protocol interfaces (APIs).
 Once the traffic reaches the nodes, Kubernetes handles it nicely, but this is a problem since not every cloud provider or on-premise data center has load balancers capable of being controlled by Kubernetes.
 
-Other container cluste management systems, e.g. docker swarm, etc, also lack a generic way to route the trafic into the container cluster.
+Other container cluster management systems, e.g. docker swarm, etc, also lack a generic way to route the trafic into the container cluster.
 One of the aims of this study is to seek a generic way to route the traffic into container clusters, and thereby facilitating web service migrations.
 
 Load balancers are often used to distribute high volume traffic from the Internet to thousands of web servers .
@@ -82,10 +82,10 @@ Although major cloud providers do not currently provide BGP peering service for 
 Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible or not, at least in on-premise data centers.
 For the cloud environment without BGP peering service, single instance of ipvs load balancer can still be run with redundancy.
 The life of the load balancer is constantly checked by one of the Kubernetes agents, and if anything that stop the load balancer happens, Kubernetes will restart the load balancer container.
-The routing table of the cloud provider can be updated by newly started ipvs container.
+The routing table of the cloud provider can be updated by newly started ipvs container immediately.
 
-The authors limit focus on  providing a portable load balancer for Kubernetes to prove the concept of proposed architecture.
-However same concept can be easily applied to other container management systems, which should be discussed in the future work.
+The authors limit the focus of this study on providing a portable load balancer for Kubernetes to prove the concept of proposed architecture.
+However, the same concept can be easily applied to other container management systems, which should be discussed in future work.
 
 The contributions of this paper are as follows:
 Although there have been studies regarding redundant software load balancers especially from the major cloud providers\cite{eisenbud2016maglev,patel2013ananta}, their load balancers are only usable within their respective cloud infrastructures.
