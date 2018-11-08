@@ -24,20 +24,18 @@ after which it will be distributed again by the DNAT rules on the nodes to the d
 The returning packets follows the exact same route as the incoming ones.
 
 This architecture has the followings problems: 
-1) There must be cloud load balancers whose APIs are supported by the Kubernetes daemons.
+1) There must exist cloud load balancers whose APIs are supported by the Kubernetes daemons.
+There are numerous load balancers which is not supported by the Kubernetes.
+These include the bare metal load balancers for on-premise data centers.
 2) Distributing the traffic twice, first on the external load balancers and second on each node, complicates the administration of packet routing. 
-
-Regarding the first proble, there are numerous load balancers which is not supported by the Kubernetes.
-These include the bare metal load balancers for on-premise data centers.  
-In such cases, users are required to set up the routing manually depending on the infrastructure.
-The traffic would be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
-However, this approach significantly degrades the portability of container clusters.
-As for the second problem, imagine a situation in which the DNAT table on one of the nodes malfunctions.
+Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, which would make it very difficult to find out which node was malfunctioning.   
 
-In short, 1) Kubernetes can be used only in limited environments where the external load balancers are supported, 
-and 2) the routes incoming traffic follow are very complex.
+Regarding the first proble, if there is no load balancer that is not supoorted by Kubernetes, users might be able to set up the routing manually depending on the infrastructure.
+The traffic would be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
+However, this approach significantly degrades the portability of container clusters.
 
+In short, 1) Kubernetes can be used only in limited environments where the external load balancers are supported, and 2) the routes incoming traffic follow are very complex.
 In order to address these problems, we propose a containerized software load balancer 
 that is deployable in any environment even if there are no external load balancers.
 

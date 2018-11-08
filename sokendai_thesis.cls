@@ -43,6 +43,23 @@
 %\usepackage{blindtext}
 %\usepackage{kantlipsum}
 
+%------------------------------------
+\usepackage{csquotes}
+%\usepackage[hyphens]{url}
+
+\usepackage{caption}
+\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{fancyvrb}
+
+\usepackage[export]{adjustbox}
+\usepackage{booktabs}
+
+\usepackage{listings} 
+%\usepackage{pmboxdraw}
+%------------------------------------
 
 % =====================================================
 %  Font
