@@ -268,7 +268,6 @@ in partial fulfillment of the requirements for the degree of
 
 \thispagestyle{empty}
 
-Committee
 \newpage
 \begin{center}
 {\Large \bfseries Committee}
