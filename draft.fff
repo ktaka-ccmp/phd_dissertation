@@ -1,5 +1,30 @@
 \begin{figure}
   \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/flannel-packet-diagram}
+  \caption{frame diagram}
+  \label{fig:flannel-packet-diagram}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+\centering
+\begin{minipage}{0.5\columnwidth}
+\begin{verbatim}
+81: eth0-tx-0
+82: eth0-rx-1
+83: eth0-rx-2
+84: eth0-rx-3
+85: eth0-rx-4
+# obtained from /proc/interrupts
+\end{verbatim}
+\end{minipage}
+\caption{RX/TX queues of the hardware}
+\label{fig:rx-queue}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}
+  \centering
   \includegraphics[width=0.8\columnwidth]{Figs/K8sConventional}
   \caption{Conventional architecture of a Kubernetes cluster.}
   \label{fig:K8sConventional}
@@ -157,34 +182,17 @@ FWM  1 lc
  
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/flannel-packet-diagram}
-  \caption{frame diagram}
-  \label{fig:flannel-packet-diagram}
-\end{figure}
-\efloatseparator
- 
-\begin{figure}
-\centering
-\begin{minipage}{0.5\columnwidth}
-\begin{verbatim}
-81: eth0-tx-0
-82: eth0-rx-1
-83: eth0-rx-2
-84: eth0-rx-3
-85: eth0-rx-4
-# obtained from /proc/interrupts
-\end{verbatim}
-\end{minipage}
-\caption{RX/TX queues of the hardware}
-\label{fig:rx-queue}
-\end{figure}
-\efloatseparator
- 
-\begin{figure}
-  \centering
   \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem}
   \caption{Benchmark setup}
   \label{fig:benchmark-schem}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.7\columnwidth]{Figs/lb_single_schem}
+  \caption{}
+  \label{fig:lb_single_schem}
 \end{figure}
 \efloatseparator
  
@@ -225,14 +233,6 @@ FWM  1 lc
   \includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
   \caption{Latency cumulative distribution function}
   \label{fig:latency_cdf_rps_40pods}
-\end{figure}
-\efloatseparator
- 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.7\columnwidth]{Figs/lb_single_schem}
-  \caption{}
-  \label{fig:lb_single_schem}
 \end{figure}
 \efloatseparator
  

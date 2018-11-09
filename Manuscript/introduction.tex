@@ -1,5 +1,6 @@
 %\section{Introduction}
 
+\section{Motivation of the research}
 Nowadays, a great number of people in the world can not spend a day without using smartphones or personal computers to retrieve information for work or for dailylife from the internet.
 For example, people use those devices to look up weather, news, emails, social media and sometimes to play games.
 These services are often called web services, where infromation is deliverd using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the internet.
@@ -21,7 +22,6 @@ They charge their customers with finer granularities in pay-as-you-go bases.
 From the point of view of cloude users (i.e. web service providers), this lowers initial cost spent on infrastructures for their services.
 It also shortens the time to start a service from the inception of the project, hence gives the users agility.
 
-
 More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention because they are lightweight, portable, and reproducible.
 Linux containers are generally more lightweight than virtual machines(VMs), because the containers share the kernel with the host operating system (OS), even though they maintain separate execution environments.
 Linux containers can be run on top of Linux OS, therefore they can be run in most of the cloud infrastructures and on-premise data centers. 
@@ -31,7 +31,12 @@ This means that containers can provide reproducible and portable execution envir
 
 For the same reasons, Linux containers are attractive for web services as well, and it is expected that web services consisting of a cluster of containers would be capable of being migrated easily for a variety of purposes.
 For example disaster recovery, cost performance optimizations, meeting legal compliance and shortening the geographical distance to customers are the main concerns for web service providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
-%
+
+The motivation of this research is to develop tools and infrastructures that will enable users to deploy their services across the world seamlessly, regardless of the cloud providers or data centers they use.
+Also, the author aims to realize the future where users can choose whatever infrastructure they like without sacrificing advanced features that are provided only by limited cloud providers.
+
+\section{Lock-in problem}
+
 It is desirable if users can migrate their services to multiple of cloud providers or on-premise data centers seamlessly, which spread across the world.
 Container cluster management systems facilitate these usages by functioning as middlewares, which hide the differences among cloud providers and on-premise data centers.
 
@@ -59,29 +64,31 @@ Major cloud providers have developed software load balancers\cite{eisenbud2016ma
 They claim that their load balancers have a high-performance level and scalability.
 In the case of on-premise data centers, there are variety of proprietary hardware load balancers.
 The actual implementation and the performance level of those existing load balancers are very different and are most likely not supported by Kubernetes.
-%
+
 Once cloud load balancers distribute incoming traffic to every server that hosts containers,
 the traffic is then distributed again to destination containers using the iptables destination network address translation(DNAT)\cite{MartinA.Brown2017,Marmol2015} rules in a round-robin manner.
 In those environments without a load balancer that is supported by the Kubernetes, e.g., in an on-premise data center, the user needs to manually configure the static route for inbound traffic in an ad-hoc manner.
 Since the Kubernetes fails to provide a uniform environment from a container cluster viewpoint, migrating container clusters among the different environments will always require a daunting tasks.
 The other aims of this study is to provide a load balancer that woks well with Kubernetes for environments lacking support by Kubernetes, and thereby facilitating web service migrations.
 
-In order to achieve these aims, the author proposes a portable and scalable software load balancer that can be used in any environment including cloud providers and in on-premise data centers, with Kubernetes.
+\section{Contribution}
+
+In order to achieve these aims, the author proposes a portable and scalable software load balancer that can be used with Kubernetes in any environment including cloud providers and in on-premise data centers.
 Users now do not need to manually adjust their services to the infrastructures.
-We will implement the proposed software load balancer using following technologies;
+The author implements the proposed software load balancer using following technologies;
 1) To make the load balancer usable in any environment, we containerize ipvs\cite{Zhang2000} using Linux container technology\cite{menage2007adding}.
 2) To make the load balancer redundant and scalable, we make it capable of updating the routing table of upstream router with Equal Cost Multi-Path(ECMP) routes\cite{al2008scalable} using a standard protocol, Border Gateway Protocol(BGP).
 In order to make the load balancer's performance level to meet the need for 10Gbps network speed, a software load balancer that better performs than ipvs is required.
-The author also extends the research into implementing the novel load balancer using eXpress Data Plane(XDP) technology\cite{bertin2017xdp}.
+The author also extends the research into implementing the novel load balancer using eXpress Data Plane(XDP) technology\cite{bertin2017xdp} to enhance the performance level.
 
 The author implements containerized Linux kernel's Internet Protocol Virtual Server (ipvs)\cite{Zhang2000} Layer 4 load balancer using a Kubernetes ingress\cite{K8sIngress2017} framework, as a proof of concept.
 Then extend it to support Equal Cost Multi-Path(ECMP)\cite{thaler2000multipath} redundancy by running a Border Gateway Protocol(BGP) agent container together with ipvs container.
 Functionality and performances are evaluated for each of them.
 
 Although major cloud providers do not currently provide BGP peering service for their users, the authors expect our proposed load balancer will be able to run, once this approach is proven to be beneficial and they start BGP peering services.
-Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible or not, at least in on-premise data centers.
+Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible, at least in on-premise data centers.
 For the cloud environment without BGP peering service, single instance of ipvs load balancer can still be run with redundancy.
-The life of the load balancer is constantly checked by one of the Kubernetes agents, and if anything that stop the load balancer happens, Kubernetes will restart the load balancer container.
+The liveness of the load balancer is constantly checked by one of the Kubernetes agents, and if anything that stop the load balancer happens, Kubernetes will restart the load balancer container.
 The routing table of the cloud provider can be updated by newly started ipvs container immediately.
 
 The authors limit the focus of this study on providing a portable load balancer for Kubernetes to prove the concept of proposed architecture.
@@ -96,6 +103,8 @@ Moreover, since proposed load balancer architecture uses nothing but existing Op
 The outcome of our study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
 Moreover, the result of our study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
 In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
+
+\section{Outline}
 
 The rest of the paper is organized as follows.
 Section \ref{Related Work} highlights related work that deals specifically with container cluster migration,

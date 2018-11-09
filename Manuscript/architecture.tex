@@ -1,4 +1,10 @@
-\section{Problems of Kuberenetes}
+This chapter provides discussion of load balancer suitable for container clusters.
+First we discuss problems of conventions architecture in Section~\ref{problem_k8s}.
+Then we discuss architectual choices and propose the best one in Section~\ref{proposed_arch}.
+After that we discuss the how to inplement a portable load balancer in Section~\ref{portable_lb}. 
+Finally we discuss the routig and redundancy architecture in Section~\ref{routing_redundancy}.
+
+\section{Problems of Kuberenetes}\label{problem_k8s}
 
 \begin{figure}
   \centering
@@ -39,7 +45,7 @@ In short, 1) Kubernetes can be used only in limited environments where the exter
 In order to address these problems, we propose a containerized software load balancer 
 that is deployable in any environment even if there are no external load balancers.
 
-\section{Proposed Architecture}
+\section{Proposed Architecture}\label{proposed_arch}
 
 This chapter discusses the load balancer architecture.
 How they are implemented and how redundancy is realized.
@@ -85,7 +91,7 @@ Load balancers can share the server pool with web containers.
 The incoming traffic is directly distributed to designated {\em pods} by the load balancer. 
 It makes the administration, e.g. finding malfunctions, easier than the conventional architecture.
 
-\section{Portable Load Balancer}
+\section{Portable Load Balancer}\label{portable_lb}
 
 In order to implement a software load balancer that is runnable in any environment, ipvs is containerized.  
 I addition to that the proposed load balancer uses two other components, keepalived, and a controller. 
@@ -105,7 +111,7 @@ Kubernetes provides ingress controller framework as the Go Language(Golang) pack
 We implement a controller program that feeds {\em pod} state changes to keepalived 
 using this framework. 
 
-\section{Routing and Redundancy}
+\section{Routing and Redundancy}\label{routing_redundancy}
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container.
 We propose redundant architecture using ECMP for load balancer containers usable especially in on-premise data centers.
@@ -228,3 +234,4 @@ In the Cloud environment BGP peering services are not offered.
 In such cases, a Load balancer should update the routing table of cloud infrastructure.
 
 
+\section{Summary}

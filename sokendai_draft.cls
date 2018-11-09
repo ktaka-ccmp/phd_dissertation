@@ -43,7 +43,7 @@
 %\usepackage{kantlipsum}
 
 %------------------------------------
-\usepackage{endfloat}
+%\usepackage{endfloat}
 
 \usepackage{csquotes}
 %\usepackage[hyphens]{url}
