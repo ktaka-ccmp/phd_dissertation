@@ -15,5 +15,5 @@ draft.pdf: draft.tex Manuscript/*.tex Bib/*.bib Makefile *.cls #Figs/*.png
 	pdflatex draft.tex
 	pdflatex draft.tex
 clean:
-	$(RM)  *.aux *.pdf *.log *~ *.bbl *.blg *.lof *.lot *.toc *.out *.ttt *.wxm *.fff Manuscript/*.aux Manuscript/*~
+	$(RM)  *.aux main.pdf draft.pdf *.log *~ *.bbl *.blg *.lof *.lot *.toc *.out *.ttt *.xwm *.fff Manuscript/*.aux Manuscript/*~
 

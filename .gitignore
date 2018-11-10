@@ -1,8 +1,8 @@
 *.log
 *.aux
-draft.*
-!draft.tex
-!draft.pdf
+#draft.*
+#!draft.tex
+#!draft.pdf
 main.*
 !main.tex
 !main.pdf
