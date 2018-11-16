@@ -108,7 +108,7 @@ The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queu
 
 \subsection{Results}
 
-\subsubsection{Multicore proccessing}
+\subsubsection{Effect of multicore proccessing}
 
 \begin{figure}
   \centering
@@ -117,12 +117,17 @@ The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queu
   \label{fig:IPVS-iptables-nginx_2figs}
 \end{figure}
 
+
+\subsubsection{Effect of overlay network}
+
 \begin{figure}
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/ipvs_flannel_mode}
   \caption{iptables results}
   \label{fig:iptabls3figs}
 \end{figure}
+
+\subsubsection{Comparison of different load balancer}
 
 \begin{figure}
   \centering
@@ -144,7 +149,6 @@ The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queu
   \caption{Performance limitation due to 1Gbps bandwidth}
   \label{fig:performance_limitation}
 \end{figure}
-
 
 Figure~\ref{fig:IPVS3figs} shows the IPVS load balancer performance, that is, 
 the throughput (Request/sec) of the Nginx web server {\em pods} in our experiments.
@@ -202,6 +206,7 @@ The latencies are a little bit smaller for IPVS, however we consider the differe
 For example, the median value at 160K[req/s] load for IPVS and iptables DNAT are, 1.1 msec and 1.2 msec, respectively.
 So, we can conclude our proposed load balancer showed no performance degradation while providing potability.
 
+\subsubsection{L3DSR}
 
 \section{On-premise experiment with 10Gbps Load balancer}
 
