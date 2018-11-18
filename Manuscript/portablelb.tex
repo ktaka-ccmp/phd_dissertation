@@ -106,54 +106,18 @@ We used a total of eight servers; six servers for Nodes, one for the load balanc
 The software versions used for Kubernetes, web server and load balancer {\em pods} are also summarized in the figure.
 The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queues.
 
-\subsection{Results}
+%\subsection{Results}
 
-\subsubsection{Effect of multicore proccessing}
+\subsection{Effect of multicore proccessing}
 
 \begin{figure}
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/ipvs_mcore_proccessing}
-  \caption{IPVS and iptables comparison}
-  \label{fig:IPVS-iptables-nginx_2figs}
+  \caption{Effect of multicore proccessing on ipvs throughput with flannel host-gw mode.}
+  \label{fig:ipvs_mcore_proccessing}
 \end{figure}
 
-
-\subsubsection{Effect of overlay network}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_flannel_mode}
-  \caption{iptables results}
-  \label{fig:iptabls3figs}
-\end{figure}
-
-\subsubsection{Comparison of different load balancer}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs-iptables-nginx}
-  \caption{IPVS results}
-  \label{fig:IPVS3figs}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
-  \caption{Latency cumulative distribution function}
-  \label{fig:latency_cdf_rps_40pods}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/tp_limit_1gbps}
-  \caption{Performance limitation due to 1Gbps bandwidth}
-  \label{fig:performance_limitation}
-\end{figure}
-
-Figure~\ref{fig:IPVS3figs} shows the IPVS load balancer performance, that is, 
-the throughput (Request/sec) of the Nginx web server {\em pods} in our experiments.
-As for the overlay network, we measured the performance for three flannel backend modes, 
-host-gw (Figure~\ref{fig:IPVS3figs}(a)), vxlan (Figure~\ref{fig:IPVS3figs}(b)) and udp (Figure~\ref{fig:IPVS3figs}(c)).
+Figure~\ref{fig:ipvs_mcore_proccessing} shows the effect of multicore proccessing.
 The following RSS and RPS setting were compared: 
 
 \begin{center}
@@ -167,12 +131,12 @@ The following RSS and RPS setting were compared:
   \end{minipage}
 \end{center}
 
-Except for the udp cases, we can see the trend in which the throughput linearly increases 
-as the {\em pod} number increases and then it eventually saturates.
-The saturated performance levels indicates the maximum performance of the IPVS load balancer.
-The maximum performance limits depend on the flannel backend mode type and the (RSS, RPS) settings.
-From the results in Figures~\ref{fig:IPVS3figs}(a,b), it can be seen that if we turn off distributed packet processing,
-{\it i.e.}, when \enquote{(RSS, RPS) = (off, off)}, performance degrades significantly. 
+The host-gw mode of flannel backends is used as the overlay network.
+We can see the trend in which the throughput linearly increases as the number of nginx {\em pod} increases and then it eventually saturates.
+The saturated performance levels indicates the maximum performance of the ipvs load balancer.
+The maximum performance limits depend on the (RSS, RPS) settings.
+From the results in this figure, it can be seen that if we turn off distributed packet processing,
+{\it i.e.}, when \enquote{(RSS, RPS) = (off, off)}, performance degrades significantly.
 In this case, the performance bottleneck is primarily due to packet processing in a single core.
 
 If we compare the results for the cases when \enquote{(RSS, RPS) = (on, off)} and \enquote{(RSS, RPS) = (off, on)},
@@ -181,7 +145,62 @@ This is understandable, since in the case of \enquote{RPS = on}, eight physical 
 in the case of \enquote{RSS = on} only four cores can be used, on the hardware used in our experiment.
 The performance bottleneck of the case when \enquote{RSS = on} is considered 
 to be due to the fact that the packet processing is only done on four CPU cores.
-%
+It can be said that RPS=on is the best setting in our experimental conditions.
+
+\subsection{Effect of overlay network}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_flannel_mode}
+  \caption{Effect of flannel backend modes on ipvs throughput with RSS = off and RPS = on.}
+  \label{fig:ipvs_flannel_mode}
+\end{figure}
+
+Figure~\ref{fig:ipvs_flannel_mode} shows the effect of flannel backend modes on ipvs throughput.
+As for the overlay network, we measured the performance for three flannel backend modes, host-gw, vxlan and udp .
+Except for the udp cases, we can see the trend in which the throughput linearly increases 
+as the number of nginx {\em pod} increases and then it eventually saturates.
+The saturated performance levels indicates the maximum performance of the ipvs load balancer.
+If we compare the performances among the flannel backend modes types, 
+the host-gw mode where no encapsulation is conducted shows the highest performance level,
+followed by the vxlan mode where the Linux kernel encapsulate the Ethernet frame.
+The udp mode where flanneld itself encapsulate the IP packet shows significantly lower performances levels.
+
+\subsection{Comparison of different load balancer}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs-iptables-nginx}
+  \caption{Throughput comparison between ipvs, iptables DNAT and nginx. The host-gw of the flannel backend modes and a kernel setting of \enquote{(RSS, RPS) = (off on)} for multicore packet proccessing is used. }
+  \label{fig:ipvs-iptables-nginx}
+\end{figure}
+
+Figure~\ref{fig:ipvs-iptables-nginx} compares the performance measurement results among the ipvs, iptables DNAT, and Nginx load balancers.
+The proposed ipvs load balancer exhibits almost equivalent performance as the existing iptables DNAT based load balancer. 
+The Nginx based load balancer shows no performance improvement even though the number of the Nginx web server {\em pods} is increased.
+It is understandable because the performance of the Nginx as a load balancer is expected to be similar to the performance as a web server.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
+  \caption{Latency cumulative distribution function.}
+  \label{fig:latency_cdf_rps_40pods}
+\end{figure}
+
+Figure~\ref{fig:latency_cdf_rps_40pods} compares Cumulative Distribution Function(CDF) of the load balancer latency at the constant load.
+The latencies are a little bit smaller for ipvs.
+For example, the median value at 160K[req/s] load for ipvs and iptables DNAT are, 1.1 msec and 1.2 msec, respectively.
+This may not be considered a siginificant difference, however we can at least say that our proposed load balancer are as good as iptables DNAT.
+
+\subsection{Analysis of the performance limitation}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/tp_limit_1gbps}
+  \caption{Performance limitation due to 1Gbps bandwidth}
+  \label{fig:performance_limitation}
+\end{figure}
+
 At first, it was not clear what caused the performance limit for the case when \enquote{RPS = on},
 however we now suspect this is due to 1Gbps bandwidth limitation.
 A packet level analysis using tcpdump\cite{jacobson1989tcpdump} revealed that 622.72 byte of extra HTTP headers, 
@@ -190,31 +209,29 @@ This results in the upper limitation of 196,627 [req/s], where the date size of 
 Figure~\ref{fig:performance_limitation} shows upper limitation of the performance level for 1Gbps ethernet together with 
 actual benchmark results and we can conclude that when \enquote{RPS = on}, IPVS performance is limited by bandwidth.
 
-If we compare the performances among the flannel backend modes types, 
-the host-gw mode where no encapsulation is conducted shows the highest performance level,
-followed by the vxlan mode where the Linux kernel encapsulate the Ethernet frame.
-The udp mode where flanneld itself encapsulate the IP packet shows significantly lower performances levels.
-
-Figure~\ref{fig:IPVS-iptables-nginx_2figs} compares the performance measurement results 
-among the IPVS, iptables DNAT, and Nginx load balancers
-with the condition of \enquote{(RSS, RPS) = (off on)}.
-The proposed IPVS load balancer exhibits almost equivalent performance as the existing iptables DNAT based load balancer. 
-The Nginx based load balancer shows no performance improvement even though the number of the Nginx web server {\em pods} is increased.
-It is understandable because the performance of the Nginx as a load balancer is expected to be similar to the performance as a web server.
-Figure~\ref{fig:latency_cdf_rps_40pods} compares Cumulative Distribution Function(CDF) of the load balancer latency at the constant load.
-The latencies are a little bit smaller for IPVS, however we consider the difference almost negligible.
-For example, the median value at 160K[req/s] load for IPVS and iptables DNAT are, 1.1 msec and 1.2 msec, respectively.
-So, we can conclude our proposed load balancer showed no performance degradation while providing potability.
-
-\subsubsection{L3DSR}
-
 \section{On-premise experiment with 10Gbps Load balancer}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/10G_ipvs}
-  \caption{GCP}
-  \label{fig:gcp_all_ieice}
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_iptables_dnat_10g}
+  \caption{comparison between ipvs and iptables @10Gbps.}
+  \label{fig:ipvs_iptables_dnat_10g}
+\end{figure}
+
+\section{L3DSR}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_1g.png}
+  \caption{Throughput of ipvs l3dsr @1Gbps.}
+  \label{fig:ipvs_l3dsr_1g.png}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_10g.png}
+  \caption{Throughput of ipvs l3dsr @10Gbps.}
+  \label{fig:ipvs_l3dsr_10g.png}
 \end{figure}
 
 \section{Cloud experiment}
