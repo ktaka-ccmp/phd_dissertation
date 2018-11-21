@@ -4,7 +4,7 @@ DIR=./Figs
 shopt -s nullglob
 
 for f in $DIR/*.svg ; do
-echo cairosvg  -s 10 $f -o ${f%.*}.png
+echo cairosvg  -s 20 $f -o ${f%.*}.png
 cairosvg  -s 10 $f -o ${f%.*}.png
 done
 
