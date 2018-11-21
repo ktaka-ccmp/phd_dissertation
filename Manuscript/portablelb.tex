@@ -1,7 +1,8 @@
-This chapter discuss the performance level of a single ipvs load balancer.
-We evaluated the load balancer functionality using physical servers in on-premise data center and compared performance level with existing iptables DNAT and nginx as a load balancer.
-We also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
-The following sections explain these in further detail. 
+This chapter discusses the performance level of a single ipvs load balancer.
+The author evaluated the load balancer functionality using physical servers in on-premise data center and compared performance level with existing iptables DNAT and nginx as a load balancer within a 1Gbps network environment.
+Then experiment was extended into the 10Gbps network environment to investigate the performance limitations of the proposed load balancer and a method to improve them.
+Furthermore, the author also carried out the performance measurement in GCP and AWS to show that the containerized ipvs load balancer is runnable and has the same characteristics in the cloud environment.
+The following sections explain these in further detail.
 
 \section{On-premise experiment with 1Gbps Load balancer}
 \subsection{Benchmark method}
@@ -24,7 +25,7 @@ The following sections explain these in further detail.
   \label{fig:benchmark-setup}
 \end{figure}
 
-We measured the performance of the load balancers using the wrk.
+A set of throughput measurement was carried out using an HTTP benchmark program, wrk\cite{Glozer2016}.
 Figure~\ref{fig:benchmark-setup} illustrates a schematic diagram of our experimental setup.
 Multiple {\em pods} are deployed on multiple nodes in the Kubernetes cluster. 
 In each {\em pod}, a Nginx web server that returns the IP address of the {\em pod} are running.
