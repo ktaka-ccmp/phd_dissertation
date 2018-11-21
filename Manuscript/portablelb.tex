@@ -7,46 +7,49 @@ The following sections explain these in further detail.
 \subsection{Benchmark method}
 
 \begin{figure}
+\begin{subfigure}[t]{\columnwidth}
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem}
-  \caption{Benchmark setup}
+  \caption{Logical configuration.}
   \label{fig:benchmark-schem}
+\end{subfigure}
+
+\begin{subfigure}[t]{\columnwidth}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/bench_1g}
+  \caption{Physical configuration.}
+  \label{fig:bench_1g}
+\end{subfigure}
+  \caption{Benchmark setup. }
+  \label{fig:benchmark-setup}
 \end{figure}
 
 We measured the performance of the load balancers using the wrk.
-Figure~\ref{fig:benchmark-schem} illustrates a schematic diagram of our experimental setup.
+Figure~\ref{fig:benchmark-setup} illustrates a schematic diagram of our experimental setup.
 Multiple {\em pods} are deployed on multiple nodes in the Kubernetes cluster. 
 In each {\em pod}, a Nginx web server that returns the IP address of the {\em pod} are running.
-We then set up the IPVS, iptables DNAT, and Nginx load balancers on one of the nodes(the top right node in the Figure~\ref{fig:benchmark-schem}). 
+We then set up the IPVS, iptables DNAT, and Nginx load balancers on one of the nodes(the top right node in the Figure~\ref{fig:benchmark-setup}). 
 
 We measured the throughput, Request/sec, of the web service running on the Kubernetes cluster as follows:
 The HTTP GET requests are sent out by the wrk on the client machine toward the nodes,
 using destination IP addresses and port numbers that are chosen based on the type of the load balancer on which the measurement is performed.
 The load balancer on the node then distributes the requests to the {\em pods}.
-Each {\em pod} will return HTTP responses to the load balancer, after which the load balancer returns them to the client.
+Each {\em pod} returns HTTP responses to the load balancer, after which the load balancer returns them to the client.
 Based on the number of responses received by wrk on the client, 
 load balancer performance, in terms of Request/sec can be obtained. 
 
-Figure~\ref{fig:benchmark example} shows an example of the command-line for wrk and the corresponding output.
+Table~\ref{tab:bench_example} shows an example of the command-line for wrk and the corresponding output.
 The command-line in Figure~\ref{fig:benchmark example} will generate 40 wrk program threads 
 and allow those threads to send out a total of 800 concurrent HTTP requests over the period of 30 seconds.
 The output example shows information including per thread statistics, error counts, Request/sec and Transfer/sec.
 
-Figure~\ref{fig:Hardware and software configuration} shows hardware and software configuration used in our experiments.
+Table~\ref{tab:hw_sw_spec} shows hardware and software configuration used in our experiments.
 We configured Nginx HTTP server to return a small HTTP content, 
 the IP address of the {\em pod}, to make a relatively severe condition for load balancers. 
 The size of the character string making up an IP address is limited to 15 bytes.
 If we had chosen the HTTP response size so that most of the IP packet resulted in maximum transmission unit(MTU), 
-the performance would have been limited by the Ethernet bandwidth.
+the performance would have been dominantly limited by the Ethernet bandwidth.
 However, since we used small HTTP responses, we could purely measure the load balancer performance.
-
-
-\begin{figure}[t]
-  \centering
-%  \includegraphics[width=0.7\columnwidth]{Figs/lb_single_schem}
-  \caption{}
-  \label{fig:lb_single_schem}
-\end{figure}
 
 \begin{table}[]
   \centering
@@ -133,8 +136,8 @@ The following RSS and RPS setting were compared:
 
 The host-gw mode of flannel backends is used as the overlay network.
 We can see the trend in which the throughput linearly increases as the number of nginx {\em pod} increases and then it eventually saturates.
-The saturated performance levels indicates the maximum performance of the ipvs load balancer.
-The maximum performance limits depend on the (RSS, RPS) settings.
+The saturated throughput levels indicates the maximum performance level of the ipvs load balancer.
+The maximum performance levels depend on the (RSS, RPS) settings.
 From the results in this figure, it can be seen that if we turn off distributed packet processing,
 {\it i.e.}, when \enquote{(RSS, RPS) = (off, off)}, performance degrades significantly.
 In this case, the performance bottleneck is primarily due to packet processing in a single core.
@@ -211,6 +214,14 @@ actual benchmark results and we can conclude that when \enquote{RPS = on}, IPVS 
 
 \section{On-premise experiment with 10Gbps Load balancer}
 
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/bench_10g}
+  \caption{Physical configuration for 10Gbps measurement.}
+  \label{fig:bench_10g}
+\end{figure}
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/ipvs_iptables_dnat_10g}
@@ -219,6 +230,13 @@ actual benchmark results and we can conclude that when \enquote{RPS = on}, IPVS 
 \end{figure}
 
 \section{L3DSR}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/bench_10g_l3dsr}
+  \caption{Physical configuration for L3DSR experiment.}
+  \label{fig:bench_10g_l3dsr}
+\end{figure}
 
 \begin{figure}[t]
   \centering
