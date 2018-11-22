@@ -1,9 +1,10 @@
 
 draft: draft.pdf
+main: main.pdf
 
-all: paper.pdf draft.pdf
+all: main.pdf draft.pdf
 
-paper.pdf: main.tex Manuscript/*.tex Bib/*.bib Makefile #Figs/*.png
+main.pdf: main.tex Manuscript/*.tex Bib/*.bib Makefile #Figs/*.png
 	pdflatex main.tex
 	bibtex main
 	pdflatex main.tex

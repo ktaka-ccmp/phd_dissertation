@@ -126,12 +126,12 @@ We briefly explain an abstract concept of overlay network in this subsection.
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
-\caption{
-  The network architecture of an exemplified container cluster system. %\\ %\par
+\caption{The network architecture of an exemplified container cluster system. }
+
   A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
   The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
   and the distributed to web pods using the overlay network.
-}
+
 \label{fig:overlay}
 \end{figure}
 
@@ -157,11 +157,15 @@ The author investigated two of the popular ones to see how it works.
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/ecmp.png}
-\caption{
-  The proposed architecture of load balancer redundancy with ECMP. %\\ %\par 
+\caption{The proposed architecture of load balancer redundancy with ECMP.}
+
+\vspace{1mm}
+
+\begin{minipage}{0.9\columnwidth}
+%\small\raggedright
   The traffic from the internet is distributed by the upstream router to multiple of lb pods using hash-based ECMP and then distributed by the lb pods to web pods using Linux kernel's ipvs.
   The ECMP routing table on the upstream router is populated using iBGP.
-}
+\end{minipage}
 \label{fig:ecmp}
 \end{figure}
 
