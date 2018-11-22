@@ -1,11 +1,11 @@
 %\section{Introduction}
 
 \section{Motivation of the research}
-Nowadays, a great number of people in the world can not spend a day without using smartphones or personal computers to retrieve information for work or for dailylife from the internet.
+Nowadays, a great number of people in the world can not spend a day without using smartphones or personal computers(PCs) to retrieve information for work or for dailylife from the internet.
 For example, people use those devices to look up weather, news, emails, social media and sometimes to play games.
-These services are often called web services, where infromation is deliverd using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the internet.
+These services are often called web services, where information is deliverd using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the internet.
 Web services are provided by various organizations, including commercial companies, government, non-profitable organizations, schools, etc.
-A client program send out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
+A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
 
 Servers for web services are usually computers located in a data center.
 Servers also refer to the server programs that are runing on those computers. 
@@ -21,6 +21,7 @@ Cloud providers utilize virtual machines(VM) where multiple VMs share a single p
 They charge their customers with finer granularities in pay-as-you-go bases.
 From the point of view of cloude users (i.e. web service providers), this lowers initial cost spent on infrastructures for their services.
 It also shortens the time to start a service from the inception of the project, hence gives the users agility.
+And at the time when the computing resources for a service is excessive, users can easily decrease the VMs.
 
 More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention because they are lightweight, portable, and reproducible.
 Linux containers are generally more lightweight than virtual machines(VMs), because the containers share the kernel with the host operating system (OS), even though they maintain separate execution environments.
@@ -54,7 +55,7 @@ However, this scenario only works when the user migrates a container cluster amo
 This is because Kubernetes partially hides differences in base environments.
 Kubernetes does not provide generic ways to route the traffic from the internet into container cluster running in the Kubernetes and expects the base infrastructure route traffic to every node that might host container.
 In other words, Kubernetes is heavily dependent on cloud load balancers, which is external load balancers that are set up on the fly by cloud providers through their application protocol interfaces (APIs).
-Once the traffic reaches the nodes, Kubernetes handles it nicely, but this is a problem since not every cloud provider or on-premise data center has load balancers capable of being controlled by Kubernetes.
+Once the traffic reaches the nodes, Kubernetes handles it nicely, but this is a problem since not every cloud provider or on-premise data center has load balancers capable of being utilized by Kubernetes.
 
 Other container cluster management systems, e.g. docker swarm, etc, also lack a generic way to route the trafic into the container cluster.
 One of the aims of this study is to seek a generic way to route the traffic into container clusters, and thereby facilitating web service migrations.
@@ -62,12 +63,12 @@ One of the aims of this study is to seek a generic way to route the traffic into
 Load balancers are often used to distribute high volume traffic from the Internet to thousands of web servers .
 Major cloud providers have developed software load balancers\cite{eisenbud2016maglev,patel2013ananta} as a part of their infrastructures.
 They claim that their load balancers have a high-performance level and scalability.
-In the case of on-premise data centers, there are variety of proprietary hardware load balancers.
-The actual implementation and the performance level of those existing load balancers are very different and are most likely not supported by Kubernetes.
-
 Once cloud load balancers distribute incoming traffic to every server that hosts containers,
 the traffic is then distributed again to destination containers using the iptables destination network address translation(DNAT)\cite{MartinA.Brown2017,Marmol2015} rules in a round-robin manner.
-In those environments without a load balancer that is supported by the Kubernetes, e.g., in an on-premise data center, the user needs to manually configure the static route for inbound traffic in an ad-hoc manner.
+
+In the case of on-premise data centers, there are variety of proprietary hardware load balancers.
+The actual implementation and the performance level of those existing load balancers are very different and are most likely not supported by Kubernetes.
+In those environments, the user needs to manually configure the static route for inbound traffic in an ad-hoc manner.
 Since the Kubernetes fails to provide a uniform environment from a container cluster viewpoint, migrating container clusters among the different environments will always require a daunting tasks.
 The other aims of this study is to provide a load balancer that woks well with Kubernetes for environments lacking support by Kubernetes, and thereby facilitating web service migrations.
 
@@ -75,7 +76,7 @@ The other aims of this study is to provide a load balancer that woks well with K
 
 In order to achieve these aims, the author proposes a portable and scalable software load balancer that can be used with Kubernetes in any environment including cloud providers and in on-premise data centers.
 Users now do not need to manually adjust their services to the infrastructures.
-The author implements the proposed software load balancer using following technologies;
+As a proof of concept the author implements the proposed software load balancer using following technologies;
 1) To make the load balancer usable in any environment, we containerize ipvs\cite{Zhang2000} using Linux container technology\cite{menage2007adding}.
 2) To make the load balancer redundant and scalable, we make it capable of updating the routing table of upstream router with Equal Cost Multi-Path(ECMP) routes\cite{al2008scalable} using a standard protocol, Border Gateway Protocol(BGP).
 In order to make the load balancer's performance level to meet the need for 10Gbps network speed, a software load balancer that better performs than ipvs is required.

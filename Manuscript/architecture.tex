@@ -47,30 +47,14 @@ that is deployable in any environment even if there are no external load balance
 
 \section{Proposed Architecture}\label{proposed_arch}
 
-This chapter discusses the load balancer architecture.
+This section discusses the load balancer architecture.
 How they are implemented and how redundancy is realized.
 
-The problems of Kubernetes architecture in Figure~\ref{fig:K8sProposed} have been the followings;
+The problems of Kubernetes architecture in Figure~\ref{fig:K8sConventional} have been the followings;
 1) There are environments with load balancers whose APIs are not supported by Kubernetes.
 2) Incoming traffic is distributed twice, once at the load balancer and once at every node.
 
-There are several possible ways to solve these problems.
-a) Make Kubernetes support all of the existing load balancer hardware that could be used in on-premise data centers.
-b) Force users to buy new hardware load balancer that is supported by Kubernetes.
-c) Provide software load balancers and make them supported by Kubernetes.
-d) Provide software load balancers as a part of container clusters.
-
-The a) is impossible. The b) does not improve the usability of the container cluster since the specific hardware is always needed.
-The c) and d) are viable solutions since they can be realized using commodity hardware.
-
-We do not know how many load balancers are needed for a specific web service.
-We also do not know how many of the services are deployed in a data center.
-Therefore a cluster of load balancers should be elastic, i.e., it should change the capacity on demand.
-Also, we also should be able to deploy many of load balancer cluster on demand.
-It would be better if we could share the same server pool with web servers, since capacity planning for hardware to host load balancer clusters may be difficult.
-
-For such application needs the container cluster seems best suited.
-Therefore the author proposes the architecture, d) where a cluster of load balancers are also deployed as a cluster of containers.
+The author proposes a load balancer architecture, where a cluster of load balancers are deployed as a cluster of containers.
 
 \begin{figure}
   \centering
@@ -91,10 +75,26 @@ Load balancers can share the server pool with web containers.
 The incoming traffic is directly distributed to designated {\em pods} by the load balancer. 
 It makes the administration, e.g. finding malfunctions, easier than the conventional architecture.
 
-\section{Portable Load Balancer}\label{portable_lb}
+There are several other possible ways to solve these problems.
+a) Make Kubernetes support all of the existing load balancer hardware that could be used in on-premise data centers.
+b) Force users to buy new hardware load balancer that is supported by Kubernetes.
+c) Provide software load balancers that function similarly as the cloud load balancers.
 
-In order to implement a software load balancer that is runnable in any environment, ipvs is containerized.  
-I addition to that the proposed load balancer uses two other components, keepalived, and a controller. 
+The a) is impossible. The b) does not improve the usability of the container cluster since the specific hardware is always needed.
+The c) seems viable solution since they can be realized using commodity hardware and the author thinks it is worth while investigating in the future.
+
+However, there is a reason why the author chose the proposed architecture as the best candidate.
+The requirements for the load balancer are exactly the benefits a container cluster can provide.
+These are portability, elasticity(scalability) and redundancy.
+Load balancers should exist any environment and behave the same manner everywhere.
+The load balancer should be able to change the performance depending on the demands.
+The load balancer should never fail; thus multiple instances should always be running.
+It is also beneficial if the load balancer can share the same server pool with web servers since this will ease the capacity planning.
+
+\subsection{Portable Load Balancer}\label{portable_lb}
+
+In order to demonstrate a software load balancer that is runnable in any environment, the ipvs is containerized.  
+In addition to that the proposed load balancer uses two other components, keepalived, and a controller. 
 These components are placed in a single Docker container image.
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later, 
 to distribute incoming Transmission Control Protocol(TCP) traffic to 
@@ -111,14 +111,14 @@ Kubernetes provides ingress controller framework as the Go Language(Golang) pack
 We implement a controller program that feeds {\em pod} state changes to keepalived 
 using this framework. 
 
-\section{Routing and Redundancy}\label{routing_redundancy}
+\subsection{Routing and Redundancy}\label{routing_redundancy}
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container.
 We propose redundant architecture using ECMP for load balancer containers usable especially in on-premise data centers.
 We first explain overlay network briefly in \ref{Overlay network} as background, then present the proposed architecture with ECMP redundancy in \ref{Redundancy with ECMP}. 
 We also present an alternative architecture using VRRP as a comparison in \ref{Redundancy with VRRP}, which we think is not as good as the architecture using ECMP. 
 
-\subsection{Overlay Network}\label{sec:overlay_network}
+\subsubsection{Overlay Network}\label{sec:overlay_network}
 
 In order to discuss load balancer for container cluster, the knowledge of the overlay network is essential.
 We briefly explain an abstract concept of overlay network in this subsection.
@@ -152,7 +152,7 @@ There many overlay network implementations.
 The author investigated two of the popular ones to see how it works.
 
 
-\subsection{ECMP}\label{Subsec:Redundancy with ECMP}
+\subsubsection{ECMP}\label{Subsec:Redundancy with ECMP}
 
 \begin{figure}[tb]
   \centering
@@ -196,7 +196,7 @@ b) We can use a BGP agent that supports dynamic neighbor (or dynamic peer), wher
 The upstream router does not need to accept BGP sessions from containers with random IP addresses, but only from the router reflector with well known fixed IP address. This may be preferable in terms of security especially when a different organization administers the upstream router.
 Although not shown in the Fig.~\ref{fig:ecmp}, we could also place another route reflector for redundancy purpose.
 
-\subsection{VRRP}\label{Subsec:Redundancy with VRRP}
+\subsubsection{VRRP}\label{Subsec:Redundancy with VRRP}
 
 \begin{figure}[tb]
 \centering
@@ -231,11 +231,10 @@ The other drawback compared with the ECMP case is that the redundancy of VRRP is
 This means that a single software load balancer limits the overall performance of the entire container cluster.
 Therefore we believe the ECMP redundancy is better than VRRP in our use cases.
 
+%% \subsection{Kubernetes}
 
-\subsection{Kubernetes}
-
-In the Cloud environment BGP peering services are not offered.
-In such cases, a Load balancer should update the routing table of cloud infrastructure.
-
+%% In the Cloud environment BGP peering services are not offered.
+%% In such cases, a Load balancer should update the routing table of cloud infrastructure.
 
 \section{Summary}
+In this chapter the followings have been discussed....
