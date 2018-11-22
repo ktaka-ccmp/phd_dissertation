@@ -1,0 +1,41 @@
+File Edit Options Buffers Tools TeX Text Help
+At first, it was not clear what caused this limitation.
+The author analyzed the kind of packets that flows during the experiment using tcpdump\cite{jaco\
+bson1989tcpdump} as follows;
+1) A wrk worker opens multiple connections and sends out http request to the web servers. The nu\
+mber of connections is determined by the command-line option, eg. 800/40 = 20 connection in the \
+case of command-line in Table~ref{tab:bench_example}. The worker sends out 100 requests to the w\
+eb server within each connection, and closes it either if all of the responses are recieved or t\
+ime out occurs.
+2) As in seen in Listing~\ref{list:tcpdump}, tcp options were mss(4 byte), sack(2 byte), ts(10 b\
+yte), nop(1 byte) and wscale(3 byte), for SYN packets. For other packets, tcp options were, nop(\
+1 byte), nop(1 byte) and ts(10 byte).
+3) The author classified the types of packes and counted the number of each type in a single con\
+nection, which is 100 http requests. Table~\ref{tab:response_data_size},\ref{tab:response_data_s\
+ize},\ref{tab:header_size} summarize the data size of 100 request, including TCP headr, IP heade\
+r, Ether header and overheads.
+From this analysis, it was found that per each HTTP request and response,
+request data with the size of 227.68[byte] and response data with the data(http content)+437.68[\
+byte] were being sent.
+
+Since the node for load balancer recives and transmits both request and response packets using s\
+ingle network interface, each
+
+
+however we now suspect this is due to 1Gbps bandwidth limitation.
+A packet level analysis using tcpdump\cite{jacobson1989tcpdump} revealed that 622.72 byte of ext\
+ra HTTP headers,
+TCP/IP headers and ethernet frames are needed for each request in the case of the wrk benchmack \
+program.
+This results in the upper limitation of 196,627 [req/s], where the date size of HTTP response bo\
+dy is 13 byte, or typical data size in our experiment.
+Figure~\ref{fig:performance_limitation} shows upper limitation of the performance level for 1Gbp\
+s ethernet together with
+actual benchmark results and we can conclude that when \enquote{RPS = on}, IPVS performance is l\
+imited by bandwidth.
+
+\section{On-premise experiment with 10Gbps Load balancer}
+
+
+-UU-:----F1  portablelb.tex   74% L294  Git:master  (LaTeX) -------------------------------------
+Wrote /home/ktaka/phd_dissertation/Manuscript/portablelb.tex

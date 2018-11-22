@@ -49,8 +49,8 @@
 %\usepackage[hyphens]{url}
 
 \usepackage{caption}
-\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{#1#2#3}}}
-\captionsetup[lstlisting]{format=listing}
+%\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{#1#2#3}}}
+%\captionsetup[lstlisting]{format=listing}
 \usepackage{subcaption}
 \captionsetup{compatibility=false}
 \usepackage{fancyvrb}
