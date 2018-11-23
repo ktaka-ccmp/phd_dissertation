@@ -43,7 +43,7 @@
 %\usepackage{blindtext}
 %\usepackage{kantlipsum}
 
-%------------------------------------
+%-ktaka------------------------------
 \usepackage{csquotes}
 %\usepackage[hyphens]{url}
 
@@ -58,6 +58,8 @@
 \usepackage{booktabs}
 
 \usepackage{listings} 
+\usepackage{placeins}
+
 %\usepackage{pmboxdraw}
 %------------------------------------
 

@@ -42,7 +42,7 @@
 %\usepackage{blindtext}
 %\usepackage{kantlipsum}
 
-%------------------------------------
+%-ktaka------------------------------
 %\usepackage{endfloat}
 
 \usepackage{csquotes}
@@ -59,6 +59,7 @@
 \usepackage{booktabs}
 
 \usepackage{listings} 
+\usepackage{placeins}
 
 %\usepackage{pmboxdraw}
 %------------------------------------

@@ -1,5 +1,6 @@
 
-\section{ingress controller}
+\chapter{ingress controller}
+%\section{ingress controller}
 \label{appendix:ingress_controller}
 
 \begin{lstlisting}[
@@ -124,6 +125,7 @@ func (ipvs IPVSController) DefaultIngressClass() string {
 }
 \end{lstlisting}
 
+\chapter{ECMP settings}
 \section{Exabgp configuration on the load balancer container.}
 \label{appendix:exabgp_config}
 
@@ -228,4 +230,100 @@ log file /var/log/zebra.log
 %\caption{Example of zebra config on the router.}
 %\label{fig:zebra_config_router}
 
+\chapter{Analysis of the performance limitation}
+
+The maximum throghput in this series of experiment is roughly, 190k[req/sec] for both ipvs an the iptables DNAT.
+At first, it was not clear what caused this limitation.
+The author analyzed the kind of packets that flows during the experiment using tcpdump\cite{jacobson1989tcpdump} as follows;
+1) A wrk worker opens multiple connections and sends out http request to the web servers. The number of connections is determined by the command-line option, eg. 800/40 = 20 connection in the case of command-line in Table~\ref{tab:bench_example}. The worker sends out 100 requests to the web server within each connection, and closes it either if all of the responses are recieved or time out occurs.
+2) As in seen in Listing~\ref{list:tcpdump}, tcp options were mss(4 byte), sack(2 byte), ts(10 byte), nop(1 byte) and wscale(3 byte), for SYN packets. For other packets, tcp options were, nop(1 byte), nop(1 byte) and ts(10 byte).
+3) The author classified the types of packes and counted the number of each type in a single connection, which is 100 http requests. Table~\ref{tab:request_data_size},\ref{tab:response_data_size},\ref{tab:header_size} summarize the data size of 100 request, including TCP headr, IP header, Ether header and overheads. 
+From this analysis, it was found that per each HTTP request and response,
+request data with the size of 227.68[byte] and response data with the data(http content)+437.68[byte] were being sent.   
+
+Since the node for load balancer recives and transmits both request and response packets using single network interface, each 1Gbps half duplex of full duplex must accomodate request and response data size.
+Therefore the theoretical maximum throughput can be expressed as; \\
+throughput[req/sec] = band width[byte/sec]/(request + response) \\
+= 1e9/8/(data+665.36)
+
+Figure~\ref{fig:performance_limitation} shows plot of theoretical maximum throughput 1Gbps ethernet together with actual benchmark results.
+Since experimnetal results agrees well with theory, the author concludes that when \enquote{RPS = on}, ipvs performance limitation is due to the 1Gbps bandwidth.
+
+\begin{lstlisting}[
+    backgroundcolor = \color{mygray},
+    basicstyle=\footnotesize,
+    breaklines=true,
+    numbers=left,
+    %    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    caption={An example of the tcpdump output},
+    captionpos=b,
+    label={list:tcpdump}
+  ]
+  curl -s  http://172.16.72.2:8888/1000
+  tcpdmup(response):
+
+  03:09:27.968942 IP 172.16.72.2.8888 > 192.168.0.112.60142:
+  Flags [S.], seq 2317920646, ack 648140715, win 28960, options [mss 1460,sackOK,TS val 2274012282 ecr 2324675546,nop,wscale 8], length 0
+  03:09:27.969685 IP 172.16.72.2.8888 > 192.168.0.112.60142:
+  Flags [.], ack 85, win 114, options [nop,nop,TS val 2274012282 ecr 2324675546], length 0
+  03:09:27.969945 IP 172.16.72.2.8888 > 192.168.0.112.60142:
+  Flags [P.], seq 1:255, ack 85, win 114, options [nop,nop,TS val 2274012282 ecr 2324675546], length 254
+  03:09:27.969948 IP 172.16.72.2.8888 > 192.168.0.112.60142:
+  Flags [P.], seq 255:1255, ack 85, win 114, options [nop,nop,TS val 2274012282 ecr 2324675546], length 1000
+  03:09:27.970846 IP 172.16.72.2.8888 > 192.168.0.112.60142:
+  Flags [F.], seq 1255, ack 86, win 114, options [nop,nop,TS val 2274012282 ecr 2324675547], length 0
+\end{lstlisting}
+
+\begin{table}[h]
+\centering
+  \begin{tabular}{|l|r|r|r|r|}
+    \hline
+%    \multicolumn{5}{|l|}{Data size in 100 HTTP requests.} \\ \hline
+    Type of Packet & \multicolumn{1}{l|}{Payload {[}byte{]}} & \multicolumn{1}{l|}{Header {[}byte{]}} & \multicolumn{1}{l|}{Count} & \multicolumn{1}{l|}{Total {[}byte{]}} \\ \hline
+    SYN & 0 & 98 & 1 & 98 \\ \hline
+    ACK & 0 & 90 & 102 & 9,180 \\ \hline
+    Push(GET) & 44 & 90 & 100 & 13,400 \\ \hline
+    FIN+ACK & 0 & 90 & 1 & 90 \\ \hline
+    \multicolumn{3}{|l|}{Total} & \multicolumn{2}{r|}{22,768} \\ \hline
+  \end{tabular}
+  \caption{Request data size for 100 HTTP requests in wrk measurement.}
+  \label{tab:request_data_size}
+%% \end{table}
+
+  \vspace{1cm}
+  
+%% \begin{table}[h]
+\centering
+  \begin{tabular}{|l|r|r|r|r|}
+    \hline
+%    \multicolumn{5}{|l|}{Response Data size for 100 HTTP requests in wrk measurement.} \\ \hline
+    Type of Packet & \multicolumn{1}{l|}{Payload {[}byte{]}} & \multicolumn{1}{l|}{Header {[}byte{]}} & \multicolumn{1}{l|}{Count} & \multicolumn{1}{l|}{Total {[}byte{]}} \\ \hline
+    SYN+ACK & 0 & 98 & 1 & 98 \\ \hline
+    ACK & 0 & 90 & 2 & 180 \\ \hline
+    Push(GET) & 254 & 90 & 100 & 34,400 \\ \hline
+    Push(DATA) & data & 90 & 100 & 100x(data+90) \\ \hline
+    FIN+ACK & 0 & 90 & 1 & 90 \\ \hline
+    \multicolumn{3}{|l|}{Total} & \multicolumn{2}{r|}{100x(data+90)+34,768} \\ \hline
+  \end{tabular}
+  \caption{Response data size for 100 HTTP requests in wrk measurement.}
+  \label{tab:response_data_size}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+  \begin{tabular}{|l|r|r|}
+    \hline
+    Type of field & \multicolumn{1}{l|}{SYN} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}ACK, SYN+ACK,\\ FIN+ACK, PUSH\end{tabular}} \\ \hline
+    preamble & 8 & 8 \\ \hline
+    ether header & 14 & 14 \\ \hline
+    ip header & 20 & 20 \\ \hline
+    tcp header & 20 + 20(tcp options) & 20 + 12(tcp options) \\ \hline
+    fcs & 4 & 4 \\ \hline
+    inter frame gap & 12 & 12 \\ \hline
+    Total [byte] & 98 & 90 \\ \hline
+  \end{tabular}
+  \caption{Header sizes of TCP/IP packet in Ethernet frame.}
+  \label{tab:header_size}
+\end{center}
+\end{table}
 
