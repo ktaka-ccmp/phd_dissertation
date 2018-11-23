@@ -1,7 +1,7 @@
 This chapter discusses the performance level of a single ipvs load balancer.
 First the author evaluated the load balancer functionality using physical servers in on-premise data center and compared performance level with existing iptables DNAT and nginx as a load balancer within a 1Gbps network environment.
-Then experiment was extended into the 10Gbps network environment to investigate the performance limitations of the proposed load balancer and a method to improve them.
-Furthermore, the author also carried out the performance measurement in GCP and AWS to show that the containerized ipvs load balancer is runnable and has the same characteristics in the cloud environment.
+Then the author also carried out the performance measurement in GCP and AWS to show that the containerized ipvs load balancer is runnable and has the same characteristics in the cloud environment.
+Furthermore, experiment was extended into the 10Gbps network environment to investigate the performance limitations of the proposed load balancer and to explore methods to improve them.
 The following sections explain these in further detail.
 
 \section{On-premise experiment with 1Gbps Load balancer}
@@ -14,7 +14,7 @@ In each {\em pod}, an nginx web server pod that returns the IP address of the {\
 The author set up the ipvs, iptables DNAT, and nginx load balancers on one of the nodes.
 All the nodes and the benchmark client are connected to a 1Gbps network switch as in Figure~\ref{fig:benchmark-setup}(\subref{fig:bench_1g}).
 
-The author measured the throughput, Request/sec, of the web service running on the Kubernetes cluster as follows:
+The throughput, Request/sec, is measured cluster as follows:
 The HTTP GET requests are sent out by the wrk on the client machine toward the nodes,
 using destination IP addresses and port numbers that are chosen based on the type of the load balancer on which the measurement is performed.
 The load balancer on the node then distributes the requests to the {\em pods}.
@@ -81,7 +81,7 @@ Table~\ref{tab:hw_sw_spec} shows hardware and software configuration used in the
 All of the nginx web server pods are configured to return the IP address of the {\em pod}, in order to make them return a small HTTP content. This makes a relatively severe condition for load balancers. 
 The size of the character string making up an IP address is limited to 15 bytes.
 If the author had chosen the HTTP response size so that most of the IP packet resulted in maximum transmission unit(MTU), the performance would have been dominantly limited by the Ethernet bandwidth.
-However, since small HTTP responses are used, the auhtor could purely measure the load balancer performance.
+% However, since small HTTP responses are used, the auhtor could purely measure the load balancer performance.
 
 \begin{table}[]
   \centering
@@ -134,6 +134,8 @@ The following three RSS and RPS settings were compared:
   \end{minipage}
 \end{center}
 The host-gw mode of flannel backends is used as the overlay network.
+The case with \enquote{(RSS, RPS) = (off, off)} means that all the incomming packets are processed by single core.  In the hardware used in the experiment, 
+
 
 We can see a general trend in which the throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
 The saturated throughput levels indicate the maximum performance level of the ipvs load balancer.
