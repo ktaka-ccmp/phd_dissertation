@@ -1,22 +1,5 @@
 \chapter*{Abstract}
 
-Linux containers have become very popular these days due to their lightweight nature and portability. 
-Numerous web services are now deployed as clusters of containers. 
-Kubernetes is a popular container management system that enables users to deploy such web services easily, and hence, 
-it facilitates web service migration to the other side of the world.
-However, since Kubernetes relies on external load balancers provided by cloud providers, 
-it is difficult to use in environments where there are no supported load balancers.
-This is particularly true for on-premise data centers, or for all but the largest cloud providers.
-In this paper, we proposed a portable load balancer that was usable in any environment, and hence facilitated web services migration.
-We implemented a containerized software load balancer that is run by Kubernetes as a part of container cluster, 
-using Linux kernel's Internet Protocol Virtual Server(IPVS).
-Then we compared the performance of our proposed load balancer with existing iptables Destination Network Address 
-Translation (DNAT) and the Nginx load balancers.
-During our experiments, we also clarified the importance of two network conditions to derive the best performance: 
-the first was the choice of the overlay network operation mode, and the second was distributing packet processing to multiple cores.
-The results indicated that our proposed IPVS load balancer improved portability of web services without sacrificing the performance.
-
-
 Linux container technology and clusters of the containers are expected to make web services consisting of multiple web servers and a load balancer portable, and thus realize easy migration of web services across the different cloud providers and on-premise datacenters.
 This prevents service to be locked-in a single cloud provider or a single location and enables users to meet their business needs, e.g., preparing for a natural disaster.
 However existing container management systems lack the generic implementation to route the traffic from the internet into the web service consisting of container clusters.
