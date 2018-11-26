@@ -111,7 +111,7 @@ For this experiment a total of eight servers are used; six servers for nodes, on
 The software versions used for Kubernetes, web server and load balancer {\em pods} are also summarized in the Table~\ref{tab:hw_sw_spec}.
 The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queues.
 
-\subsection{Result 1: Effect of multicore proccessing}
+\subsection{Effect of multicore proccessing}
 
 \begin{figure}
   \centering
@@ -167,7 +167,7 @@ The author regarded that \enquote{(RSS, RPS) = (off, on)} is the best setting in
 
 \FloatBarrier
 
-\subsection{Result 2: Effect of overlay network}
+\subsection{Effect of overlay network}
 
 \begin{figure}[h]
   \centering
@@ -189,7 +189,7 @@ The author considers the host-gw mode is the best, the vxlan tunnel the second b
 
 \FloatBarrier
 
-\subsection{Result 3: Comparison of different load balancer}
+\subsection{Comparison of different load balancer}
 
 \begin{figure}[htb]
   \centering
@@ -217,6 +217,36 @@ This may not be considered a siginificant difference, however we can at least sa
 So, to conclude this section, the containerized ipvs load balancer showed equivalent performance leves with the iptables DNAT loadbalancing functions that is used in Kubernetes cluster.
 
 \FloatBarrier
+\section{L3DSR using ipvs tun}
+
+The performance levels of ipvs and iptables DNAT have been limited by 1 Gbps band width.
+This can be alleviated in the case of ipvs by using so called Layer 3 Direct Server Return(l3dsr) setup.
+
+The ipvs has the mode called ipvs-tun.
+When the ipvs-tun send out the packets to real servers, it encapsulates the original packet in ipip tunnling packet that is destined to real servers.
+The realserver receives the packet on a tunl0 device and decapsulates the ipip packet, revealing the original packet.
+Sice the souce IP address of original packet is maintained, the returning packets are sent directly toward the benchmark client.
+In this scheme the returning packets do not consume the band width nor the CPU power of the load balancer node.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/bench_1g_l3dsr}
+  \caption{Physical configuration for L3DSR experiment.}
+  \label{fig:bench_1g_l3dsr}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_1g.png}
+  \caption{Throughput of ipvs l3dsr @1Gbps.}
+  \label{fig:ipvs_l3dsr_1g.png}
+\end{figure}
+
+Figure~\ref{fig:ipvs_l3dsr_1g.png} shows the throughput of the ipvs-tun, ipvs-nat and iptables DNAT.
+As can be seen in the figure, the performance levels is greatly improved ipvs-tun.
+
+
+\FloatBarrier
 
 \section{Cloud experiment}
 
@@ -234,16 +264,17 @@ So, to conclude this section, the containerized ipvs load balancer showed equiva
   \label{fig:aws_c4_ieice}
 \end{figure}
 
-Fig.~\ref{fig:gcp_all_ieice} and Fig.~\ref{fig:aws_c4_ieice} show the load balancer performance levels that are measured in GCP and AWS, respectively.
-Both results show similar characteristics as the experiment in an on-premise data center in Fig.~\ref{fig:ipvs_performance}~(\subref{fig:ipvs-iptables-nginx}), where throughput increases linearly to a certain saturation level that is determined by either network speed or machine specifications.
+
+Figure~\ref{fig:gcp_all_ieice} and Figure~\ref{fig:aws_c4_ieice} show the load balancer performance levels that are measured in GCP and AWS, respectively.
+Both results show similar characteristics as the experiment in an on-premise data center in Figure~\ref{fig:ipvs_mcore_proccessing}, where throughput increases linearly to a certain saturation level that is determined by either network speed or machine specifications.
+It is shown that the proposed load balancer can be run in cloud environments and also functions properly.
 Since the machine specifications can be easily changed in the cases of cloud environments, the author measured throughput with several conditions of CPU counts.
-It is shown that our proposed load balancer can be run in cloud environments and also functions properly.
 
 It seems that the load balancer's throughput saturation levels are determined by CPU counts.
-However, the actual throuput numbers are smaller than those of the load balancers in on premise data centers.
-This may be because the physcal servers out performs the VMs in cloud environment, or because network band width are limited based of the type of instances. 
-A detailed analysis is further required in the future to clarify which factor limits the throughput.
-Still, we can say that the proposed ipvs load balancers can be run in both GCP and AWS, and behavior is the same with the load balancers in on-premise data centers.
+The actual throughput numbers are smaller than those of the load balancers in on-premise data centers.
+This may be because the physical servers in  on-premise data center outperform the VMs in a cloud environment, or because network bandwidth is limited based on the type of instances.
+A detailed analysis is further required in the future to clarify which factor limits the throughput in the case of the cloud environment.
+Still, we can say that the proposed ipvs load balancers can be run in both GCP and AWS, and the behavior is the same with the load balancers in on-premise data centers.
 
 \FloatBarrier
 
@@ -256,8 +287,10 @@ The throughput levels are also very dependent on the back end mode of the flanne
 The host-gw mode where no tunneling is used resulted in the best performance level.
 It is clear that the case that utilizes all of the CPU cores better performs than the case with only four CPU cores utilized.
 
-The performance levels of ipvs, iptables DNAT and nginx have also been compared.
-The proposed ipvs load balancer in the container had the same performance level as load balancing function of iptables DNAT.
+The performance levels of ipvs(nat), iptables DNAT and nginx have also been compared.
+The proposed ipvs(nat) load balancer in the container had the same performance level as load balancing function of iptables DNAT.
+Furthermore in the case of L3DSR setup, the performance level of ipvs(tun) load balancer has about 1.5 times larger that that of ipvs(nat) and iptables DNAT.
+
 It is also shown that the proposed load balancer can be run in GCP and AWS.
 The behavior of the proposed load balancer in those cloud environments is the same as that in the on-premise data center.
 The author conclude that the proposed load balancer is portable and performs at the same level as the existing load balancers.

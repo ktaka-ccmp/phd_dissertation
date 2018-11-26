@@ -55,15 +55,16 @@ There are multiple nodes for load balancers and on each of the nodes, single loa
 Each load balancer {\em pod} consists of both an ipvs container and an exabgp container.
 The routing table of the benchmark client is updated by BGP protocol through a route reflector.
 
-Using these hardware and software setups, the following four types of evaluations have been carried out;
+Using these hardware and software setups the following four types of evaluations have been carried out;
 1) Evaluation of ECMP functionality. The author examined if ECMP routing table is correctly updated.
-3) Evaluation of the scalability. The author evaluated how throughput is improved by running multiple ipvs pods.
-2) Evaluation of ECMP response. The author evaluated the delay between the time ipvs pods are started or stopped until the time ECMP routing table reflected the change.
+2) Evaluation of the scalability. The author evaluated how throughput is improved by running multiple ipvs pods simultaneously.
+3) Evaluation of ECMP response. The author evaluated the delay between the time ipvs pods are started or stopped until the time ECMP routing table reflected the change.
+
 
 The throughputs are measured using wrk in the same manner as in Chapter~\ref{chapter:portablelb}.
 Notable differences from the previous throughput experiment in Figure~\ref{fig:benchmark-setup} are;
 There four nodes for load balancers instead of one.
-And the 10 Gbps NIC is used for the benchmark client since for scalability experiment we have multiple of ipvs container load balancers that can fill up 1 Gbps bandwidth.
+Also, the 10 Gbps NIC is used for the benchmark client since for scalability experiment there are multiple of ipvs container load balancers that can fill up 1 Gbps bandwidth.
 Some of the software has also been updated to the most recent versions at the time of the experiment.
 
 \FloatBarrier
@@ -123,7 +124,7 @@ Some of the software has also been updated to the most recent versions at the ti
 
 First, the author examined ECMP functionality by monitoring the routing table on the benchmark client.
 Table~\ref{tab:exabgp_routing_table}~(\subref{tab:single}) shows the routing table entry on the router when a single load balancer pod existed.
-From this line, we can tell that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
+From this entry, we can tell that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
 It also shows that this routing rule is controlled by zebra.
 
 When the number of the load balancer pods was increased to three, the routing table entry in Table~\ref{tab:exabgp_routing_table}~(\subref{tab:three}) could be seen.
@@ -131,8 +132,8 @@ There are three next hops towards 10.1.1.0/24 each of which being the node where
 The weights of the three next-hops are all 1.
 The update of the routing entry was almost instant as the author increased the number of the load balancers.
 
-Table~\ref{tab:exabgp_routing_table}~(\subref{tab:double_svc}) shows the case where we additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
-We could accommodate two different services with different IP addresses, one with three load balancers and the other with two load balancers on a group of nodes(10.0.0,105,10.0.0,106,10.0.0,107).
+Table~\ref{tab:exabgp_routing_table}~(\subref{tab:double_svc}) shows the case where the author additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
+It was possible to accommodate two different services with different IP addresses, one with three load balancers and the other with two load balancers on a group of nodes(10.0.0,105,10.0.0,106,10.0.0,107).
 The update of the routing entry was almost instant as the author started the load balancers for the second service.
 
 \FloatBarrier
@@ -146,7 +147,7 @@ The update of the routing entry was almost instant as the author started the loa
 \end{figure}
 
 The throughput measurement was also carried out to show that ECMP technique increases the throughput as the number of the load balancers is increased.
-Fig.~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
+Figure~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
 There are four solid lines in the figure, each corresponding the throughput result when there are one through four of the proposed load balancers.
 As can be seen in the figure, as we increased the number of the pod the throughput increased linearly to a certain level after which it saturated.
 The saturated levels, i.e. performance levels, depend on the number of the ipvs load balancer pods (lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such).
@@ -154,7 +155,7 @@ The performance levels increase linearly as we increase the number of the load b
 
 The performance level did not scale further when the number of load balancers was increased more than four.
 This was because the performance of the benchmark client hit the ceiling, i.e., the CPU usage was 100\% when the total throughput was around 780k [req/sec].
-The author expects that replacing the benchmark client with more powerful machines will improve the performance level further.
+The author expects that replacing the benchmark client with more powerful machines will further improve the performance level this system.
 
 \FloatBarrier
 
