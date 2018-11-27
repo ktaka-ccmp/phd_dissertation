@@ -47,8 +47,9 @@ The following subsections explain the evaluation in detail.
   \label{tab:ecmp-hw_sw_spec}
 \end{table}
 
-Figure~\ref{fig:lb_ecmp_schem} shows the schematic diagram of the experimental setup and Table~\ref{tab:ecmp-hw_sw_spec} summarizes hardware and software specifications for the experiments.
-
+Figure~\ref{fig:lb_ecmp_schem} shows the schematic diagram of the experimental setup.
+And Table~\ref{tab:ecmp-hw_sw_spec} summarizes hardware and software specifications for the experiments.
+%
 Multiple {\em pods} are deployed on multiple nodes in the Kubernetes cluster.
 In each {\em pod}, an nginx web server pod that returns the IP address of the {\em pod} are running.
 There are multiple nodes for load balancers and on each of the nodes, single load balancer {\em pod} is deployed.
@@ -64,7 +65,7 @@ Using these hardware and software setups the following four types of evaluations
 The throughputs are measured using wrk in the same manner as in Chapter~\ref{chapter:portablelb}.
 Notable differences from the previous throughput experiment in Figure~\ref{fig:benchmark-setup} are;
 There four nodes for load balancers instead of one.
-Also, the 10 Gbps NIC is used for the benchmark client since for scalability experiment there are multiple of ipvs container load balancers that can fill up 1 Gbps bandwidth.
+Also, the 10 Gbps NIC is used for the benchmark client since for scalability experiment, there are multiple of ipvs container load balancers that can fill up 1 Gbps bandwidth.
 Some of the software has also been updated to the most recent versions at the time of the experiment.
 
 \FloatBarrier
@@ -125,15 +126,15 @@ Some of the software has also been updated to the most recent versions at the ti
 First, the author examined ECMP functionality by monitoring the routing table on the benchmark client.
 Table~\ref{tab:exabgp_routing_table}~(\subref{tab:single}) shows the routing table entry on the router when a single load balancer pod existed.
 From this entry, we can tell that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
-It also shows that this routing rule is controlled by zebra.
+There is also a keyword, zebra, which indicates that zebra controls this routing rule.
 
-When the number of the load balancer pods was increased to three, the routing table entry in Table~\ref{tab:exabgp_routing_table}~(\subref{tab:three}) could be seen.
+When the number of the load balancer pods was increased to three, the routing table becomes to have entries in Table~\ref{tab:exabgp_routing_table}~(\subref{tab:three}).
 There are three next hops towards 10.1.1.0/24 each of which being the node where the load balancer pods are running.
-The weights of the three next-hops are all 1.
+The weights of the three next-hops are equal, i.e., 1.
 The update of the routing entry was almost instant as the author increased the number of the load balancers.
 
 Table~\ref{tab:exabgp_routing_table}~(\subref{tab:double_svc}) shows the case where the author additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
-It was possible to accommodate two different services with different IP addresses, one with three load balancers and the other with two load balancers on a group of nodes(10.0.0,105,10.0.0,106,10.0.0,107).
+It was possible to accommodate two different services with different IP addresses, one with three load balancers and the other with two load balancers on a group of nodes, 10.0.0.105, 10.0.0.106 and 10.0.0.107.
 The update of the routing entry was almost instant as the author started the load balancers for the second service.
 
 \FloatBarrier
@@ -142,19 +143,21 @@ The update of the routing entry was almost instant as the author started the loa
 
 \begin{figure}[h]
   \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_lb_cubic}
-  \caption{Caption 1}
-  \label{fig:ecmp_lb_cubic}
+  \caption{Throughput of ECMP redundant load balancer.}
+The throughputs are measured for a single load balancer(lb x1), two(lb x2), three(lb x3) and four(lb x4) load balancers. 
+
+\label{fig:ecmp_lb_cubic}
 \end{figure}
 
 The throughput measurement was also carried out to show that ECMP technique increases the throughput as the number of the load balancers is increased.
 Figure~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
 There are four solid lines in the figure, each corresponding the throughput result when there are one through four of the proposed load balancers.
+
 As can be seen in the figure, as we increased the number of the pod the throughput increased linearly to a certain level after which it saturated.
 The saturated levels, i.e. performance levels, depend on the number of the ipvs load balancer pods (lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such).
 The performance levels increase linearly as we increase the number of the load balancers.
-
 The performance level did not scale further when the number of load balancers was increased more than four.
-This was because the performance of the benchmark client hit the ceiling, i.e., the CPU usage was 100\% when the total throughput was around 780k [req/sec].
+This was because the performance of the benchmark client was hitting the ceiling, i.e., the CPU usage was 100\% when the total throughput was around 780k [req/sec].
 The author expects that replacing the benchmark client with more powerful machines will further improve the performance level this system.
 
 \FloatBarrier
@@ -167,9 +170,11 @@ The author expects that replacing the benchmark client with more powerful machin
   \label{fig:ecmp_delay_histgram}
 \end{figure}
 
-Figure~\ref{fig:ecmp_delay_histgram} shows the histogram of the ECMP update delay, where the author measured the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, as the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
+Figure~\ref{fig:ecmp_delay_histgram} shows the histogram of the ECMP update delay.
+The author measured the delays until the number of running ipvs pods is reflected into the routing table on the benchmark client.
+The number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
 As we can see from the figure, most of the delays are within 6 seconds, and the largest delay was 10 seconds.
-We can conclude that ECMP routing update in our proposed architecture is quick enough.
+We can say that ECMP routing update in our proposed architecture is quick enough.
 
 \begin{figure}[t]
   \includegraphics[width=0.98\columnwidth,left]{Figs/ecmp_response}
@@ -178,7 +183,7 @@ We can conclude that ECMP routing update in our proposed architecture is quick e
 \end{figure}
 
 Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the number of the load balancers was periodically changed. 
-The red line in the figure shows the number of the ipvs load balancer pods, which was changed randomly every 60 seconds.
+The red line in the figure shows the number of the ipvs load balancer pods, which was changed randomly in every 60 seconds.
 The blue line corresponds to the resulting throughput.
 As we can see from the figure, the blue line nicely follows the shape of the red line.
 This indicates that new load balancers are immediately utilized after they are created.
@@ -190,7 +195,7 @@ It also indicates that after removing some load balancers, the traffic to them i
 
 In this chapter, the redundancy and scalability of the proposed load balancers have been discussed.
 The author verified that ECMP routing table was properly created in the experimental system.
-The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
+The update of the ECMP routing table was quick enough, i.e., within 10 seconds, throughout 20 hours experiment and the routing table was always correct.
 The scalability of the load balancer was also examined and it has been found that maximum performance levels scaled linearly as the number of the load balancer pods was increased to four.
 The maximum throughput level obtained through the experiment was 780k [req/sec], which is limited due to the maximum CPU performance of the benchmark client rather than the performance of the load balancer cluster.
 

@@ -1,0 +1,52 @@
+File Edit Options Buffers Tools TeX Text Help
+
+For this experiment a total of eight servers are used; six servers for nodes, one for the load balancer and one for th\
+e benchmark client, with all having the same hardware specifications.
+The software versions used for Kubernetes, web server and load balancer {\em pods} are also summarized in the Table~\r\
+ef{tab:hw_sw_spec}.
+The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queues.
+
+\subsection{Effect of multicore proccessing}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_mcore_proccessing}
+  \caption{Effect of multicore proccessing on ipvs throughput.}
+  \label{fig:ipvs_mcore_proccessing}
+\end{figure}
+
+Figure~\ref{fig:ipvs_mcore_proccessing} shows a result of throughput experiment with different multicore proccessing s\
+ettings.
+The following three RSS and RPS settings were compared:
+\begin{center}
+  \centering
+  \begin{minipage}{0.8\columnwidth}
+\begin{verbatim}
+(RSS, RPS) = (off, off)
+           = (on , off)
+           = (off, on )
+\end{verbatim}
+  \end{minipage}
+\end{center}
+%The host-gw mode of flannel backends is used as the overlay network.
+
+The case with \enquote{(RSS, RPS) = (off, off)} means that multicore packet processing is completely disabled, i.e.,  \
+all the incoming packets are processed by a single core.
+The \enquote{(RSS, RPS) = (on, off)} means that the interrupt handling and the following IP protocol proccesing are th\
+e packet proccessing is done on 4 of the CPU cores since the NIC used in the experiment has only four rx-queues.
+The \enquote{(RSS, RPS) = (off, on)} means that all of the CPU cores are utilized for the packet proccessing.
+
+We can see a general trend in which the throughput linearly increases as the number of nginx {\em pod}s increases and \
+then it eventually saturates.
+The saturated throughput levels indicate the maximum performance level of the ipvs load balancer.
+The maximum performance levels depend on the (RSS, RPS) settings.
+From the results in this figure, it can be seen that if we turn off multicore packet processing,
+{\it i.e.}, when \enquote{(RSS, RPS) = (off, off)}, performance degrades significantly.
+In this case, the performance bottleneck is primarily due to packet processing in a single core.
+
+If we compare the results for the cases when \enquote{(RSS, RPS) = (on, off)} and \enquote{(RSS, RPS) = (off, on)},
+the latter is better than the former.
+It is clear that the case that utilizes all of the CPU cores better performs than the case with only four CPU cores ut\
+ilized.
+-UU-:----F1  portablelb.tex   32% L138  Git:master  (LaTeX) -----------------------------------------------------------
+Wrote /home/ktaka/phd_dissertation/Manuscript/portablelb.tex

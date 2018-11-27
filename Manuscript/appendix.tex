@@ -230,11 +230,11 @@ log file /var/log/zebra.log
 %\caption{Example of zebra config on the router.}
 %\label{fig:zebra_config_router}
 
-\chapter{Analysis of the performance limitation}
-\label{appendix:performance_limitation}
+\chapter{Analysis of the performance limit}
+\label{appendix:performance_limit}
 
 The maximum throghput in this series of experiment is roughly, 190k[req/sec] for both ipvs an the iptables DNAT.
-At first, it was not clear what caused this limitation.
+At first, it was not clear what caused this limit.
 The author analyzed the kind of packets that flows during the experiment using tcpdump\cite{jacobson1989tcpdump} as follows;
 1) A wrk worker opens multiple connections and sends out http request to the web servers. The number of connections is determined by the command-line option, eg. 800/40 = 20 connection in the case of command-line in Table~\ref{tab:bench_example}. The worker sends out 100 requests to the web server within each connection, and closes it either if all of the responses are recieved or time out occurs.
 2) As in seen in Listing~\ref{list:tcpdump}, tcp options were mss(4 byte), sack(2 byte), ts(10 byte), nop(1 byte) and wscale(3 byte), for SYN packets. For other packets, tcp options were, nop(1 byte), nop(1 byte) and ts(10 byte).
@@ -247,8 +247,8 @@ Therefore the theoretical maximum throughput can be expressed as; \\
 throughput[req/sec] = band width[byte/sec]/(request + response) \\
 = 1e9/8/(data+665.36)
 
-Figure~\ref{fig:performance_limitation} shows plot of theoretical maximum throughput 1Gbps ethernet together with actual benchmark results.
-Since experimnetal results agrees well with theory, the author concludes that when \enquote{RPS = on}, ipvs performance limitation is due to the 1Gbps bandwidth.
+Figure~\ref{fig:performance_limit} shows plot of theoretical maximum throughput 1Gbps ethernet together with actual benchmark results.
+Since experimnetal results agrees well with theory, the author concludes that when \enquote{RPS = on}, ipvs performance limit is due to the 1Gbps bandwidth.
 
 \begin{lstlisting}[
     backgroundcolor = \color{mygray},
