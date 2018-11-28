@@ -45,7 +45,7 @@ However, the magnitudes of the improvements are different among the types of the
 While the throughput of the ipvs-nat is 334833 [req/sec], that of the iptables DNAT is 777640 [req/sec].
 This suggests that the packet forwarding of the iptables DNAT is more efficient than that of ipvs-nat.
 Although the throughput of the ipvs-tun, 730975 [req/sec] is better than ipvs-nat because of the L3DSR settings, it still falls short of that of iptables DNAT.
-It seems that containerized ipvs load balancers are inherently less efficient than the iptables DNAT, which could be attributed to either overhead of container network(veth+bridge) or kernel code for ipvs itself.
+It seems that containerized ipvs load balancers are inherently less efficient than the iptables DNAT, which could be attributed to either overhead of container network(veth+bridge)\cite{zhao2017performance,ruiz2015performance} or kernel code for ipvs itself.
 In order to investigate this issue, the author conducted a throughput measurement for ipvs-nat and ipvs-tun that are set up in node net namespaces in the next section.
 
 \begin{table}[H]
@@ -54,9 +54,9 @@ In order to investigate this issue, the author conducted a throughput measuremen
     \hline
     & \multicolumn{2}{c|}{Throughput {[}req/sec{]}} \\ \hline
     Type of load balancer & \multicolumn{1}{c|}{1Gbps} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}10Gbps} \\ \hline
-    \multicolumn{1}{c|}{iptables DNAT} & 193198 & \cellcolor[HTML]{ECF4FF}777640 \\ \hline
-    \multicolumn{1}{c|}{ipvs-nat} & 195666 & \cellcolor[HTML]{ECF4FF}334833 \\ \hline
-    \multicolumn{1}{c|}{ipvs-tun} & 292660 & \cellcolor[HTML]{ECF4FF}730975 \\ \hline
+    \multicolumn{1}{|c|}{iptables DNAT} & 193198 & \cellcolor[HTML]{ECF4FF}777640 \\ \hline
+    \multicolumn{1}{|c|}{ipvs-nat} & 195666 & \cellcolor[HTML]{ECF4FF}334833 \\ \hline
+    \multicolumn{1}{|c|}{ipvs-tun} & 292660 & \cellcolor[HTML]{ECF4FF}730975 \\ \hline
   \end{tabular}
   \caption{Performance levels in 1Gbps and in 10Gbps.}
   \raggedright
@@ -93,9 +93,9 @@ We can see that maximum throughputs can be improved in the case of load balancer
     \hline
     & \multicolumn{2}{c|}{Throughput {[}req/sec{]}} \\ \hline
     Type of load balancer & \multicolumn{1}{c|}{pod name space} & \multicolumn{1}{c|}{node name space} \\ \hline
-    \multicolumn{1}{c|}{iptables DNAT} & NA & \cellcolor[HTML]{ECF4FF}777640 \\ \hline
-    \multicolumn{1}{c|}{ipvs-nat} & \cellcolor[HTML]{ECF4FF}334833 & \cellcolor[HTML]{FFF3F3}699635 \\ \hline
-    \multicolumn{1}{c|}{ipvs-tun} & \cellcolor[HTML]{ECF4FF}730975 & \cellcolor[HTML]{FFF3F3}779932 \\ \hline
+    \multicolumn{1}{|c|}{iptables DNAT} & NA & \cellcolor[HTML]{ECF4FF}777640 \\ \hline
+    \multicolumn{1}{|c|}{ipvs-nat} & \cellcolor[HTML]{ECF4FF}334833 & \cellcolor[HTML]{FFF3F3}699635 \\ \hline
+    \multicolumn{1}{|c|}{ipvs-tun} & \cellcolor[HTML]{ECF4FF}730975 & \cellcolor[HTML]{FFF3F3}779932 \\ \hline
   \end{tabular}
   \caption{Performance levels in pod namespace and in node namespace.}
   \raggedright
