@@ -9,8 +9,9 @@ Also presented is the novel software load balancer using eXpress Data Plane(XDP)
 Figure~\ref{fig:bench_10g} and Figure~\ref{fig:bench_10g_l3dsr} shows the packte flow for ipvs-nat and ipvs-tun, respectively.
 The 10Gbps NICs are used for bechmark client and the node for load balancer.
 In the case of the ipvs-nat and iptable DNAT, the response packets from nginx pods must be returned to the load balancer, and then load balancer returns it to the client.
-The NIC of the 
-As a contrast, in the case of ipvs-tun, the response packets from nginx pods are directly returned to the client.
+This incurs addtional packet processing load to the CPU of the load balancer node.
+In contrast, in the case of ipvs-tun, the response packets from nginx pods are directly returned to the client.
+The load balancer only needs to process request packets.
 
 \begin{figure}[h]
   \centering
@@ -25,6 +26,11 @@ As a contrast, in the case of ipvs-tun, the response packets from nginx pods are
   \caption{Physical configuration for L3DSR experiment.}
   \label{fig:bench_10g_l3dsr}
 \end{figure}
+
+Figure~\ref{fig:ipvs_l3dsr_10g} shows the throughput of ipvs-nat ipvs-tun and iptable DNAT.
+While the ipvs-tun showed better performance level than ipvs-nat, the iptables DNAT show yet better peformance level.
+The limiting factor for the ipvs-tun and ipvs-nat case seem to be the insufficient CPU perwar for the node.
+ 
 
 
 \begin{figure}[h]
