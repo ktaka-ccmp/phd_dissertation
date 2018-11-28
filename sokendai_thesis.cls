@@ -60,6 +60,8 @@
 \usepackage{listings} 
 \usepackage{placeins}
 
+\usepackage[table,xcdraw]{xcolor}
+
 %\usepackage{pmboxdraw}
 %------------------------------------
 

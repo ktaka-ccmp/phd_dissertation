@@ -2,7 +2,8 @@
 draft: draft.pdf
 main: main.pdf
 
-all: main.pdf draft.pdf
+#all: main.pdf draft.pdf
+all: draft.pdf main.pdf
 
 main.pdf: main.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
 	pdflatex main.tex
