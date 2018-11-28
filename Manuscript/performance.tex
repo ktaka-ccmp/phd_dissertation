@@ -1,9 +1,16 @@
-This chapter explore the method to further improve the performance levels of propsed load balancer.
-
-Then performance levels in the 10Gbps environment is discussed.
-Novel XDP load balancer is discussed.
+Up until now most of the experiments are done in 1Gbps network environments.
+Also, so far the proposed load balancer architecture and it is proof of concept implementation have shown its validity and decent performance levels.
+However, it is essential to extend the experiment in the 10Gbps network environments to investigate what is the limitation of the current POF implementation and to explore the way to improve its performance level.
+The author first carries out throughput measurements of ipvs-nat, ipvs-tun and iptables DNAT, then explores the way to improve the ipvs-nat and ipvs-tun performance levels.
+Also presented is the novel software load balancer using eXpress Data Plane(XDP) technology, as an alternative to ipvs software load balancers.
 
 \section{Throuput of ipvs-nat, ipvs-tun and iptables DNAT}
+
+Figure~\ref{fig:bench_10g} and Figure~\ref{fig:bench_10g_l3dsr} shows the packte flow for ipvs-nat and ipvs-tun, respectively.
+The 10Gbps NICs are used for bechmark client and the node for load balancer.
+In the case of the ipvs-nat and iptable DNAT, the response packets from nginx pods must be returned to the load balancer, and then load balancer returns it to the client.
+The NIC of the 
+As a contrast, in the case of ipvs-tun, the response packets from nginx pods are directly returned to the client.
 
 \begin{figure}[h]
   \centering
@@ -20,17 +27,25 @@ Novel XDP load balancer is discussed.
 \end{figure}
 
 
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_10g.png}
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_10g}
   \caption{Throughput of ipvs l3dsr @10Gbps.}
-  \label{fig:ipvs_l3dsr_10g.png}
+  \label{fig:ipvs_l3dsr_10g}
 \end{figure}
 
 Figure~\ref{fig:ipvs_l3dsr_10g.png} shows the throughput of the ipvs-tun, ipvs masqurade mode togther with iptables DNAT.
 
 \FloatBarrier
 \section{Throuput of ipvs-nat, ipvs-tun and iptables DNAT}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_node_l3dsr_10g}
+  \caption{Throughput of ipvs in node name space.}
+  \label{Figs/ipvs_node_l3dsr_10g}
+\end{figure}
+
 
 \FloatBarrier
 \section{XDP load balancer}
