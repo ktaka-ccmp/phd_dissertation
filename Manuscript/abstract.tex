@@ -1,12 +1,52 @@
 \chapter*{Abstract}
 
-Linux container technology and clusters of the containers are expected to make web services consisting of multiple web servers and a load balancer portable, and thus realize easy migration of web services across the different cloud providers and on-premise datacenters.
-This prevents service to be locked-in a single cloud provider or a single location and enables users to meet their business needs, e.g., preparing for a natural disaster.
-However existing container management systems lack the generic implementation to route the traffic from the internet into the web service consisting of container clusters.
-For example, Kubernetes, which is one of the most popular container management systems, is heavily dependent on cloud load balancers. If users use unsupported cloud providers or on-premise datacenters, it is up to users to route the traffic into their cluster while keeping the redundancy and scalability.
-This means that users could easily be locked-in the major cloud providers including GCP, AWS, and Azure.
-In this paper, we propose an architecture for a group of containerized load balancers with ECMP redundancy.
-We containerize Linux ipvs and exabgp, and then implement an experimental system using standard Linux boxes and open source software.
-We also reveal that our proposed system properly route the traffics with redundancy.
-Our proposed load balancers are usable even if the infrastructure does not have supported load balancers by Kubernetes and thus free users from lock-ins.
+Today a vast majority of the people in the world use PCs or smartphones to communicate with friends, check up the news, watch the videos, play games, etc., through the Internet.
+These services are called web services because they utilize web technology through HTTP(S) protocols.
+Web services are generally provided by a cluster of web server programs, database server programs, and load balancers.
+Web service providers deploy these programs on a cluster of physical servers in an on-premise data center or on a cluster of VMs in cloud infrastructures.
+
+Recently Linux container technology and clusters of the containers have come to draw attention because they are expected to make web services consisting of multiple web servers and a load balancer portable, and thus realize easy migration of web services across the different cloud providers and on-premise data centers.
+Service migrations prevent a service to be locked-in a single cloud provider or a single location and enable users to meet their business needs, e.g., preparing for a natural disaster, lower the cost of infrastructure and comply the regulations.
+
+In order for a web service to be deployed easily in different base infrastructures, container management systems are often used.
+However existing container management systems lack the generic capability to route the traffic from the internet into web service container clusters.
+For example, Kubernetes, which is one of the most popular container management systems, is heavily dependent on cloud load balancers.
+If users use unsupported base infrastructures, it becomes users responsibility to route the traffic into their cluster while keeping the redundancy and scalability.
+This means that users are happy only in the major cloud providers including GCP, AWS, and Azure; thus they could easily be locked-in those infrastructures.
+
+In this dissertation, the author proposes a load balancer architecture that is usable in any of the base infrastructure, including cloud providers and on-premise data centers, in order to free users from lock-ins.
+The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure.
+It also utilizes ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
+
+The author implemented a containerized software load balancer that is run by Kubernetes as a part of container cluster, using Linux kernel's IPVS.
+In order to discuss the feasibility of the proposed load balancer, performance measurements are conducted in 1 Gbps network environment.
+It was shown that the proposed load balancers are runnable in an on-premise data center, GCP and AWS.
+It can be said that the proposed load balancers are portable.
+The throughput levels of a load balancer are dependent on settings for multi-core packet processing.
+It was shown that better to use as many CPU cores as possible for packet processing.
+The throughput levels are also very dependent on the overlay network backend mode and the container network, i.e., veth+bridge.
+The host-gw mode where no tunneling is used resulted in the best performance level, and the vxlan mode resulted in the second best.
+Although the overheads of the container network are negligible in 1 Gbps network environment, they are not negligible in 10 Gbps network environment.
+In the experiment in 1 Gbps network environment, the ipvs-nat load balancer in the container had the same performance level as load balancing function of iptables DNAT on the node.
+Furthermore, the performance level of ipvs-tun load balancer in a container with the L3DSR setup was about 1.5 times larger than that of iptables DNAT.
+Therefore in 1 Gbps network environment, the proposed load balancer is portable while it has the 1.5 times better performance level or the same performance level depending on the mode of operation.
+
+Also implemented is the ECMP setups where multiple of the load balancer containers are deployed, each advertising the route to the service VIP.
+The ECMP technique makes the load balancers redundant and scalable since all the load balancer containers act as active.
+The whole system is resilient to a single failure of load balancer container.
+Also by utilizing multiple of load balancers simultaneously, the throughput of the total system is increased significantly.
+These characteristics are evaluated by checking the routing table of the upstream router and throughput measurement.
+The author verified that ECMP routing table was properly created in the experimental system.
+The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
+The maximum performance levels of the cluster of load balancers scaled linearly as the number of the load balancer pods was increased up to four of them.
+
+The author also extended the throughput measurement into 10 Gbps network environment.
+It was revealed that ipvs-nat and ipvs-tun load balancers in containers had lower performance levels compared with the iptables DNAT.
+By setting up the load balancing table in node net namespaces, the performance levels of ipvs-nat and ipvs-tun became closer to that of the iptables DNAT,
+which is suggesting that the overhead of the container network is no longer invisible in 10 Gbps network environment.
+The author is currently implementing and evaluating a novel software load balancer using XDP technology to provide a better alternative to ipvs as a portable load balancer.
+
+The outcome of this study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
+Moreover, the result of this study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
+In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
 
