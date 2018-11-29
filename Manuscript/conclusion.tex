@@ -1,46 +1,41 @@
 \section{Conclusions}\label{Conclusions}
 
 In this dissertation, the author proposed a portable load balancer with ECMP redundancy for the Kubernetes cluster systems that is aimed at facilitating migration of container clusters for web services.
-The author implemented a containerized software load balancer that is run by Kubernetes as a part of container cluster, using Linux kernel's IPVS, as a proof of concept.
-In order to discuss the feasibility of the proposed load balancer, we built 
-a Kubernetes cluster system and conducted performance measurements.
-Our experimental results indicate that the IPVS based load balancer in container improves the portability of 
-the Kubernetes cluster system while it shows the similar performance levels as the existing iptables DNAT based load balancer.
-We also clarified that choosing the appropriate operating modes of overlay networks is important for the performance of load balancers. 
-For example, in the case of flannel, only the vxlan and udp backend operation modes could be used 
-in the cloud environment, and the udp backend significantly degraded their performance.
-Furthermore, we also learned that the distribution of packet processing among multiple CPUs was very important
-to obtain the maximum performance levels from load balancers.
+The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure.
+It also utilizes ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
 
-The throughput levels of a load balancer are dependent on settings for multicore packet processing.
-It has been better to use as many CPU cores as possible for packet processing.
-The throughput levels are also very dependent on the back end mode of the flannel overlay network.
-The host-gw mode where no tunneling is used resulted in the best performance level.
-It is clear that the case that utilizes all of the CPU cores better performs than the case with only four CPU cores utilized.
-The performance levels of ipvs(nat), iptables DNAT and nginx have also been compared.
-The proposed ipvs(nat) load balancer in the container had the same performance level as load balancing function of iptables DNAT.
-Furthermore in the case of L3DSR setup, the performance level of ipvs(tun) load balancer has about 1.5 times larger that that of ipvs(nat) and iptables DNAT.
-It is also shown that the proposed load balancer can be run in GCP and AWS.
-The behavior of the proposed load balancer in those cloud environments is the same as that in the on-premise data center.
-The author conclude that the proposed load balancer is portable and performs at the same level as the existing load balancers.
+The author implemented a containerized software load balancer that is run by Kubernetes as a part of container cluster, using Linux kernel's IPVS.
+In order to discuss the feasibility of the proposed load balancer, performance measurements are conducted in 1 Gbps network environment.
+It was shown that the proposed load balancers are runnable in an on-premise data center, GCP and AWS.
+Therefore the proposed load balancers can be said to be portable.
+The throughput levels of a load balancer are dependent on settings for multi-core packet processing.
+It was shown that better to use as many CPU cores as possible for packet processing.
+The throughput levels are also very dependent on the overlay network backend mode.
+The host-gw mode where no tunneling is used resulted in the best performance level, and the vxlan mode resulted in the second best.
+In the experiment in 1 Gbps network environment, the ipvs-nat load balancer in the container had the same performance level as load balancing function of iptables DNAT on the node.
+Furthermore, the performance level of ipvs-tun load balancer in a container with the L3DSR setup was about 1.5 times larger than that of iptables DNAT.
+Therefore in 1 Gbps network environment, the proposed load balancer is portable while it has the 1.5 times better performance level or the same performance level depending on the mode of operation.
 
-
-The ECMP technique is expected to make the load balancers redundant and scalable since all the load balancer containers act as active.
+Also implemented is the ECMP setups where multiple of the load balancer containers are deployed, each advertising the route to the service VIP.
+The ECMP technique makes the load balancers redundant and scalable since all the load balancer containers act as active.
 The whole system is resilient to a single failure of load balancer container.
-Also since multiple of load balancers can be utilized simultaneously, it is expected that the throughput of the total system is increased significantly.
-In order to evaluate these characteristics of the ECMP technique,
-the author examined if the ECMP routing table is updated correctly when multiple of the load balancer {\em pods} are started.
-After that, in order to explore the scalability, the author also measured the throughput of the cluster of load balancers.
-Finally, the author examined how quick those ECMP routing table updates are.
+Also by utilizing multiple of load balancers simultaneously, the throughput of the total system is increased significantly.
+These characteristics are evaluated by checking the routing table of the upstream router and by throughput measurement.
+%
 The author verified that ECMP routing table was properly created in the experimental system.
 The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
-The scalability of the load balancer was also examined and it has been found that maximum performance levels scaled linearly as the number of the load balancer pods was increased to four.
+The maximum performance levels of the cluster of load balancers scaled linearly as the number of the load balancer pods was increased up to four of them.
 The maximum throughput level obtained through the experiment was 780k [req/sec], which is limited due to the maximum CPU performance of the benchmark client rather than the performance of the load balancer cluster.
 
-%
+The author also extended the throughput measurement into 10 Gbps network environment.
+It was revealed that ipvs-nat and ipvs-tun load balancers in containers had lower performance levels compared with the iptables DNAT.
+This has been suspected to be due to the overhead of the container network, i.e., veth+bridge.
+By setting up the load balancing table in node net namespaces, the performance levels of ipvs-nat and ipvs-tun became closer to that of the iptables DNAT.
+Although the overheads of the container network were invisible in 1 Gbps network environment, they were no longer invisible in 10 Gbps network environment.
+The author is currently implementing and evaluating a novel software load balancer using XDP technology to provide a better alternative to ipvs as a portable load balancer.
 
-The limitations of this work that authors aware of include the followings: 
-2) Experiments are conducted only in a 1Gbps network environment.
-The experimental results indicate the performance of IPVS may be limited by the network bandwidth, 1Gbps, in our experiments. 
-Thus, experiments with the faster network setting, e.g. 10Gigabit ethernet, are needed to investigate the feasibility of the proposed load balancer.
+The outcome of this study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
+Moreover, the result of this study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
+In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
+
 

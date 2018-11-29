@@ -1,9 +1,9 @@
 This chapter presents implementation of the proof of the concept system for the proposed load balancer architecture in detail.
-First overall architecure is explained in Section~\ref{poc_arch}.
-Then ipvs containerization is explained in detail in Section~\ref{ipvs_cont}.
-Finally implementation of BGP software container is explained in Section~\ref{bgp_cont}.
+First overall architecure is explained in Section~\ref{sec:poc}.
+Then ipvs containerization is explained in detail in Section~\ref{sec:ipvs}.
+Finally implementation of BGP software container is explained in Section~\ref{sec:bgp}.
 
-\section{Proof of concept system architecture}
+\section{Proof of concept system architecture}\label{sec:poc}
 
 \begin{figure}[tb]
 \begin{center}
@@ -21,7 +21,7 @@ Fig.~\ref{fig:poc} shows the schematic diagram of proof of concept container clu
 All the nodes and route reflector are configured using Debian 9.5 with self compiled linux-4.16.12 kernel.  
 The upstream router also used conventional linux box using the same OS as the nodes and route reflector.
 For the Linux kernel to support hash based ECMP routing table we needed to use kernel version 4.12 or later.
-We also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ip-sysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
+We also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
 In the actual production environment, proprietary hardware with the highest throughput is often deployed, but we could still test some of the required advanced functions by using a Linux box.
 
 Each load balancer pod consists of an exabgp container and an ipvs container.
@@ -39,7 +39,7 @@ The route reflector also uses a Linux box with gobgp and overlay network setup.
 The requirements for the BGP agent on the route reflector are dynamic-neighbours and add-paths features.
 The configurations for the route reflector is summarised in \ref{appendix:route_reflector_config}.
 
-\section{Ipvs container}
+\section{Ipvs container}\label{sec:ipvs}
 
 \begin{figure}
 \includegraphics[width=0.8\columnwidth]{Figs/ipvs-ingress-schem}
@@ -130,7 +130,7 @@ using the masquerade mode(Masq) and
 the least connection(lc)\cite{Zhang2000} balancing algorithm.
 
 
-\section{BGP software container}
+\section{BGP software container}\label{sec:bgp}
 
 \begin{figure}[tb]
 
@@ -155,7 +155,7 @@ the least connection(lc)\cite{Zhang2000} balancing algorithm.
       \hline
     \end{tabular}
     \caption{}
-    \label{tab:single}
+    \label{fig:exabgp_setting}
   \end{subtable}
 
   \caption{
@@ -177,8 +177,10 @@ A routing rule to accept the packets toward those IPs as local is also required 
 A configuration of exabgp is shown in \ref{appendix:exabgp_config}.
 
 \section{ingress controller}
+[Filled in later]
 
 \section{choice bgp software}
+[Filled in later]
 
 \section{Summary}
-
+[Filled in later]

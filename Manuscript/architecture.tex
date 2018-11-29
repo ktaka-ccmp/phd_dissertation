@@ -115,8 +115,8 @@ using this framework.
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container.
 We propose redundant architecture using ECMP for load balancer containers usable especially in on-premise data centers.
-We first explain overlay network briefly in \ref{Overlay network} as background, then present the proposed architecture with ECMP redundancy in \ref{Redundancy with ECMP}. 
-We also present an alternative architecture using VRRP as a comparison in \ref{Redundancy with VRRP}, which we think is not as good as the architecture using ECMP. 
+We first explain overlay network briefly in \ref{sec:overlay_network} as background, then present the proposed architecture with ECMP redundancy in \ref{sec:ecmp}. 
+We also present an alternative architecture using VRRP as a comparison in \ref{sec:vrrp}, which we think is not as good as the architecture using ECMP. 
 
 \subsubsection{Overlay Network}\label{sec:overlay_network}
 
@@ -152,7 +152,7 @@ There many overlay network implementations.
 The author investigated two of the popular ones to see how it works.
 
 
-\subsubsection{ECMP}\label{Subsec:Redundancy with ECMP}
+\subsubsection{ECMP}\label{sec:ecmp}
 
 \begin{figure}[tb]
   \centering
@@ -196,7 +196,7 @@ b) We can use a BGP agent that supports dynamic neighbor (or dynamic peer), wher
 The upstream router does not need to accept BGP sessions from containers with random IP addresses, but only from the router reflector with well known fixed IP address. This may be preferable in terms of security especially when a different organization administers the upstream router.
 Although not shown in the Fig.~\ref{fig:ecmp}, we could also place another route reflector for redundancy purpose.
 
-\subsubsection{VRRP}\label{Subsec:Redundancy with VRRP}
+\subsubsection{VRRP}\label{sec:vrrp}
 
 \begin{figure}[tb]
 \centering
@@ -237,4 +237,5 @@ Therefore we believe the ECMP redundancy is better than VRRP in our use cases.
 %% In such cases, a Load balancer should update the routing table of cloud infrastructure.
 
 \section{Summary}
+[Filled in later]
 In this chapter the followings have been discussed....

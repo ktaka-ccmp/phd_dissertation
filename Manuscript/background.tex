@@ -1,11 +1,12 @@
+\section{Backgorund information}
 
 This chaper provides background information that are important in this research.
 First two of the most popular overlay networks used in Kubernetes are explaind in detail.
 Then the author explain how to utilize multicore CPUs for packet proccessing in Linux.
 
-\section{Overlay Network}
+\subsection{Overlay Network}
 
-\subsection{Flannel}
+\subsubsection{Flannel}
 
 We used flannel to build the Kubernetes cluster used in our experiment.
 Flannel has three types of backend, {\it i.e.}, operating modes, named host-gw, vxlan, and udp\cite{CoreOSFlannelBackend}.
@@ -45,7 +46,7 @@ In the case of the udp mode, only 28 bytes of header are used for encapsulation,
 
 Performance of the load balancers can be influenced by the overhead of encapsulation. 
 Thus, the host-gw mode, where there is no overhead due to encapsulation, 
-results in the best performance levels as shown in Section~\ref{Result and Discussion}.
+results in the best performance levels as is shown in Chapter~\ref{chapter:portablelb}.
 However, the host-gw mode has a significant drawback that prohibit it to work correctly in cloud platforms. 
 Since the host-gw mode simply sends out a packet without encapsulation, if there is a cloud gateway between nodes, 
 the gateway cannot identify the proper destination, thus drop the packet.
@@ -76,22 +77,23 @@ they prohibit the use of the flannel host-gw mode in those cloud providers.
 
 In our experiment, we compared the performance of load balancers when different flannel backend modes were used. 
 
-\paragraph{\bf host-gw}
-\paragraph{\bf vxlan}
-\paragraph{\bf udp}
+%% \paragraph{\bf host-gw}
+%% \paragraph{\bf vxlan}
+%% \paragraph{\bf udp}
 
-\subsection{Calico}
-\paragraph{\bf no-tunnel}
-\paragraph{\bf ipip}
+\subsubsection{Calico}
+[Filled in later]
+%% \paragraph{\bf no-tunnel}
+%% \paragraph{\bf ipip}
 
-\section{Multicore Packet Proccessing}
+\subsection{Multicore Packet Proccessing}
 
 Recently, the performance of CPUs are improved significantly due to the development of multi-core CPUs.
 One of the top of the line server processors from Intel now includes up to 28 cores in a single CPU.
 In order to enjoy the benefits of multi-core CPUs in communication performance, 
 it is necessary to distribute the handling of interrupts from the NIC and the IP protocol processing to the available physical cores.
 
-\subsection{rss}
+\subsubsection{rss}
 
 Receive Side Scaling (RSS)\cite{TomHerbert} is a technology 
 to distribute handling of the interrupt from NIC queues to multiple CPU cores.
@@ -169,7 +171,7 @@ echo 1 > /proc/irq/85/smp_affinity
 \end{center}
 
 %In this case, interrupt from any of rx-queue is routed to CPU0.
-\subsection{rps}
+\subsubsection{rps}
 
 The RPS distributes IP protocol processing by placing the packet
 on the desired CPU's backlog queue and wakes up the CPU using inter-processor interrupts.
@@ -216,21 +218,26 @@ much smaller than the number of CPU cores.
 That was the case of our experiment, where we had a NIC with only four rx-queues, 
 while there was a CPU with eight physical cores.
 
-\subsection{rps}
-\subsection{Others}
-\paragraph{rfs}
-\paragraph{xps}
-\paragraph{xfs}
+%% \subsubsection{rps}
+%% \subsubsection{Others}
+%% \paragraph{rfs}
+%% \paragraph{xps}
+%% \paragraph{xfs}
 
-\section{Other parameters}
-\subsection{tcp congestion mode}
+%% \subsection{Other parameters}
+%% [Filled in later]
+%% \subsection{Cloud Load Balancers}
+%% [Filled in later]
+%% \subsubsection{Maglev}
+%% [Filled in later]
+%% \subsubsection{Ananta}
+%% [Filled in later]
+%% \subsubsection{GCP Load Balancer}
+%% [Filled in later]
+%% GCP experimental data.
 
-\section{Cloud Load Balancers}
-\subsection{Maglev}
-\subsection{Ananta}
-\subsection{GCP Load Balancer}
-GCP experimental data.
-
-\section{ipvs}
+%% \subsection{ipvs}
+%% [Filled in later]
 
 \section{Summary}
+[Filled in later]
