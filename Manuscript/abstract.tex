@@ -23,11 +23,11 @@ In order to discuss the feasibility of the proposed load balancer, performance m
 It was shown that the proposed load balancers are runnable in an on-premise data center, GCP and AWS.
 It can be said that the proposed load balancers are portable.
 The throughput levels of a load balancer are dependent on settings for multi-core packet processing.
-It was shown that better to use as many CPU cores as possible for packet processing.
-The throughput levels are also very dependent on the overlay network backend mode and the container network, i.e., veth+bridge.
+It was shown to be better to use as many CPU cores as possible for packet processing.
+The throughput levels are also very dependent on the overlay network backend mode and overhead of the container network, i.e., veth+bridge.
 The host-gw mode where no tunneling is used resulted in the best performance level, and the vxlan mode resulted in the second best.
-Although the overheads of the container network are negligible in 1 Gbps network environment, they are not negligible in 10 Gbps network environment.
-In the experiment in 1 Gbps network environment, the ipvs-nat load balancer in the container had the same performance level as load balancing function of iptables DNAT on the node.
+Although the overheads of the container network are invisible in 1 Gbps network environment, they are visible in 10 Gbps network environment.
+In the experiment in 1 Gbps network environment, the ipvs-nat load balancer in the container had the same performance level as load balancing function of iptables DNAT in the node net namespace.
 Furthermore, the performance level of ipvs-tun load balancer in a container with the L3DSR setup was about 1.5 times larger than that of iptables DNAT.
 Therefore in 1 Gbps network environment, the proposed load balancer is portable while it has the 1.5 times better performance level or the same performance level depending on the mode of operation.
 

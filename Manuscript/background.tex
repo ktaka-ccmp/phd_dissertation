@@ -40,7 +40,7 @@ In the case of the udp mode, only 28 bytes of header are used for encapsulation,
 \begin{figure}
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/flannel-packet-diagram}
-  \caption{frame diagram}
+  \caption{Frame diagram}
   \label{fig:flannel-packet-diagram}
 \end{figure}
 
@@ -218,11 +218,17 @@ much smaller than the number of CPU cores.
 That was the case of our experiment, where we had a NIC with only four rx-queues, 
 while there was a CPU with eight physical cores.
 
+\mytodo[inline]{Write about rps,rfs,xfs}
+
 %% \subsubsection{rps}
 %% \subsubsection{Others}
 %% \paragraph{rfs}
 %% \paragraph{xps}
 %% \paragraph{xfs}
+
+\mytodo[inline]{Write about Maglev, Ananta, GCP load balancer}
+\mytodo[inline]{Write about ipvs}
+
 
 %% \subsection{Other parameters}
 %% [Filled in later]
@@ -240,4 +246,5 @@ while there was a CPU with eight physical cores.
 %% [Filled in later]
 
 \section{Summary}
+\mytodo[inline]{Write summary for background}
 [Filled in later]

@@ -106,6 +106,8 @@ We can see that maximum throughputs can be improved in the case of load balancer
 \FloatBarrier
 \section{XDP load balancer}
 [Filled in later]
+\mytodo[inline]{Write about XDP}
+
 
 \section{Summary}
 
@@ -118,9 +120,9 @@ However, the throughputs of ipvs-nat and ipvs-tun are smaller than that of iptab
 Then the author improved the performance levels by setting up ipvs-nat and ipvs-tun load balancers in the node net namespace to remove overhead of the container network.
 The throughput of the ipvs-tun became almost identical to that of iptables DNAT, and the throughput of the ipvs-nat also improved to the level close to that of the iptables DNAT.
 
-The authot also presented the novel software load balancer using eXpress Data Plane(XDP) technology, as an alternative to ipvs software load balancers.
-And brah brah brah.....
+%% The authot also presented the novel software load balancer using eXpress Data Plane(XDP) technology, as an alternative to ipvs software load balancers.
 [Filled in later]
+\mytodo[inline]{Write summary about XDP}
 
 
 
