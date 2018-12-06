@@ -166,7 +166,9 @@ The author expects that replacing the benchmark client with more powerful machin
 
 \begin{figure}[t]
   \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_delay_histgram}
-  \caption{Caption 2}
+  \caption{A histogram of the ECMP update delay.}
+This shows the delays until the number of running ipvs pods is reflected into the routing table on the benchmark client,
+when the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
   \label{fig:ecmp_delay_histgram}
 \end{figure}
 
@@ -178,7 +180,8 @@ We can say that ECMP routing update in our proposed architecture is quick enough
 
 \begin{figure}[t]
   \includegraphics[width=0.98\columnwidth,left]{Figs/ecmp_response}
-  \caption{Caption 2}
+  \caption{Throughput responsiveness.}
+This shows the throughput responsiveness when the number of the load balancers was changed randomly in every 60 seconds. 
   \label{fig:ecmp_response}
 \end{figure}
 
