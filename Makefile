@@ -7,13 +7,15 @@ all: draft.pdf main.pdf
 
 main.pdf: main.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
 	pdflatex main.tex
-	bibtex main
+#	bibtex main
+	biber main
 	pdflatex main.tex
 	pdflatex main.tex
 
 draft.pdf: draft.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
 	pdflatex draft.tex
-	bibtex draft
+#	bibtex draft
+	biber draft
 	pdflatex draft.tex
 	pdflatex draft.tex
 clean:

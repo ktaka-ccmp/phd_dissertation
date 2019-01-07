@@ -63,6 +63,9 @@
 
 \usepackage[table,xcdraw]{xcolor}
 
+\usepackage{biblatex}
+\addbibresource{Bib/reference.bib}
+
 %\usepackage{pmboxdraw}
 %------------------------------------
 
