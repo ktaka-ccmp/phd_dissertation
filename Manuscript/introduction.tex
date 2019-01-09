@@ -76,9 +76,9 @@ Those software load balancers have APIs through which an outside program can set
 Once cloud load balancers distribute incoming traffic to every server that hosts containers,
 the traffic is then distributed again to destination containers using the iptables destination network address translation(DNAT)\cite{MartinA.Brown2017,Marmol2015} rules in a round-robin manner.
 
-In the case of bare metal load balancers in on-premise data centers, it is very unlikely that they have APIs through which a container management system can set up and control the behavior of the load balancer.
-Moreover, even if some of the load balancers start to offer such APIs, it is very likely that most of the load balancers are left unsupported by Kubernetes  because there are a variety of proprietary hardware load balancers.
-In the case of on-premise data centers, the user needs to manually configure the static route for inbound traffic in an ad-hoc manner.
+In the case of on-premise data centers, there are variety of proprietary hardware load balancers.
+It is very likely that most of the load balancers are left unsupported by Kubernetes, even if some of the load balancers have APIs through which a container management system can set up and control the behavior.
+In these  cases, the user needs to manually configure the static route for inbound traffic in an ad-hoc manner.
 Since the Kubernetes fails to provide a uniform environment from a container cluster viewpoint, migrating container clusters among the different environments will always require a daunting task.
 One of the aims of this study is to seek a generic way to route the traffic into container clusters by providing a load balancer that works well with the container management systems, and thereby to facilitate web service migrations.
 
@@ -87,23 +87,15 @@ One of the aims of this study is to seek a generic way to route the traffic into
 In order to achieve these aims, the author proposes a portable and scalable software load balancer that can be used in any environment including cloud providers and in on-premise data centers.
 By using such a load balancer, users do not need to manually adjust their services to the infrastructures.
 As a proof of concept the author implements the proposed software load balancer that works well with with Kubernetes using following technologies;
-1) To make the load balancer usable in any environment, we containerize ipvs\cite{Zhang2000} using Linux container technology\cite{menage2007adding}.
-2) To make the load balancer redundant and scalable, we make it capable of updating the routing table of upstream router with Equal Cost Multi-Path(ECMP) routes\cite{al2008scalable} using a standard protocol, Border Gateway Protocol(BGP).
-In order to make the load balancer's performance level to meet the need for 10Gbps network speed, a software load balancer that better performs than ipvs is required.
-The author also extends the research into implementing the novel load balancer using eXpress Data Plane(XDP) technology\cite{bertin2017xdp} to enhance the performance level.
+1) To make the load balancer usable in any environment, Internet Protocol Virtual Server (ipvs)\cite{Zhang2000} is containerized using Docker\cite{merkel2014docker}. 
+2) To make the load balancer redundant and scalable, the author makes it capable of updating the routing table of upstream router with Equal Cost Multi-Path(ECMP) routes\cite{al2008scalable} using a standard protocol, Border Gateway Protocol(BGP).
+3) The author also extends the research into implementing the novel load balancer using eXpress Data Plane(XDP) technology\cite{bertin2017xdp} to enhance the performance level to meet the need for 10Gbps network speed.
+
+The ipvs is a software load balancer in Linux kernel.
 
 The author implements containerized Linux kernel's Internet Protocol Virtual Server (ipvs)\cite{Zhang2000} Layer 4 load balancer using a Kubernetes ingress\cite{K8sIngress2017} framework, as a proof of concept.
 Then extend it to support Equal Cost Multi-Path(ECMP)\cite{thaler2000multipath} redundancy by running a Border Gateway Protocol(BGP) agent container together with ipvs container.
 Functionality and performances are evaluated for each of them.
-
-Although major cloud providers do not currently provide BGP peering service for their users, the authors expect our proposed load balancer will be able to run, once this approach is proven to be beneficial and they start BGP peering services.
-Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible, at least in on-premise data centers.
-For the cloud environment without BGP peering service, single instance of ipvs load balancer can still be run with redundancy.
-The liveness of the load balancer is constantly checked by one of the Kubernetes agents, and if anything that stop the load balancer happens, Kubernetes will restart the load balancer container.
-The routing table of the cloud provider can be updated by newly started ipvs container immediately.
-
-The authors limit the focus of this study on providing a portable load balancer for Kubernetes to prove the concept of proposed architecture.
-However, the same concept can be easily applied to other container management systems, which should be discussed in future work.
 
 The contributions of this paper are as follows:
 Although there have been studies regarding redundant software load balancers especially from the major cloud providers\cite{eisenbud2016maglev,patel2013ananta}, their load balancers are only usable within their respective cloud infrastructures.
@@ -114,6 +106,16 @@ Moreover, since proposed load balancer architecture uses nothing but existing Op
 The outcome of our study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
 Moreover, the result of our study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
 In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
+
+Although major cloud providers do not currently provide BGP peering service for their users, the authors expect our proposed load balancer will be able to run, once this approach is proven to be beneficial and they start BGP peering services.
+Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible, at least in on-premise data centers.
+For the cloud environment without BGP peering service, single instance of ipvs load balancer can still be run with redundancy.
+The liveness of the load balancer is constantly checked by one of the Kubernetes agents, and if anything that stop the load balancer happens, Kubernetes will restart the load balancer container.
+The routing table of the cloud provider can be updated by newly started ipvs container immediately.
+
+The authors limit the focus of this study on providing a portable load balancer for Kubernetes to prove the concept of proposed architecture.
+However, the same concept can be easily applied to other container management systems, which should be discussed in future work.
+
 
 \section{Outline}
 
