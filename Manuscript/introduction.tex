@@ -10,7 +10,7 @@ A client program on PCs or smartphone sends out requests to servers and the serv
 Servers for web applications are usually computers located in a data center.
 %Servers also refer to the server programs that are runing on these computers. 
 Multiple servers cooperate to fulfill the need of the clients.
-A group of these servers is often called a web cluster or a web application cluster.
+A group of these servers is often called a web application cluster or a web cluster.
 Figure~\ref{fig:web_cluster} shows schematic diagram of an example of a web cluster.
 
 \begin{figure}[h]
@@ -23,17 +23,18 @@ An example of web cluster.
 \label{fig:web_cluster}
 \end{figure}
 
-In this example, there are several web servers and Database(DB) servers that work together to respond to requests from clients.
-There are also a set of load balancers that distribute requests from clients to multiple web servers. 
-Web servers may store some important data into DB servers and retrieve those data from DB servers as needed.
+In this example, there are two load balancers, four web servers and two Database(DB) servers that work together to respond to requests from clients.
+The load balancers distribute requests from clients to multiple web servers. 
+Then the web servers retrieve some data from the database servers to form the response, sometimes they may store important data into the database servers.
 Web application providers often purchase these servers and locate them in server housing facilities called data centers.
 
 The emergence of Cloud Computing made it easier for web application providers to deploy their services than before.
-Cloud providers utilize virtual machines(VM) where multiple VMs share a single physical server.
-Cloud providers lend virtual machines in pay-as-you-go bases and charge their customers with finer granularities than they would lend whole physical servers.
-From the point of view of cloud users (i.e. web application providers), this lowers initial cost spent on infrastructures for their services.
-It also shortens the time to start a service from the inception of the project, hence gives the users agility.
-And at the time when the computing resources for a service is excessive, users can easily decrease the VMs and reduce the cost.
+Cloud providers offer to lend virtual machines(VM), which share a single physical server.
+Web application providers needed to buy or rent physical servers and install them in a data center before they start their services.
+But now, thanks to Cloud Computing, they can rent VMs in pay-as-you-go bases with the matter of several clicks in their office, and they are charged with finer granularities.
+For cloud users (i.e., web application providers), Cloud Computing lowers initial cost spent on infrastructures for their services and also gives them agility, i.e., shortens the time to prepare servers in a data center for their service.
+And at the time when the computing resources for a service is excessive, users can quickly decrease the VMs and reduce the cost.
+This was impossible when they bought servers and installed them in the datacenter.
 
 More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention because they are lightweight, portable, and reproducible, and hence cloud providers are starting to offer services utilizing container technologies.
 Linux containers are generally more lightweight than virtual machines(VMs), because the containers share the kernel with the host operating system (OS), while they maintain separate execution environments.
