@@ -25,6 +25,11 @@
 \item container management system schedule containers
 \end{itemize}
 
+Another aspect of the container management system is interesting. 
+It can be viewed as the Operating System for a cluster of servers, where it not only provides scheduling of proccesses but also route the traffic to the right processes.
+In this way, a cluster of computers can be used to provide web services with the ease of using a single computer.
+
+
 \subsection{Desireble infrastructure using container}
 
 \begin{itemize}
@@ -43,16 +48,16 @@ Software load balancer that work well with container env.
 
 \subsection{Old}
 
-
 Today, a great number of people in the world can not spend a day without using smartphones or personal computers(PCs) to retrieve information from the Internet for work or for daily life.
 For example, people use these devices to look up web pages, emails, social media and sometimes to play games.
 These services are often called web applications, where information is delivered using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
 Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, schools, etc.
+(The author calls them web application providers hereafter.)
 A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
 
 Servers for web applications are usually computers located in a data center.
 %Servers also refer to the server programs that are runing on these computers. 
-Multiple servers cooperate to fulfill the need of the clients.
+In the data center multiple servers cooperate to fulfill the need of the clients.
 A group of these servers is often called a web application cluster or a web cluster.
 Figure~\ref{fig:web_cluster} shows schematic diagram of an example of a web cluster.
 
@@ -68,11 +73,27 @@ An example of web cluster.
 
 In this example, there are two load balancers, four web servers and two Database(DB) servers that work together to respond to requests from clients.
 The load balancers distribute requests from clients to multiple web servers. 
-Then the web servers retrieve some data from the database servers to form the response, sometimes they may store important data into the database servers.
-Web application providers often purchase these servers and locate them in server housing facilities called data centers.
+Then the web servers form the response using the data retrieved from the database servers, and send it back to the client.
+Sometimes the web servers may store and update important data into the database servers.
 
-The emergence of Cloud Computing made it easier for web application providers to deploy their services than before.
-Cloud providers offer to lend virtual machines(VM), which share a single physical server.
+Web application providers often purchase these servers and locate them in server housing facilities called data centers.
+In this type of infrastructure, the web application providers typically need to sign a contract with data center company for server housing spaces and buy servers and install them in their rented spaces in a data center by themselves.
+Preparing data centers, installing the servers and configuring software stacks for their services often require considerable time and money.
+If they want to expand their services to different countries or if they're going to prepare for natural disasters, they most likely need about the same amount of money and hassles required to build their original infrastructures.
+Since the servers are located in the users own facilities or rented facilities, and the users are responsible for managing servers, this type of infrastructure is on-premise infrastructure.
+
+The emergence of Cloud Computing made starting a new service easier for web application providers than before.
+Cloud computing utilizes virtual machine(VM) technology, e.g. KVM, Xen and VMware, and VMs are rented by users(e.g. web application providers) pay-per-use bases.
+Figure~\ref{fig:vm} shows an example architecture of VM technology.
+VMs share a single physical server, and each VM behave almost like a single physical server.
+
+Cloud providers prepare physical facilities, servers and software stacks for renting VMs to users beforehand.
+So when users want to rent a VM, they only need to click a few buttons on web consols provided by cloud providers.
+As a result, an up and running VMs typically with a Linux kernel running on top of it is available to users.
+
+
+
+
 Web application providers needed to buy or rent physical servers and install them in a data center before they start their services.
 But now, thanks to Cloud Computing, they can rent VMs in pay-as-you-go bases with the matter of several clicks in their office, and they are charged with finer granularities.
 For cloud users (i.e., web application providers), Cloud Computing lowers initial cost spent on infrastructures for their services and also gives them agility, i.e., shortens the time to prepare servers in a data center for their service.
