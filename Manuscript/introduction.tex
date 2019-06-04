@@ -79,35 +79,54 @@ Sometimes the web servers may store and update important data into the database 
 Web application providers often purchase these servers and locate them in server housing facilities called data centers.
 In this type of infrastructure, the web application providers typically need to sign a contract with data center company for server housing spaces and buy servers and install them in their rented spaces in a data center by themselves.
 Preparing data centers, installing the servers and configuring software stacks for their services often require considerable time and money.
-If they want to expand their services to different countries or if they're going to prepare for natural disasters, they most likely need about the same amount of money and hassles required to build their original infrastructures.
-Since the servers are located in the users own facilities or rented facilities, and the users are responsible for managing servers, this type of infrastructure is on-premise infrastructure.
+If they want to expand their services to different countries or if they want to prepare for natural disasters by preparing an additional web cluster in a different data center, they most likely need about the same amount of money and hassles required to build their original infrastructures.
+Since the servers are located in the users own facilities or rented facilities, and the users are responsible for managing servers, this type of infrastructure is called on-premise infrastructure.
 
 The emergence of Cloud Computing made starting a new service easier for web application providers than before.
-Cloud computing utilizes virtual machine(VM) technology, e.g. KVM, Xen and VMware, and VMs are rented by users(e.g. web application providers) pay-per-use bases.
-Figure~\ref{fig:vm} shows an example architecture of VM technology.
-VMs share a single physical server, and each VM behave almost like a single physical server.
+Cloud computing utilizes virtual machine(VM) technology, e.g. KVM, Xen and VMware, and VMs are rented by users(e.g. web application providers) pay-per-use basis.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{Figs/physical_vm_container.png}
+\end{center}
+\caption{
+Different n multi tenant example architecture of virtual machine technology. Virtual machines share a single physical server.
+}
+\label{fig:physical_vm_container}
+\end{figure}
 
-Cloud providers prepare physical facilities, servers and software stacks for renting VMs to users beforehand.
-So when users want to rent a VM, they only need to click a few buttons on web consols provided by cloud providers.
-As a result, an up and running VMs typically with a Linux kernel running on top of it is available to users.
-
-
-
-
-Web application providers needed to buy or rent physical servers and install them in a data center before they start their services.
-But now, thanks to Cloud Computing, they can rent VMs in pay-as-you-go bases with the matter of several clicks in their office, and they are charged with finer granularities.
-For cloud users (i.e., web application providers), Cloud Computing lowers initial cost spent on infrastructures for their services and also gives them agility, i.e., shortens the time to prepare servers in a data center for their service.
-And at the time when the computing resources for a service is excessive, users can quickly decrease the VMs and reduce the cost.
+Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology. 
+VMs share a single physical server.
+A full OS including Linux kernel is running in every VM, and each VM behaves almost as same as a single physical server.
+Since VMs are fractions of a single physical server, server resources are utilized with finer granularities.
+Users can start their services with a cluster of VMs, resulting in lower cost.
+Cloud providers also prepare physical servers and software stacks for VMs before renting it to users.
+As a result, users need only to click a few buttons on web consols, and then, up-and-running VMs are available for them.
+This will bring agility to users when they launch their services.
+And since computing resources are offered as a pay-par-uses basis with per-second billing, when the computing resources for a service is more than enough, users can quickly reduce cost by stopping excessive VMs.
 This was impossible when they bought servers and installed them in the datacenter.
+In short cloud computing brought us agility, flexibility, and cost-effectiveness.
 
-More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention because they are lightweight, portable, and reproducible, and hence cloud providers are starting to offer services utilizing container technologies.
-Linux containers are generally more lightweight than virtual machines(VMs), because the containers share the kernel with the host operating system (OS), while they maintain separate execution environments.
-Linux containers can be run on top of widely used Linux OS; therefore they can be run in most of the cloud infrastructures and on-premise data centers.
-They are generally portable because the process execution environments are archived into tar files,
-so whenever one attempts to run a container, the exact same file systems are restored from the archives even when totally different data centers are used.
-This means that containers can provide reproducible and portable execution environments.
 
-For the same reasons, Linux containers are attractive for web applications as well, and it is expected that web applications consisting of a cluster of containers are capable of being migrated easily for a variety of purposes.
+More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention.
+Figure~\ref{fig:physical_vm_container} (c) shows an example architecture of container technology. 
+Container technology utilizes Linux kernel's namespace feature to separate processes.  
+Every process is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
+Linux kernel implements filesystem, PID, network, user, IPC, and hostname namespaces. 
+For example, each filesystem namespace has its own root filesystem, and each network namespace has its own network devices and IP addresses.
+Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
+Whilst VMs needed to run a full OS on top of a hypervisor, thus imposing extra overhead, a process in Linux containers is as light as a single process.
+%
+Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{}.
+These tools restore file system from image (archive) file, launch processes and assign appropriate namespaces.
+Due to the widespread usage of Linux systems, Linux containers run in most of the cloud infrastructures and on-premise data centers.
+Linux containers are reproducible because the process execution environments are archived into tar files.
+Whenever one attempts to run a container, the exact same file systems are restored from the archive even when totally different data centers or cloud providers are used.
+Since Linux containers are generally more lightweight than virtual machines(VMs), and they are portable and reproducible, 
+cloud providers are starting to offer services utilizing container technologies.
+
+For these reasons, Linux containers are attractive for web applications as well, and it is expected that web applications consisting of a cluster of containers can be run anywhere regardless of the difference in base infrastructures, i.e. cloud providers or data centers.
+
+migrated easily for a variety of purposes.
 For example disaster recovery, cost performance optimizations, meeting legal compliance and shortening the geographical distance to customers are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
 
 The purpose of this research is to enable web application providers to easily deploy their services across the world seamlessly, regardless of cloud providers or data centers they use, by better-utilizing container cluster technology. 
