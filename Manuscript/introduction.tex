@@ -32,38 +32,19 @@ The load balancers distribute requests from clients to multiple web servers.
 Then the web servers form the response using the data retrieved from the database servers, and send it back to the client.
 Sometimes the web servers may store and update important data into the database servers.
 
-\subsection{On-premise datacenter}
+\subsection{On-premise data center}
 
 Web application providers often purchase these servers and locate them in server housing facilities called data centers.
 In this type of infrastructure, the web application providers typically need to sign a contract with data center company for server housing racks, buy servers and install them in their rented racks by themselves.
 Since the servers are located in the users own facilities or rented facilities, and the users are responsible for managing those servers, this type of infrastructure is often called on-premise infrastructure so as to contrast Cloud Computing infrastructure.
-Preparing data centers, installing the servers and configuring software stacks for their services often require considerable amount of time and money.
-If they want to expand their services to different countries or if they want to prepare for natural disasters by preparing an additional web cluster in a different data center, they most likely need about the same amount of time, money and effort required to build their original infrastructures.
+Preparing data centers, installing the servers and configuring software stacks for their services often require considerable amount of time, money and effort.
+If web application providers want to expand their services to different countries or if they want to prepare for natural disasters by preparing an additional web cluster in a different data center, they most likely need about the same amount of time, money and effort required to build their original infrastructures.
 
 \subsection{Cloud computing}
 
 The emergence of Cloud Computing made many things easier for web application providers than before.
 Cloud computing utilizes a virtual machine(VM) technology, e.g. KVM, Xen, and VMware.
-Cloud computing providers offer VMs to web application providers(users) with pay-per-use billing.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{Figs/physical_vm_container.png}
-\end{center}
-\caption{
-The difference in physical server usage between (a) Bare Metal servers, (b) Virtual Machine and (c) Container technology.
-(a) Bare Metal servers is a word to describe conventional physical servers in contrast to Virtual Machines.
-On top of a Bare Metal server, an operating system and application programs are runnig.
-(b) Virtual Machine technology utilizes physical server hardware and a hypervisor.
-The hypervisor provides generic representations of server hardware, which are called virtual machines.
-A full operating system and applications are running on each of the virtual machines.
-(c) Container technology separates applications by containing them to their respective namespaces.
-Applications can not see each other's filesystems, networks, users and process IDs unless they belong to the same namespace.
-Since container technology merely relies on Linux kernel's namespace function and optionally cgroup, a containerized process does not have any additional overhead compared with a process running on a conventional physical server and operating system.
-Container technology can be also utilized on top of virtual machines.
-}
-\label{fig:physical_vm_container}
-\end{figure}
+Cloud computing service providers offer VMs to web application providers(users) with pay-per-use billing.
 
 Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology. 
 VMs share a single physical server.
@@ -71,38 +52,100 @@ A full OS including Linux kernel is running on top of the virtual machine repres
 Each VM behaves almost as same as a single physical server.
 Since VMs are fractions of a single physical server, server resources are utilized with finer granularities.
 Users can start their services with a cluster of VMs, which is smaller than a cluster of physical servers, and hence resulting in lower cost.
-Cloud providers prepare physical servers and software stacks for VMs before renting it to users.
+Cloud providers generally prepare physical servers and software stacks for VMs before renting it to users, and they also provide an easy to use web interfaces. 
 As a result, users need only to click a few buttons on web browsers, before up-and-running VMs are available for them.
 This easiness will bring agility to users when they launch their services.
 And since computing resources are offered with per-second pay-per-use billing, users can quickly reduce the cost by stopping excessive VMs, when the demand for computing power decreases.
-This was impossible when web application providers purchased physical servers and installed them in a conventional data center.
+This was impossible when web application providers purchased physical servers and installed them in a conventional on-premise data center.
 In short cloud computing brought the users agility, flexibility, and cost-effectiveness.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{Figs/physical_vm_container.png}
+\end{center}
+\caption{
+The difference in physical server usage between (a) Bare Metal servers, (b) Virtual Machine and (c) Container technology.
+}
+
+(a) Bare Metal servers is a word to describe conventional physical servers in contrast to Virtual Machines.
+On top of a Bare Metal server, an operating system and application programs are running.
+(b) Virtual Machine technology utilizes physical server hardware and a hypervisor.
+The hypervisor provides generic representations of server hardware, which are called virtual machines.
+A full operating system and applications are running on each of the virtual machines.
+(c) Container technology separates applications by containing them to their respective namespaces.
+Applications can not see each other's file systems, networks, users and process IDs unless they belong to the same namespace.
+Since container technology merely relies on Linux kernel's namespace function and optionally cgroup, a containerized process does not have any additional overhead compared with a process running on a conventional physical server and operating system.
+Container technology can be also utilized on top of virtual machines.
+
+\label{fig:physical_vm_container}
+\end{figure}
 
 \subsection{Container technology}
 
 More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention.
 Figure~\ref{fig:physical_vm_container} (c) shows an example architecture of container technology. 
 Container technology utilizes Linux kernel's namespace feature to separate process execution environments.  
-Every process is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
-Linux kernel implements filesystem, PID, network, user, IPC, and hostname namespaces. 
-For example, each filesystem namespace has its own root filesystem, and each network namespace has its own network devices and IP addresses.
-Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
-Whilst VMs needed to run a full OS on top of a hypervisor and hence imposing extra overhead, a process in Linux containers is as light as a single process because it merely belongs to its respective namespace.
-%
-Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{}.
-These tools restore file system from image (archive) file, setup network interfaces, launch processes, and assign appropriate namespaces.
 Due to the widespread usage of Linux systems, Linux containers can run in most of the cloud infrastructures and on-premise data centers.
-Linux containers are reproducible because the process execution environments are archived into tar files.
-Whenever one attempts to run a container, the exact same file systems are restored from the archive.
-Therefore a process in a container is expected to behave exact same manner, even when totally different data centers or cloud providers are used.
-This was not easy when there was no container technology, because there are many flavors of Linux distributions and hence there was a possibility that the program binary and libraries were not identical, whenever one attempted to run a process.
-A single update of a library might have broken the expected behavior.
-%
-Thanks to these benefits, i.e., Linux containers are generally more lightweight, portable and reproducible than virtual machines(VMs), cloud providers are starting to offer services utilizing container technologies.
+
+Every process is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
+Linux kernel implements filesystem namespace, PID namespace, network namespace, user namespace, IPC namespace, and hostname namespace. 
+For example, each filesystem namespace can have its own root filesystem, and each network namespace has its own network devices and IP addresses.
+Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
+Whilst VMs needed to run a full OS on top of a hypervisor and hence imposing extra overhead, a process in Linux containers is as light as a single process because it is merely a process that belongs to its own namespace.
+
+Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{}.
+These tools take care of assigning an appropriate namespace to a process and make it look like running in its own virtual server.
+For example, container tools restore a file system from an archive file every time a container is launched. 
+Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
+
+The fact that each container has its own file system that is restored from a single archive file means that a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
+Therefore a process in a container is expected to behave exactly the same manner, even if totally different data centers or cloud providers are used.
+This was not easy when there was no container technology.
+Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program or library version could have broken the expected behavior.
+
+A significant benefit of the Linux container technology is that it guarantees a process to behave always the same manner wherever the container is launched.
+
+
+
+
+
+
+\subsection{Container Management System}
+
+Thanks to benefits mentioned above, i.e., Linux containers are generally more lightweight, portable and reproducible than virtual machines(VMs), container technologies are very attractive for web applications. 
+However in order to easily deploy web applications on top of a cluster of physical servers, container cluster management system or container orchestration tools are very important.
+
+Orchestration tools do;
+scheduling of containers
+
+
+cloud providers are starting to offer services utilizing container technologies.
+These service include tools that enhance the easiness of deploying a container management system  
 
 For these reasons, Linux containers are attractive for web applications as well, and it is expected that web applications consisting of a cluster of containers can be run anywhere regardless of the difference in base infrastructures, i.e. cloud providers or data centers.
 
-\subsection{Container Management System}
+
+Ingress Routing Loadbalancing
+Internal Routing Loadbalancing
+Scheduling containers
+Application definition
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|r|r|r|}
+    \hline
+    & \multicolumn{1}{c|}{Kuberenets} & \multicolumn{1}{c|}{Docker Swarm} & \multicolumn{1}{c|}{Mesos Marathon} \\ \hline
+    Ingress loadbalancing & External & External & Static to Marathon LB  \\ \hline
+    Internal loadbalancing & proxy setup iptables DNAT  & L4 routing mesh(ipvs) & Marathon LB(haproxy)  \\ \hline
+    Container scheduling & Yes  & Yes & Yes  \\ \hline
+    Application definition & Yaml & Yes & Yes  \\ \hline
+  \end{tabular}
+  \caption{Performance levels in 1Gbps and in 10Gbps.}
+  \raggedright
+  Throughput results of the load balancers at 40 nginx pods from the data for the Figures~\ref{fig:ipvs_l3dsr_1g.png} and \ref{fig:ipvs_l3dsr_10g} are shown.
+%  \label{table:nat_tun_dnat_1g_10g}
+\end{table}
+
 
 
 Docaker Swarm, Kubernetes, Marathon
@@ -111,7 +154,7 @@ Container orchestrator.
 Container management system schedule containers
 
 Another aspect of the container management system is interesting. 
-It can be viewed as the Operating System for a cluster of servers, where it not only provides scheduling of proccesses but also route the traffic to the right processes.
+It can be viewed as the Operating System for a cluster of servers, where it not only provides scheduling of processes but also route the traffic to the right processes.
 In this way, a cluster of computers can be used to provide web services with the ease of using a single computer.
 
 
