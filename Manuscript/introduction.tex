@@ -84,45 +84,67 @@ Container technology can be also utilized on top of virtual machines.
 
 More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention.
 Figure~\ref{fig:physical_vm_container} (c) shows an example architecture of container technology. 
-Container technology utilizes Linux kernel's namespace feature to separate process execution environments.  
-Due to the widespread usage of Linux systems, Linux containers can run in most of the cloud infrastructures and on-premise data centers.
+Linux containers are the processes that have separate execution environments that are created using the Linux kernel's namespace feature.
+The namespace feature can isolate visibility of resources on a single Linux server.
 
-Every process is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
+The Linux container can run on any Linux server including physical servers and VM servers.
+Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers.
+
+Every process in a container is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
 Linux kernel implements filesystem namespace, PID namespace, network namespace, user namespace, IPC namespace, and hostname namespace. 
 For example, each filesystem namespace can have its own root filesystem, and each network namespace has its own network devices and IP addresses.
 Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
-Whilst VMs needed to run a full OS on top of a hypervisor and hence imposing extra overhead, a process in Linux containers is as light as a single process because it is merely a process that belongs to its own namespace.
+Whilst each VM needed to run a full OS on top of a hypervisor and hence imposing extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence imposing no extra overhead.
 
 Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{}.
 These tools take care of assigning an appropriate namespace to a process and make it look like running in its own virtual server.
 For example, container tools restore a file system from an archive file every time a container is launched. 
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
 
-The fact that each container has its own file system that is restored from a single archive file means that a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
-Therefore a process in a container is expected to behave exactly the same manner, even if totally different data centers or cloud providers are used.
+The fact that each container has its own file system that is restored from a single archive file brings a significant benefit, i.e. a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
+Therefore a process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
 This was not easy when there was no container technology.
-Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program or library version could have broken the expected behavior.
+Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could have broken the expected behavior.
 
-A significant benefit of the Linux container technology is that it guarantees a process to behave always the same manner wherever the container is launched.
+In addition to that, since containers on a single server can have separate libraries on their respective filesystems, libraries in any container can be updated without influencing other containers.
+In conventional technology, processes on a single server are dependent on common shared libraries, updates of the library sometimes have caused compatibility issues.
 
-
-
-
-
+Thanks to these benefits, i.e., Linux containers are generally more lightweight, portable and reproducible than virtual machines(VMs), container technologies are very attractive for web applications.
+And in order to facilitate deployment of a web application that consists of a cluster of containers, several container management systems have been developed.
 
 \subsection{Container Management System}
 
-Thanks to benefits mentioned above, i.e., Linux containers are generally more lightweight, portable and reproducible than virtual machines(VMs), container technologies are very attractive for web applications. 
-However in order to easily deploy web applications on top of a cluster of physical servers, container cluster management system or container orchestration tools are very important.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{Figs/container_management_system}
+\end{center}
+\caption{
+container management system
+}
 
-Orchestration tools do;
-scheduling of containers
+\label{fig:container_management_system}
+\end{figure}
 
 
-cloud providers are starting to offer services utilizing container technologies.
-These service include tools that enhance the easiness of deploying a container management system  
 
-For these reasons, Linux containers are attractive for web applications as well, and it is expected that web applications consisting of a cluster of containers can be run anywhere regardless of the difference in base infrastructures, i.e. cloud providers or data centers.
+A container management system is a tool to ease the management of multiple containers that are launched on a cluster of servers.
+It will controle the scheduling of containers and routing ther traffice to the cluster.
+
+Orchestration tool does the followings;
+
+\begin{itemize}
+\item scheduling of containers, launch and temination of containers and deciding on which server to launch them
+\item ip address management for containers to comunicate each other
+\item routing traffic to containers
+\end{itemize}
+
+
+Another aspect of the container management system is interesting. 
+It can be viewed as the Operating System for a cluster of servers, where it not only provides scheduling of processes but also route the traffic to the right processes.
+In this way, a cluster of computers can be used to provide web services with the ease of using a single computer.
+
+
+Each of the Container Management System varies in target applications, and thus has the strength and weaknesses.
 
 
 Ingress Routing Loadbalancing
@@ -143,19 +165,15 @@ Application definition
   \caption{Performance levels in 1Gbps and in 10Gbps.}
   \raggedright
   Throughput results of the load balancers at 40 nginx pods from the data for the Figures~\ref{fig:ipvs_l3dsr_1g.png} and \ref{fig:ipvs_l3dsr_10g} are shown.
-%  \label{table:nat_tun_dnat_1g_10g}
+  \label{table:aaaa}
 \end{table}
 
-
+\subsubsection{Kubernetes}
+\subsubsection{Docker swarm}
+\subsubsection{Mesos}
 
 Docaker Swarm, Kubernetes, Marathon
 Container orchestrator.
-
-Container management system schedule containers
-
-Another aspect of the container management system is interesting. 
-It can be viewed as the Operating System for a cluster of servers, where it not only provides scheduling of processes but also route the traffic to the right processes.
-In this way, a cluster of computers can be used to provide web services with the ease of using a single computer.
 
 
 
@@ -166,7 +184,7 @@ The purpose of this research is to enable web application providers to easily de
 Also, the author aims to realize the future where users can choose whatever infrastructure they like without sacrificing advanced features that are provided only by limited cloud providers.
 
 
-\subsection{Desireble infrastructure using container}
+\section{Global container infrastructure}
 
 \begin{itemize}
 \item Universal Container management system as a middle ware
@@ -182,9 +200,21 @@ Software load balancer that work well with container env.
 \item How is that scable?
 \end{itemize}
 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{Figs/global_container_infrastructure}
+\end{center}
+\caption{
+container management system
+}
+
+\label{fig:global_container_infrastructure}
+\end{figure}
 
 
-\section{Avoid lock-in problem}
+
+\section{Problems of existing container management system}
+%\section{Avoid lock-in problem}
 
 It is desirable if users can migrate their services to multiple of cloud providers or on-premise data centers seamlessly, which spread across the world.
 Container cluster management systems facilitate these usages by functioning as middlewares, which hide the differences among cloud providers and on-premise data centers.
@@ -221,7 +251,23 @@ In these cases, the user needs to manually configure the static route for inboun
 Since the Kubernetes fails to provide a uniform environment from a container cluster viewpoint, migrating container clusters among the different environments will always require daunting tasks.
 One of the aims of this study is to seek a generic way to route the traffic into container clusters automatically, by providing a software load balancer that works well with the container management systems, and thereby to facilitate web application migrations.
 
-\section{Contribution}
+
+\section{Focus of this study}
+
+\subsection{load balancer for container clusters}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{Figs/cluster_of_container_loadbalancer}
+\end{center}
+\caption{
+container management system
+}
+
+\label{fig:cluster_of_container_loadbalancer}
+\end{figure}
+
+\subsection{Contribution}
 
 In order to achieve these aims, the author proposes a portable and scalable software load balancer that can be used in any environment including cloud providers and in on-premise data centers.
 By using such a load balancer, users do not need to manually adjust their services to the base infrastructures.
