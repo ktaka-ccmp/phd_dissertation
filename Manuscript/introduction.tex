@@ -7,7 +7,7 @@
 Today, a great number of people in the world can not spend a day without using smartphones or personal computers(PCs) to retrieve information from the Internet for work or for daily life.
 For example, people use these devices to look up web pages, emails, social media and sometimes to play games.
 These services are often called web applications, where information is delivered using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
-Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, schools, etc.
+Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, etc.
 (The author calls them web application providers hereafter.)
 A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
 
@@ -28,16 +28,16 @@ An example of web cluster.
 \end{figure}
 
 In this example, there are two load balancers, four web servers and two Database(DB) servers that work together to respond to requests from clients.
-The load balancers distribute requests from clients to multiple web servers. 
-Then the web servers form the response using the data retrieved from the database servers, and send it back to the client.
-Sometimes the web servers may store and update important data into the database servers.
+The load balancers distribute requests from clients to multiple web servers.
+Then the web servers form responses using data retrieved from the database servers and send it back to the clients.
+Sometimes the web servers also store and update important data into the database servers.
 
 \subsection{On-premise data center}
 
 Web application providers often purchase these servers and locate them in server housing facilities called data centers.
-In this type of infrastructure, the web application providers typically need to sign a contract with data center company for server housing racks, buy servers and install them in their rented racks by themselves.
-Since the servers are located in the users own facilities or rented facilities, and the users are responsible for managing those servers, this type of infrastructure is often called on-premise infrastructure so as to contrast Cloud Computing infrastructure.
-Preparing data centers, installing the servers and configuring software stacks for their services often require considerable amount of time, money and effort.
+In this type of infrastructure, web application providers typically need to sign a contract with data center company for server housing racks, buy servers and install them in their rented racks by themselves.
+Since web application providers place servers in their own facilities or rented facilities, and they are responsible for managing the servers, this type of infrastructure is often called on-premise infrastructure in contrast to Cloud Computing infrastructure.
+Preparing data centers, installing the servers and configuring software stacks for web application services often require a considerable amount of time, money and effort.
 If web application providers want to expand their services to different countries or if they want to prepare for natural disasters by preparing an additional web cluster in a different data center, they most likely need about the same amount of time, money and effort required to build their original infrastructures.
 
 \subsection{Cloud computing}
@@ -51,11 +51,11 @@ VMs share a single physical server.
 A full OS including Linux kernel is running on top of the virtual machine represented by the hypervisor.
 Each VM behaves almost as same as a single physical server.
 Since VMs are fractions of a single physical server, server resources are utilized with finer granularities.
-Users can start their services with a cluster of VMs, which is smaller than a cluster of physical servers, and hence resulting in lower cost.
-Cloud providers generally prepare physical servers and software stacks for VMs before renting it to users, and they also provide an easy to use web interfaces. 
-As a result, users need only to click a few buttons on web browsers, before up-and-running VMs are available for them.
-This easiness will bring agility to users when they launch their services.
-And since computing resources are offered with per-second pay-per-use billing, users can quickly reduce the cost by stopping excessive VMs, when the demand for computing power decreases.
+Web application providers can start their services with a cluster of VMs, which is smaller than a cluster of physical servers, and hence resulting in lower cost.
+Cloud providers generally prepare physical servers and software stacks for VMs before renting it to users, and they also provide an easy to use web interfaces.
+As a result, users need only to click a few buttons on web browsers, in order to obtain up-and-running VMs.
+This simplicity will bring agility to web application providers when they launch their services.
+And since computing resources are offered with per-second pay-per-use billing, web application providers can quickly reduce the cost by stopping excessive VMs, when the demand for computing power decreases.
 This was impossible when web application providers purchased physical servers and installed them in a conventional on-premise data center.
 In short cloud computing brought the users agility, flexibility, and cost-effectiveness.
 
@@ -87,17 +87,17 @@ Figure~\ref{fig:physical_vm_container} (c) shows an example architecture of cont
 Linux containers are the processes that have separate execution environments that are created using the Linux kernel's namespace feature.
 The namespace feature can isolate visibility of resources on a single Linux server.
 
-The Linux container can run on any Linux server including physical servers and VM servers.
+The Linux container can run on any Linux systems including physical servers and VM servers.
 Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers.
 
 Every process in a container is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
 Linux kernel implements filesystem namespace, PID namespace, network namespace, user namespace, IPC namespace, and hostname namespace. 
-For example, each filesystem namespace can have its own root filesystem, and each network namespace has its own network devices and IP addresses.
+For example, each filesystem namespace can have its own root filesystem, and each network namespace can have its own network devices and IP addresses.
 Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
-Whilst each VM needed to run a full OS on top of a hypervisor and hence imposing extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence imposing no extra overhead.
+While each VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence imposes no extra overhead.
 
 Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{}.
-These tools take care of assigning an appropriate namespace to a process and make it look like running in its own virtual server.
+These tools assign an appropriate namespace to a process upon the launch of the process and make it look like running in its own virtual server.
 For example, container tools restore a file system from an archive file every time a container is launched. 
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
 
@@ -106,13 +106,14 @@ Therefore a process in a container is guaranteed to behave exactly the same mann
 This was not easy when there was no container technology.
 Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could have broken the expected behavior.
 
-In addition to that, since containers on a single server can have separate libraries on their respective filesystems, libraries in any container can be updated without influencing other containers.
-In conventional technology, processes on a single server are dependent on common shared libraries, updates of the library sometimes have caused compatibility issues.
+In addition to that, containers on a single server can have own version of libraries on their respective filesystems, in other words, libraries in any container can be updated without influencing other containers.
+In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused compatibility issues.
 
-Thanks to these benefits, i.e., Linux containers are generally more lightweight, portable and reproducible than virtual machines(VMs), container technologies are very attractive for web applications.
-And in order to facilitate deployment of a web application that consists of a cluster of containers, several container management systems have been developed.
+Thanks to these benefits container technologies are very attractive for web applications.
+Considerable efforts in utilizing container technologies for web applications are ongoing.
+And to facilitate deployment of a web application that consists of a cluster of containers, several container management systems have been in development.
 
-\subsection{Container Management System}
+\subsection{Container Orchestrator}
 
 \begin{figure}[h]
 \begin{center}
@@ -125,47 +126,35 @@ container management system
 \label{fig:container_management_system}
 \end{figure}
 
+A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
+As shown in Figure~\ref{fig:container_management_system}, the following capabilities are desirable for the container orchestrator for web application;
+1) {\bf Multi-layer service description in configuration files:} The configuration file for the orchestrator should be able to describe multiple clusters of containers and their relationships.
+2) {\bf Scheduling:} Depending on the configuration file, the orchestrator should be able to pick servers and launch containers on them. Orchestrator should maintain the number of running containers described in configuration files.
+3) {\bf Ingress routing and load balancing:} The orchestrator should be able to set up routes for incoming traffic from the internet to a group of containers in a redundant and scalable manner.
+4) {\bf Internal routing and load balancing:} If the web application consists of multiple service groups of containers, the orchestrator should be able to set up routes between the groups in a redundant and scalable manner.
 
-
-A container management system is a tool to ease the management of multiple containers that are launched on a cluster of servers.
-It will controle the scheduling of containers and routing ther traffice to the cluster.
-
-Orchestration tool does the followings;
-
-\begin{itemize}
-\item scheduling of containers, launch and temination of containers and deciding on which server to launch them
-\item ip address management for containers to comunicate each other
-\item routing traffic to containers
-\end{itemize}
-
-
-Another aspect of the container management system is interesting. 
-It can be viewed as the Operating System for a cluster of servers, where it not only provides scheduling of processes but also route the traffic to the right processes.
-In this way, a cluster of computers can be used to provide web services with the ease of using a single computer.
+Another aspect of the container orchestrator is interesting.
+It can be viewed as the Operating System for a data center, which not only provides scheduling of processes but also routes the traffic to the right processes.
+The orchestrator let users launch an internally dependent complex cluster of containers, with a single launch command by supplying a configuration file prepared beforehand.
+By using the orchestrator, a user can start a web application that consists of a cluster of containers, as easily as starting a single process on a single computer.
 
 
 Each of the Container Management System varies in target applications, and thus has the strength and weaknesses.
 
-
-Ingress Routing Loadbalancing
-Internal Routing Loadbalancing
-Scheduling containers
-Application definition
-
 \begin{table}[H]
   \centering
-  \begin{tabular}{|l|r|r|r|}
+  \begin{tabular}{|l|c|c|c|}
     \hline
     & \multicolumn{1}{c|}{Kuberenets} & \multicolumn{1}{c|}{Docker Swarm} & \multicolumn{1}{c|}{Mesos Marathon} \\ \hline
-    Ingress loadbalancing & External & External & Static to Marathon LB  \\ \hline
-    Internal loadbalancing & proxy setup iptables DNAT  & L4 routing mesh(ipvs) & Marathon LB(haproxy)  \\ \hline
-    Container scheduling & Yes  & Yes & Yes  \\ \hline
-    Application definition & Yaml & Yes & Yes  \\ \hline
+    Config file & Yaml & Yaml & unknown  \\ \hline
+    Scheduling & Yes &  Yes &  Yes  \\ \hline
+    Ingress routing & \begin{tabular}{c} Static\\ Cloud load balancer$^{**}$\end{tabular} & Static & Static \\ \hline
+    Internal routing & iptables DNAT & ipvs &  haproxy  \\ \hline
   \end{tabular}
-  \caption{Performance levels in 1Gbps and in 10Gbps.}
+  \caption{Container orchestrator comparison.}
   \raggedright
-  Throughput results of the load balancers at 40 nginx pods from the data for the Figures~\ref{fig:ipvs_l3dsr_1g.png} and \ref{fig:ipvs_l3dsr_10g} are shown.
-  \label{table:aaaa}
+  aaaa 1) Multi-layer service description in configuration files
+  \label{table:orchestrator_comparison}
 \end{table}
 
 \subsubsection{Kubernetes}
