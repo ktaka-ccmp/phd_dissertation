@@ -32,6 +32,43 @@ The load balancers distribute requests from clients to multiple web servers.
 Then the web servers form responses using data retrieved from the database servers and send it back to the clients.
 Sometimes the web servers also store and update important data into the database servers.
 
+\subsection{Migration is important}
+
+migrated easily for a variety of purposes.
+For example disaster recovery, cost performance optimizations, meeting legal compliance and shortening the geographical distance to customers are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
+
+The purpose of this research is to enable web application providers to easily deploy their services across the world seamlessly, regardless of cloud providers or data centers they use, by better-utilizing container cluster technology. 
+Also, the author aims to realize the future where users can choose whatever infrastructure they like without sacrificing advanced features that are provided only by limited cloud providers.
+
+\subsection{Global container infrastructure}
+
+\begin{itemize}
+\item Universal Container management system as a middle ware
+\item Global data storage as Google spanner, Conckroach database
+\item Global routing, Anycast 
+\end{itemize}
+
+The author focus on Load balancer.
+Software load balancer that work well with container env.
+
+\begin{itemize}
+\item How is the performance?
+\item How is that scable?
+\end{itemize}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{Figs/global_container_infrastructure}
+\end{center}
+\caption{
+container management system
+}
+
+\label{fig:global_container_infrastructure}
+\end{figure}
+
+\section{Inftastructure for web applications}
+
 \subsection{On-premise data center}
 
 Web application providers often purchase these servers and locate them in server housing facilities called data centers.
@@ -106,7 +143,7 @@ Therefore a process in a container is guaranteed to behave exactly the same mann
 This was not easy when there was no container technology.
 Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could have broken the expected behavior.
 
-In addition to that, containers on a single server can have own version of libraries on their respective filesystems, in other words, libraries in any container can be updated without influencing other containers.
+In addition to that, containers on a single server can have own version of libraries on their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers.
 In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused compatibility issues.
 
 Thanks to these benefits container technologies are very attractive for web applications.
@@ -120,24 +157,32 @@ And to facilitate deployment of a web application that consists of a cluster of 
 \includegraphics[width=0.9\columnwidth]{Figs/container_management_system}
 \end{center}
 \caption{
-container management system
+A web application cluster and container orchestrator.
 }
+
+A web application cluster consists of nginx(http), redis(key-value store) and mysqld(database) is depicted in this figure. 
+Each of the component consists of a cluster of containers.
+Container orchestrator recieve configuration file(1), schdule containers(2), set up ingress routing using load balancer(3) and set up internal routing(4).
 
 \label{fig:container_management_system}
 \end{figure}
 
 A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
-As shown in Figure~\ref{fig:container_management_system}, the following capabilities are desirable for the container orchestrator for web application;
-1) {\bf Multi-layer service description in configuration files:} The configuration file for the orchestrator should be able to describe multiple clusters of containers and their relationships.
-2) {\bf Scheduling:} Depending on the configuration file, the orchestrator should be able to pick servers and launch containers on them. Orchestrator should maintain the number of running containers described in configuration files.
-3) {\bf Ingress routing and load balancing:} The orchestrator should be able to set up routes for incoming traffic from the internet to a group of containers in a redundant and scalable manner.
-4) {\bf Internal routing and load balancing:} If the web application consists of multiple service groups of containers, the orchestrator should be able to set up routes between the groups in a redundant and scalable manner.
+As shown in Figure~\ref{fig:container_management_system}, the following capabilities are important for the container orchestrator for web application;
+1) {\bf Configuration file:} The configuration file for the orchestrator must be able to describe multiple clusters of containers and their relationships.
+2) {\bf Scheduling:} Depending on the configuration file, the orchestrator must be able to pick servers and launch containers on them. Orchestrator must also maintain the state described in configuration files, for example, the orchestrator must maintain the number of running containers.
+3) {\bf Ingress routing:} The orchestrator must be able to set up routes for incoming traffic from the internet to a group of containers in a redundant and scalable manner.
+4) {\bf Internal routing:} If the web application consists of multiple service groups of containers, the orchestrator must be able to set up routes between the groups in a redundant and scalable manner.
 
-Another aspect of the container orchestrator is interesting.
-It can be viewed as the Operating System for a data center, which not only provides scheduling of processes but also routes the traffic to the right processes.
-The orchestrator let users launch an internally dependent complex cluster of containers, with a single launch command by supplying a configuration file prepared beforehand.
-By using the orchestrator, a user can start a web application that consists of a cluster of containers, as easily as starting a single process on a single computer.
+In a configuration file a user can describe how a cluster of containers should be configured, and also can describe relationships between different clusters.
+As a result, the user can launch a web application that consists of interdependent clusters of containers just by supplying the configuration file to the orchestrator.
+For example, a web cluster in Figure~\ref{fig:container_management_system} consists of three different functionalities, namely http server, key-value store, and database.
+Each of those consists of a cluster of containers.
+And in the configuration file, the relationship between http server, key-value store, and database functionalities are written.
+The configuration file also contains how each cluster should be run, including the number of the containers and resources assigned to them.
 
+Thanks to these capabilities, the orchestrator can be viewed as an Operating System for a cluster of servers in a data center, which not only provides scheduling of processes but also routes the traffic to the right processes.
+By using the orchestrator, a user can start a web application that consists of a cluster of containers, on a cluster of servers in a data center, as easily as starting a single process on a single computer.
 
 Each of the Container Management System varies in target applications, and thus has the strength and weaknesses.
 
@@ -164,45 +209,9 @@ Each of the Container Management System varies in target applications, and thus 
 Docaker Swarm, Kubernetes, Marathon
 Container orchestrator.
 
+\section{Focus of this study}
 
-
-migrated easily for a variety of purposes.
-For example disaster recovery, cost performance optimizations, meeting legal compliance and shortening the geographical distance to customers are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
-
-The purpose of this research is to enable web application providers to easily deploy their services across the world seamlessly, regardless of cloud providers or data centers they use, by better-utilizing container cluster technology. 
-Also, the author aims to realize the future where users can choose whatever infrastructure they like without sacrificing advanced features that are provided only by limited cloud providers.
-
-
-\section{Global container infrastructure}
-
-\begin{itemize}
-\item Universal Container management system as a middle ware
-\item Global data storage as Google spanner, Conckroach database
-\item Global routing, Anycast 
-\end{itemize}
-
-The author focus on Load balancer.
-Software load balancer that work well with container env.
-
-\begin{itemize}
-\item How is the performance?
-\item How is that scable?
-\end{itemize}
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{Figs/global_container_infrastructure}
-\end{center}
-\caption{
-container management system
-}
-
-\label{fig:global_container_infrastructure}
-\end{figure}
-
-
-
-\section{Problems of existing container management system}
+\subsection{Problems of existing container management system}
 %\section{Avoid lock-in problem}
 
 It is desirable if users can migrate their services to multiple of cloud providers or on-premise data centers seamlessly, which spread across the world.
@@ -241,9 +250,7 @@ Since the Kubernetes fails to provide a uniform environment from a container clu
 One of the aims of this study is to seek a generic way to route the traffic into container clusters automatically, by providing a software load balancer that works well with the container management systems, and thereby to facilitate web application migrations.
 
 
-\section{Focus of this study}
-
-\subsection{load balancer for container clusters}
+\subsection{Load balancer for container clusters}
 
 \begin{figure}[h]
 \begin{center}
