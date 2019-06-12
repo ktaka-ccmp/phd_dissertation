@@ -1,16 +1,22 @@
 %\section{Introduction}
 
-\section{Motivation of the research}
+\section{Motivation}
 
-\subsection{Web applications and infrastructure}
+\subsection{Web application cluster}
 
 Today, a great number of people in the world can not spend a day without using smartphones or personal computers(PCs) to retrieve information from the Internet for work or for daily life.
 For example, people use these devices to look up web pages, emails, social media and sometimes to play games.
-These services are often called web applications, where information is delivered using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
+These services are often called web applications or web services, where information is delivered using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
 Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, etc.
-(The author calls them web application providers hereafter.)
-A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
 
+Google provides a variety of web services including, Gmail, Search engine, Google Suits, etc.
+Facebook provides social media service, Amazon provides shopping sites.
+Governments provides information regarding the service they provide to their citizens.
+Schools provide a syllabus to their students.
+Web applications are an essential part of daily life.
+The author calls those organizations that provide web applications, web application providers hereafter.
+
+A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
 Servers for web applications are usually computers located in a data center.
 %Servers also refer to the server programs that are runing on these computers. 
 In the data center multiple servers cooperate to fulfill the need of the clients.
@@ -32,40 +38,55 @@ The load balancers distribute requests from clients to multiple web servers.
 Then the web servers form responses using data retrieved from the database servers and send it back to the clients.
 Sometimes the web servers also store and update important data into the database servers.
 
-\subsection{Migration is important}
+\subsection{Web cluster migration}
 
-migrated easily for a variety of purposes.
+As the web applications become essensial part of daily life, an outage of the service is getting to be a bigger problem.
+People would not be able to access the information once somethig happens to a web cluster in a data center.
+
+For example, if web pages run by local government stops, people will not be able to access the information regarding public service.
+If a shopping site run by a company stops, the revenue of the company will be negatively affected.
+Problems of web applications by giant companies can be even bigger.
+An outage of Gmail or Google search engine would stop most of the bussiness activities around the world.
+Same is true for the outage of Amazon.com, affect buyers and bussinesses that sell products on its platform.
+
+In order to prevent such outages, preparing another web application cluster in a different location in case for disasters is very important.
+For that purpose, it would be better if a web application cluster can be easily migrated to a differet data center.
+
+Migration capability of a web cluster also has other benefits.
+If a e-commerce service is successful in a country, let's say in Japan, the company that run the service might want to start the e-commerce service in Europe.
+In this situation the company probably wants to have its web cluster in somewhere in Europe, because for Europian customers, responses from a web site in Europe is quicker than that in Japan. 
+
+In summary, being able to migrate a web application cluster is very important for a variety of purposes.
 For example disaster recovery, cost performance optimizations, meeting legal compliance and shortening the geographical distance to customers are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
 
-The purpose of this research is to enable web application providers to easily deploy their services across the world seamlessly, regardless of cloud providers or data centers they use, by better-utilizing container cluster technology. 
-Also, the author aims to realize the future where users can choose whatever infrastructure they like without sacrificing advanced features that are provided only by limited cloud providers.
+The purpose of this research is to propose infrastructures for web application providers that can easily deploy their services across the world, regardless of cloud providers or data centers they use.
 
-\subsection{Global container infrastructure}
-
-\begin{itemize}
-\item Universal Container management system as a middle ware
-\item Global data storage as Google spanner, Conckroach database
-\item Global routing, Anycast 
-\end{itemize}
-
-The author focus on Load balancer.
-Software load balancer that work well with container env.
-
-\begin{itemize}
-\item How is the performance?
-\item How is that scable?
-\end{itemize}
+\subsection{Infrastructure for web applications}
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=0.9\columnwidth]{Figs/global_container_infrastructure}
 \end{center}
 \caption{
-container management system
+An example global container infrastructure.
 }
 
 \label{fig:global_container_infrastructure}
 \end{figure}
+
+Such infrastructure might have the following features;
+1) have universal middleware to manage web clusters,
+2) store data in globally consistent data storage,
+3) route global traffic based on the closeness.
+
+Figure\ref{global_container_infrastructure} shows an example infrastructure that is suitable for web cluster migrations.
+
+Although the resaerch is ongoing regarding this subject, there are candidates for each of above features;
+a container orchestrators for the universal middle ware, the google spanner\ref{} or cockroach database\ref{} for global data store, anycast routing\ref{} for global traffic routing.
+
+In this study the author mainly focus on container orchestrator.
+Software load balancer that work well with container env.
+
 
 \section{Inftastructure for web applications}
 
@@ -83,7 +104,7 @@ The emergence of Cloud Computing made many things easier for web application pro
 Cloud computing utilizes a virtual machine(VM) technology, e.g. KVM, Xen, and VMware.
 Cloud computing service providers offer VMs to web application providers(users) with pay-per-use billing.
 
-Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology. 
+Figure~\ref{fig:physical_vm_container} compares different usages of a single physical server and Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology.
 VMs share a single physical server.
 A full OS including Linux kernel is running on top of the virtual machine represented by the hypervisor.
 Each VM behaves almost as same as a single physical server.
@@ -133,7 +154,7 @@ For example, each filesystem namespace can have its own root filesystem, and eac
 Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
 While each VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence imposes no extra overhead.
 
-Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{}.
+Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{merkel2014docker}.
 These tools assign an appropriate namespace to a process upon the launch of the process and make it look like running in its own virtual server.
 For example, container tools restore a file system from an archive file every time a container is launched. 
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
@@ -184,6 +205,8 @@ The configuration file also contains how each cluster should be run, including t
 Thanks to these capabilities, the orchestrator can be viewed as an Operating System for a cluster of servers in a data center, which not only provides scheduling of processes but also routes the traffic to the right processes.
 By using the orchestrator, a user can start a web application that consists of a cluster of containers, on a cluster of servers in a data center, as easily as starting a single process on a single computer.
 
+There are several orchestrators for containers. Table\ref{table:orchestrator_comparison} compares features of major orcestrators.
+
 Each of the Container Management System varies in target applications, and thus has the strength and weaknesses.
 
 \begin{table}[H]
@@ -206,8 +229,6 @@ Each of the Container Management System varies in target applications, and thus 
 \subsubsection{Docker swarm}
 \subsubsection{Mesos}
 
-Docaker Swarm, Kubernetes, Marathon
-Container orchestrator.
 
 \section{Focus of this study}
 
