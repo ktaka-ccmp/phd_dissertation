@@ -40,28 +40,28 @@ Sometimes the web servers also store and update important data into the database
 
 \subsection{Web cluster migration}
 
-As the web applications become essensial part of daily life, an outage of the service is getting to be a bigger problem.
-People would not be able to access the information once somethig happens to a web cluster in a data center.
+As web applications become an essential part of daily life, an outage of the service is getting to be a bigger problem.
+People will not be able to access the necessary information once something happens to a web cluster in a data center.
 
 For example, if web pages run by local government stops, people will not be able to access the information regarding public service.
-If a shopping site run by a company stops, the revenue of the company will be negatively affected.
-Problems of web applications by giant companies can be even bigger.
-An outage of Gmail or Google search engine would stop most of the bussiness activities around the world.
-Same is true for the outage of Amazon.com, affect buyers and bussinesses that sell products on its platform.
+If a shopping site run by a company stops, customers cannot buy products and the revenue of the company will be negatively affected.
+Outages of web applications by giant companies can have an even bigger impact.
+An outage of Gmail or Google search engine will stop most of the business activities around the world.
+Service down of Amazon.com affect buyers and businesses that sell products on its platform.
 
-In order to prevent such outages, preparing another web application cluster in a different location in case for disasters is very important.
-For that purpose, it would be better if a web application cluster can be easily migrated to a differet data center.
+In order to prevent such outages, preparing another web application cluster in a different location in the case for disasters is very important.
+For that purpose, it is desirable if a web application cluster can be easily migrated to a different data center.
 
 Migration capability of a web cluster also has other benefits.
-If a e-commerce service is successful in a country, let's say in Japan, the company that run the service might want to start the e-commerce service in Europe.
-In this situation the company probably wants to have its web cluster in somewhere in Europe, because for Europian customers, responses from a web site in Europe is quicker than that in Japan. 
+If an e-commerce service is successful in Japan, the company that runs the service might want to start the same service, let's say, in Europe.
+In this situation, the company probably wants to have its web cluster in somewhere in Europe, because, for Europian customers, responses from a web site in Europe is quicker than that in Japan.
 
-In summary, being able to migrate a web application cluster is very important for a variety of purposes.
+Being able to migrate a web application cluster is very important for a variety of purposes.
 For example disaster recovery, cost performance optimizations, meeting legal compliance and shortening the geographical distance to customers are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
-
+Therefore it is important for a web application provider to be able to easily deploy and migrate their web applications among different infrastructure around the world.
 The purpose of this research is to propose infrastructures for web application providers that can easily deploy their services across the world, regardless of cloud providers or data centers they use.
 
-\subsection{Infrastructure for web applications}
+\subsection{Ideal infrastructure}
 
 \begin{figure}[h]
 \begin{center}
@@ -74,25 +74,27 @@ An example global container infrastructure.
 \label{fig:global_container_infrastructure}
 \end{figure}
 
-Such infrastructure might have the following features;
+For that purpose, infrastructures for web applications are required to have the following features;
 1) have universal middleware to manage web clusters,
 2) store data in globally consistent data storage,
 3) route global traffic based on the closeness.
 
-Figure\ref{global_container_infrastructure} shows an example infrastructure that is suitable for web cluster migrations.
+Figure\ref{fig:global_container_infrastructure} shows an ideal infrastructure having these features.
+A container orchestrators launch and manage container.
+Important data are stored in globally consistent data storage, such as Google spanner\cite{Corbett:2013:SGG:2518037.2491245,Cooper:2013:SGG:2485732.2485756} or CockroachDB\cite{pavlo2016s}.
+Traffic is routed to the closest data center using anycast\cite{Weiden:2010:ALB:1924976.1925002}.
 
-Although the resaerch is ongoing regarding this subject, there are candidates for each of above features;
-a container orchestrators for the universal middle ware, the google spanner\ref{} or cockroach database\ref{} for global data store, anycast routing\ref{} for global traffic routing.
+Each of these features is an on-going research topic.
+Although the ultimate goal is realizing this type of infrastructure, we limit the scope to container orchestrator in this study.
 
-In this study the author mainly focus on container orchestrator.
-Software load balancer that work well with container env.
-
+By realizing global container infrastructure web application providers can deploy their service whenever and wherever they want.
+Also, they can move their services quickly depending on the circumstances.
 
 \section{Inftastructure for web applications}
 
 \subsection{On-premise data center}
 
-Web application providers often purchase these servers and locate them in server housing facilities called data centers.
+Web application providers often purchase servers and install them in server housing facilities called data centers.
 In this type of infrastructure, web application providers typically need to sign a contract with data center company for server housing racks, buy servers and install them in their rented racks by themselves.
 Since web application providers place servers in their own facilities or rented facilities, and they are responsible for managing the servers, this type of infrastructure is often called on-premise infrastructure in contrast to Cloud Computing infrastructure.
 Preparing data centers, installing the servers and configuring software stacks for web application services often require a considerable amount of time, money and effort.
@@ -104,14 +106,14 @@ The emergence of Cloud Computing made many things easier for web application pro
 Cloud computing utilizes a virtual machine(VM) technology, e.g. KVM, Xen, and VMware.
 Cloud computing service providers offer VMs to web application providers(users) with pay-per-use billing.
 
-Figure~\ref{fig:physical_vm_container} compares different usages of a single physical server and Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology.
+Figure~\ref{fig:physical_vm_container} compares different type of usages of a single physical server and Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology.
 VMs share a single physical server.
 A full OS including Linux kernel is running on top of the virtual machine represented by the hypervisor.
 Each VM behaves almost as same as a single physical server.
 Since VMs are fractions of a single physical server, server resources are utilized with finer granularities.
 Web application providers can start their services with a cluster of VMs, which is smaller than a cluster of physical servers, and hence resulting in lower cost.
-Cloud providers generally prepare physical servers and software stacks for VMs before renting it to users, and they also provide an easy to use web interfaces.
-As a result, users need only to click a few buttons on web browsers, in order to obtain up-and-running VMs.
+Cloud providers generally prepare physical servers and software stacks for VMs before renting it to users, and they also provide an easy to use web user interfaces.
+As a result, users only need to click a few buttons on web browsers and wait for a few minutes in order to obtain up-and-running VMs.
 This simplicity will bring agility to web application providers when they launch their services.
 And since computing resources are offered with per-second pay-per-use billing, web application providers can quickly reduce the cost by stopping excessive VMs, when the demand for computing power decreases.
 This was impossible when web application providers purchased physical servers and installed them in a conventional on-premise data center.
@@ -150,12 +152,12 @@ Due to the widespread usage of Linux systems, the Linux container can run in mos
 
 Every process in a container is assigned to a certain namespace, and if two processes belong to different namespaces, they can not see each other's resources. 
 Linux kernel implements filesystem namespace, PID namespace, network namespace, user namespace, IPC namespace, and hostname namespace. 
-For example, each filesystem namespace can have its own root filesystem, and each network namespace can have its own network devices and IP addresses.
+For example, every filesystem namespace can have its own root filesystem, and every network namespace can have its own network devices and IP addresses.
 Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
 While each VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence imposes no extra overhead.
 
 Several management tools are available for Linux containers, including LXC\ref{}, systemd-nspawn\ref{}, lmctfy\ref{} and Docker\ref{merkel2014docker}.
-These tools assign an appropriate namespace to a process upon the launch of the process and make it look like running in its own virtual server.
+These tools assign an appropriate namespace to a process upon the launch of the process and make it look like running in its own virtual Linux system.
 For example, container tools restore a file system from an archive file every time a container is launched. 
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
 
@@ -169,7 +171,7 @@ In conventional technologies, processes on a single server are dependent on comm
 
 Thanks to these benefits container technologies are very attractive for web applications.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
-And to facilitate deployment of a web application that consists of a cluster of containers, several container management systems have been in development.
+And to facilitate deployment of a web application that consists of a cluster of containers, several container orchestrator(container management systems) have been in development.
 
 \subsection{Container Orchestrator}
 
@@ -189,21 +191,21 @@ Container orchestrator recieve configuration file(1), schdule containers(2), set
 \end{figure}
 
 A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
-As shown in Figure~\ref{fig:container_management_system}, the following capabilities are important for the container orchestrator for web application;
+As shown in Figure~\ref{fig:container_management_system}, the following features are important for the container orchestrator for web application;
 1) {\bf Configuration file:} The configuration file for the orchestrator must be able to describe multiple clusters of containers and their relationships.
-2) {\bf Scheduling:} Depending on the configuration file, the orchestrator must be able to pick servers and launch containers on them. Orchestrator must also maintain the state described in configuration files, for example, the orchestrator must maintain the number of running containers.
+2) {\bf Scheduling:} Depending on the configuration file, the orchestrator must pick servers and launch containers on them. Orchestrator must also maintain the state described in configuration files, for example, the orchestrator must maintain the number of running containers.
 3) {\bf Ingress routing:} The orchestrator must be able to set up routes for incoming traffic from the internet to a group of containers in a redundant and scalable manner.
-4) {\bf Internal routing:} If the web application consists of multiple service groups of containers, the orchestrator must be able to set up routes between the groups in a redundant and scalable manner.
+4) {\bf Internal routing:} If the web application consists of multiple groups of containers, the orchestrator must be able to set up routes between the groups in a redundant and scalable manner.
 
 In a configuration file a user can describe how a cluster of containers should be configured, and also can describe relationships between different clusters.
 As a result, the user can launch a web application that consists of interdependent clusters of containers just by supplying the configuration file to the orchestrator.
 For example, a web cluster in Figure~\ref{fig:container_management_system} consists of three different functionalities, namely http server, key-value store, and database.
-Each of those consists of a cluster of containers.
-And in the configuration file, the relationship between http server, key-value store, and database functionalities are written.
+Each of those consists of multiple containers.
+In the configuration file, the relationship between http server, key-value store, and database functionalities are specified.
 The configuration file also contains how each cluster should be run, including the number of the containers and resources assigned to them.
 
-Thanks to these capabilities, the orchestrator can be viewed as an Operating System for a cluster of servers in a data center, which not only provides scheduling of processes but also routes the traffic to the right processes.
-By using the orchestrator, a user can start a web application that consists of a cluster of containers, on a cluster of servers in a data center, as easily as starting a single process on a single computer.
+Thanks to these features, an orchestrator can be viewed as an Operating System for a cluster of servers in a data center, which not only provides scheduling of processes but also routes the traffic to the right processes.
+By using orchestrators, a user can start a web application that consists of a cluster of containers, on multiple servers in a data center, as easily as starting a single process on a single computer.
 
 There are several orchestrators for containers. Table\ref{table:orchestrator_comparison} compares features of major orcestrators.
 
