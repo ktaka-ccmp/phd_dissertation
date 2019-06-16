@@ -1,12 +1,57 @@
-\section{Backgorund information}
+%\section{Backgorund information}
 
 This chaper provides background information that are important in this research.
 First two of the most popular overlay networks used in Kubernetes are explaind in detail.
 Then the author explain how to utilize multicore CPUs for packet proccessing in Linux.
 
-\subsection{Overlay Network}
 
-\subsubsection{Flannel}
+\section{Container Network}
+
+\subsection{bridge+veth}
+\subsection{macvlan, ipvlan}
+\subsection{hostnetwork}
+
+
+\section{Overlay Network}
+
+
+\subsubsection{Overlay Network}\label{sec:overlay_network}
+
+In order to discuss load balancer for container cluster, the knowledge of the overlay network is essential.
+We briefly explain an abstract concept of overlay network in this subsection.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
+\caption{The network architecture of an exemplified container cluster system. }
+
+  A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
+  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
+  and the distributed to web pods using the overlay network.
+
+\label{fig:overlay}
+\end{figure}
+
+Fig.~\ref{fig:overlay} shows schematic diagram of network architecture of a container cluster system. 
+Suppose we have a physical network(node network) with IP address range of 10.0.0.0/16 and an overlay network with IP address range of 172.16.0.0/16.
+The node network is the network for nodes to communicate with each other.
+The overlay network is the network setups for containers to communicate with each other.
+An overlay network typically consists of appropriate routing tables on nodes, and optionally of tunneling setup using ipip or vxlan.
+The upstream router usually belongs to the node network.
+When a container in the Fig.~\ref{fig:overlay} communicates with any of the nodes, it can use its IP address in 172.16.0.0/16 IP range as a source IP, since every node has proper routing table for the overlay network.
+When a container communicates with the upstream router that does not have routing information regarding the overlay network, the source IP address must be translated by Source Network Address Translation(SNAT) rules on the node the container resides.
+
+The SNAT caused a problem when we tried to co-host multiple load balancer containers for different services on a single node, and let them connect the upstream router directly.
+This was due to the fact that the BGP agent used in our experiment only used the source IP address of the connection to distinguish the BGP peer.
+The agent behaved as though different BGP connections from different containers belonged to a single BGP session because the source IP addresses were identical due to the SNAT.
+
+There many overlay network implementations.
+The author investigated two of the popular ones to see how it works.
+
+
+\subsection{General concept}
+
+\subsection{Flannel}
 
 We used flannel to build the Kubernetes cluster used in our experiment.
 Flannel has three types of backend, {\it i.e.}, operating modes, named host-gw, vxlan, and udp\cite{CoreOSFlannelBackend}.
@@ -81,19 +126,22 @@ In our experiment, we compared the performance of load balancers when different 
 %% \paragraph{\bf vxlan}
 %% \paragraph{\bf udp}
 
-\subsubsection{Calico}
+\subsection{Calico}
 [Filled in later]
 %% \paragraph{\bf no-tunnel}
 %% \paragraph{\bf ipip}
 
-\subsection{Multicore Packet Proccessing}
+
+\section{Multicore Packet Proccessing}
 
 Recently, the performance of CPUs are improved significantly due to the development of multi-core CPUs.
 One of the top of the line server processors from Intel now includes up to 28 cores in a single CPU.
 In order to enjoy the benefits of multi-core CPUs in communication performance, 
 it is necessary to distribute the handling of interrupts from the NIC and the IP protocol processing to the available physical cores.
 
-\subsubsection{rss}
+\mytodo[inline]{Write about rps,rfs,xfs}
+
+\subsection{rss}
 
 Receive Side Scaling (RSS)\cite{TomHerbert} is a technology 
 to distribute handling of the interrupt from NIC queues to multiple CPU cores.
@@ -218,33 +266,28 @@ much smaller than the number of CPU cores.
 That was the case of our experiment, where we had a NIC with only four rx-queues, 
 while there was a CPU with eight physical cores.
 
-\mytodo[inline]{Write about rps,rfs,xfs}
+\section{Linux vritual server}
 
-%% \subsubsection{rps}
-%% \subsubsection{Others}
-%% \paragraph{rfs}
-%% \paragraph{xps}
-%% \paragraph{xfs}
+In order to demonstrate a software load balancer that is runnable in any environment, the ipvs is containerized.  
+In addition to that the proposed load balancer uses two other components, keepalived, and a controller. 
+These components are placed in a single Docker container image.
+The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later, 
+to distribute incoming Transmission Control Protocol(TCP) traffic to 
+{\em real servers}\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
+in the original literature\cite{Zhang2000}. We will also use this term in the similar way.}\cite{Zhang2000}. 
+For example, ipvs distributes incoming Hypertext Transfer Protocol(HTTP) traffic destined for a single destination IP address, 
+to multiple HTTP servers(e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
+Keepalived is a management program that performs health checking for {\em real servers}
+and manages ipvs balancing rules in the kernel accordingly.
+It is often used together with ipvs to facilitate ease of use.
+The controller is a daemon that periodically monitors the {\em pod} information on the master, 
+and it performs various actions when such information changes.
+Kubernetes provides ingress controller framework as the Go Language(Golang) package to implement the controllers. 
+We implement a controller program that feeds {\em pod} state changes to keepalived 
+using this framework. 
 
-\mytodo[inline]{Write about Maglev, Ananta, GCP load balancer}
 \mytodo[inline]{Write about ipvs}
 
 
-%% \subsection{Other parameters}
-%% [Filled in later]
-%% \subsection{Cloud Load Balancers}
-%% [Filled in later]
-%% \subsubsection{Maglev}
-%% [Filled in later]
-%% \subsubsection{Ananta}
-%% [Filled in later]
-%% \subsubsection{GCP Load Balancer}
-%% [Filled in later]
-%% GCP experimental data.
-
-%% \subsection{ipvs}
-%% [Filled in later]
-
 \section{Summary}
 \mytodo[inline]{Write summary for background}
-[Filled in later]
