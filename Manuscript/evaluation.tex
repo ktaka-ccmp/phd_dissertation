@@ -111,7 +111,8 @@ For this experiment a total of eight servers are used; six servers for nodes, on
 The software versions used for Kubernetes, web server and load balancer {\em pods} are also summarized in the Table~\ref{tab:hw_sw_spec}.
 The hardware we used had eight physical CPU cores and a 1Gbps NIC with 4 rx-queues.
 
-\subsection{Effect of multicore proccessing}
+\subsection{Results}
+\subsubsection{Effect of multicore proccessing}
 
 \begin{figure}
   \centering
@@ -169,7 +170,7 @@ The author regarded that \enquote{(RSS, RPS) = (off, on)} is the best setting in
 
 \FloatBarrier
 
-\subsection{Effect of overlay network}
+\subsubsection{Effect of overlay network}
 
 \begin{figure}[h]
   \centering
@@ -193,7 +194,7 @@ The author used host-gw mode for most of the experiments conducted in on-premise
 
 \FloatBarrier
 
-\subsection{Comparison of different load balancer}
+\subsubsection{Comparison of different load balancer}
 
 \begin{figure}[htb]
   \centering
@@ -222,7 +223,8 @@ These may not be considered a significant difference; however, we can at least s
 So, to conclude this section, the containerized ipvs load balancer showed equivalent performance levels with the iptables DNAT load-balancing function that is used in Kubernetes cluster.
 
 \FloatBarrier
-\section{L3DSR using ipvs tun}
+
+\subsubsection{L3DSR using ipvs tun}
 
 The performance levels of ipvs and iptables DNAT have been limited by 1 Gbps bandwidth.
 This can be alleviated in the case of ipvs by using so-called Layer 3 Direct Server Return(l3dsr) setup.
@@ -269,7 +271,7 @@ After that, in order to explore the scalability, the author also measured the th
 Finally, the author examined how quick those ECMP routing table updates are.
 The following sections explain the evaluation in detail.
 
-\section{Evaluation method}
+\subsection{Evaluation method}
 
 \begin{figure}[b]
   \centering
@@ -331,7 +333,9 @@ Some of the software has also been updated to the most recent versions at the ti
 
 \FloatBarrier
 
-\section{ECMP functionality}
+\subsection{Reults}
+
+\subsubsection{ECMP functionality}
 
 \begin{table}[h]
 
@@ -400,7 +404,7 @@ The update of the routing entry was almost instant as the author started the loa
 
 \FloatBarrier
 
-\section{Scalability}
+\subsubsection{Scalability}
 
 \begin{figure}[h]
   \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_lb_cubic}
@@ -423,7 +427,7 @@ The author expects that replacing the benchmark client with more powerful machin
 
 \FloatBarrier
 
-\section{ECMP response}
+\subsubsection{Response}
 
 \begin{figure}[t]
   \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_delay_histgram}
@@ -459,6 +463,10 @@ It also indicates that after removing some load balancers, the traffic to them i
 \section{Cloud experiment
 %%  [Add experimental conditions for GCP and AWS]
 }
+
+\subsection{Method}
+
+\subsection{Results}
 
 \begin{figure}[t]
   \centering

@@ -123,12 +123,15 @@ Although not shown in the Fig.~\ref{fig:ecmp}, we could also place another route
 
 \section{Proof of concept system}\label{sec:poc}
 
+\subsection{General}
+
 \begin{figure}[tb]
 \begin{center}
 \includegraphics[width=0.8\columnwidth]{Figs/poc.png}
 \end{center}
-\caption{
-  An experimental container cluster with proposed redundant software balancers. \\ %\par 
+\caption{Proof of concept system}
+\centering\parbox[c]{0.9\columnwidth}{
+  An experimental container cluster with proposed redundant software balancers.
   The master and nodes are configured as Kubernetes's master and nodes on top of conventional Linux boxes, respectively.
   The route reflector and the upstream router are also conventional Linux boxes.
 }
@@ -158,7 +161,7 @@ The route reflector also uses a Linux box with gobgp and overlay network setup.
 The requirements for the BGP agent on the route reflector are dynamic-neighbours and add-paths features.
 The configurations for the route reflector is summarised in \ref{appendix:route_reflector_config}.
 
-\section{Ipvs container}\label{sec:ipvs}
+\subsection{Ipvs container}\label{sec:ipvs}
 
 \begin{figure}
 \includegraphics[width=0.8\columnwidth]{Figs/ipvs-ingress-schem}
@@ -248,7 +251,7 @@ the least connection(lc)\cite{Zhang2000} balancing algorithm.
 \mytodo[inline]{Write about ingress controller implementation.}
 
 
-\section{BGP software container}\label{sec:bgp}
+\subsection{BGP software container}\label{sec:bgp}
 
 \begin{figure}[tb]
 
