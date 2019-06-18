@@ -25,7 +25,7 @@ and is the basic execution unit in a Kubernetes cluster.
 When a service is created, the master schedules where to run {\em pods} and kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
 The proxy daemon on the nodes also setup iptables DNAT\cite{MartinA.Brown2017} rules. 
-The Internet traffic will then be evenly distributed by the cloud load balancer to nodes, 
+The Ingress traffic will then be evenly distributed by the cloud load balancer to nodes, 
 after which it will be distributed again by the DNAT rules on the nodes to the designated {\em pods}. 
 The returning packets follows the exact same route as the incoming ones.
 
@@ -35,7 +35,7 @@ There are numerous load balancers which is not supported by the Kubernetes.
 These include the bare metal load balancers for on-premise data centers.
 2) Distributing the traffic twice, first on the external load balancers and second on each node, complicates the administration of packet routing. 
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
-In such a case, only occasional timeouts would be observed, which would make it very difficult to find out which node was malfunctioning.   
+In such a case, only occasional timeouts would be observed, and hence it would be very difficult to find out which node is malfunctioning.   
 
 Regarding the first problem, if there is no load balancer that is not supoorted by Kubernetes, users must set up the routing manually depending on the infrastructure.
 The traffic would be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
@@ -54,71 +54,32 @@ that is deployable in any environment even if there are no external load balance
   \label{fig:K8sProposed}
 \end{figure}
 
-The author proposes a load balancer architecture, where a cluster of load balancers are deployed as a cluster of containers.
-Figure~\ref{fig:K8sProposed} shows the proposed laod balancer architecture for Kubernetes,
+The author proposes a load balancer architecture, where a cluster of load balancers are deployed as containers.
+Figure~\ref{fig:K8sProposed} shows the proposed load balancer architecture for Kubernetes,
 which has the following characteristics;
 1) Each load balancer itself is run as a {\em pod} by Kubernetes. 
 2) Load balancing tables are dynamically updated based on information about running {\em pods}.
 3) There exist multiple load balancers for redundancy and scalability.
-4) The routes to existing load balancers in the upstream router are updated dynamically using standard network protocol.
+4) The routing table in the upstream router are updated dynamically using standard network protocol.
 
 Containerized load balancer can run in any environment including on-premise data centers if only they use Linux systems.
-As a result, load balancers can share the server pool with web containers.
+Furthermore, load balancers can share the server pool with web containers.
 Users can utilize existing servers rather than buying dedicated hardware.
 
 In the case of conventional architecture, cloud load balancer distributed ingress traffic to every node and then internal load balancers based on iptables DNAT forwarded the packet again to running pods.
 However, in the case of the proposed load balancers, the ingress traffic is directly routed to the running {\em pods}.
 As a result, the route becomes simpler and hence finding malfunctions becomes easier than the conventional architecture.
 
-Because a cluster of load balancer containers is controlled by a container orchestrator, it can scale the size of the cluster depending on the demand.
-Furthermore, Kubernetes always tries to maintain the number of load balancer containers at the number specified by the administrator.
-If a single container fails, Kubernetes schedule and launch another one on a different node, which provides the resilience to failures.
 
-The routes to the load balancers are automatically updated through the standard protocol. 
-Users do not need to manually add the route every time new load balancer container is launched, as is the case in the conventional architecture.
+Because a cluster of load balancer containers is controlled by a container orchestrator, Kubernetes, the load balancer becomes redundant and scalable.
+Kubernetes always tries to maintain the number of load balancer containers at the number specified by the administrator.
+If a single container fails, Kubernetes schedule and launch another one on a different node, which provides the resilience to failures.
+Furthermore, when there is an increase in the traffic, it can also scale the size of the cluster depending on the demand.
+
+The routes to the load balancers are automatically updated through the standard protocol, BGP. 
+Therefore users do not need to manually add the route every time new load balancer container is launched, as is the case in the conventional architecture.
 
 \FloatBarrier
-
-\section{Implimentation}\label{sec:poc}
-
-\subsection{General}
-
-\begin{figure}[tb]
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{Figs/poc.png}
-\end{center}
-\caption{Proof of concept system}
-\centering\parbox[c]{0.9\columnwidth}{
-  An experimental container cluster with proposed redundant software balancers.
-  The master and nodes are configured as Kubernetes's master and nodes on top of conventional Linux boxes, respectively.
-  The route reflector and the upstream router are also conventional Linux boxes.
-}
-\label{fig:poc}
-\end{figure}
-
-Fig.~\ref{fig:poc} shows the schematic diagram of proof of concept load balancer cluster system.
-%
-Each load balancer pod consists of an exabgp container and an ipvs container.
-The ipvs container is responsible for distributing the traffic toward the IP address that a service uses, to web server(nginx) pods.
-The ipvs container monitors the availability of web server pods and manages the load balancing rule appropriately.
-The exabgp container is responsible for advertising the route toward the IP address that a service uses, to the route reflector.
-The route reflector aggregates the routing information advertised by load balancer pods and advertise them to the upstream router.
-
-All the nodes and route reflector are configured using Debian 9.5 with self compiled linux-4.16.12 kernel.  
-The author also used conventional Linux box as the upstream router for testing purpose, using the same OS as the nodes and route reflector.
-The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
-The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
-Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed,
-we could still test some of the advanced functions by using a Linux box as the router.
-
-The exabgp is used in the load balancer pods because of the simplicity in setting as static route advertiser.
-On the other hand, gobgp is used in the router and the route reflector, because exabgp did not seem to support add-path\cite{rfc7911} needed for multi-path advertisement and Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018}.
-The gobgp supports the add-path, and the FIB manipulation through zebra\cite{osrg_gobgp_zebra}.
-The configurations for the router is summarised in \ref{appendix:router_config}.
-
-The route reflector also uses a Linux box with gobgp and overlay network setup.
-The requirements for the BGP agent on the route reflector are dynamic-neighbours and add-paths features.
-The configurations for the route reflector is summarised in \ref{appendix:route_reflector_config}.
 
 \subsection{General1}
 
@@ -171,6 +132,52 @@ Although not shown in the Fig.~\ref{fig:ecmp}, we could also place another route
 %\section{Proof of concept system}\label{sec:poc}
 
 \FloatBarrier
+
+
+\section{Implimentation}\label{sec:poc}
+
+\subsection{General}
+
+\begin{figure}[tb]
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{Figs/poc.png}
+\end{center}
+\caption{Proof of concept system}
+\centering\parbox[c]{0.9\columnwidth}{
+  An experimental container cluster with proposed redundant software balancers.
+  The master and nodes are configured as Kubernetes's master and nodes on top of conventional Linux boxes, respectively.
+  The route reflector and the upstream router are also conventional Linux boxes.
+}
+\label{fig:poc}
+\end{figure}
+
+Fig.~\ref{fig:poc} shows the schematic diagram of proof of concept load balancer cluster system.
+%
+Each load balancer pod consists of an exabgp container and an ipvs container.
+The ipvs container is responsible for distributing the traffic toward the IP address that a service uses, to web server(nginx) pods.
+The ipvs container monitors the availability of web server pods by consulting apiserver on the master node and manages the load balancing rule appropriately.
+The exabgp container is responsible for advertising the route toward the IP address that a service uses, to the route reflector.
+The route reflector aggregates the routing information advertised by load balancer pods and advertise them to the upstream router.
+The upstream router updates its routing table according to the advertisement.
+
+All the nodes and route reflector are configured using Debian 9.5 with self compiled linux-4.16.12 kernel.  
+The author also used conventional Linux box as the upstream router for testing purpose, using the same OS as the nodes and route reflector.
+The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
+The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
+Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed,
+we could still test some of the advanced functions by using a Linux box as the router.
+
+Exabgp is used in the load balancer pods and gobgp is used in the route reflector and the upstream router.
+Exabgp can be configured as a static route advertiser in a much simpler way than gobgp or other software, which is preferable for load balancers.
+Gobgp supports add-path\cite{rfc7911} feature needed for multi-path advertisement, which is required for the route reflector.
+Gobgp also supports Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018}feature through zebra\cite{osrg_gobgp_zebra} for updating routing table in the upstream router.
+The add-path and FIB manipulation are not supported in exbgp.
+The configurations for the router is summarised in \ref{appendix:router_config}.
+
+The route reflector also uses a Linux box with gobgp and overlay network setup.
+The requirements for the BGP agent on the route reflector are dynamic-neighbours and add-paths features.
+The configurations for the route reflector is summarised in \ref{appendix:route_reflector_config}.
+
 
 \subsection{BGP software container}\label{sec:bgp}
 
