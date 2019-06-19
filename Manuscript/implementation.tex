@@ -3,43 +3,51 @@ First overall architecure is explained in Section~\ref{sec:poc}.
 Then ipvs containerization is explained in detail in Section~\ref{sec:ipvs}.
 Finally implementation of BGP software container is explained in Section~\ref{sec:bgp}.
 
-\section{Proof of concept system architecture}\label{sec:poc}
+\section{Implementation}
+
+\subsection{Experimental system architecture}\label{sec:poc}
 
 \begin{figure}[tb]
 \begin{center}
 \includegraphics[width=0.8\columnwidth]{Figs/poc.png}
 \end{center}
-\caption{
-  An experimental container cluster with proposed redundant software balancers. \\ %\par 
+\caption{Proof of concept system}
+\centering\parbox[c]{0.9\columnwidth}{
+  An experimental container cluster with proposed redundant software balancers.
   The master and nodes are configured as Kubernetes's master and nodes on top of conventional Linux boxes, respectively.
   The route reflector and the upstream router are also conventional Linux boxes.
 }
 \label{fig:poc}
 \end{figure}
 
-Fig.~\ref{fig:poc} shows the schematic diagram of proof of concept container cluster system with our proposed redundant software load balancers.
-All the nodes and route reflector are configured using Debian 9.5 with self compiled linux-4.16.12 kernel.  
-The upstream router also used conventional linux box using the same OS as the nodes and route reflector.
-For the Linux kernel to support hash based ECMP routing table we needed to use kernel version 4.12 or later.
-We also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
-In the actual production environment, proprietary hardware with the highest throughput is often deployed, but we could still test some of the required advanced functions by using a Linux box.
-
+Fig.~\ref{fig:poc} shows the schematic diagram of proof of concept load balancer cluster system.
+%
 Each load balancer pod consists of an exabgp container and an ipvs container.
 The ipvs container is responsible for distributing the traffic toward the IP address that a service uses, to web server(nginx) pods.
-The ipvs container monitors the availability of web server pods and manages the load balancing rule appropriately.
+The ipvs container monitors the availability of web server pods by consulting apiserver on the master node and manages the load balancing rule appropriately.
 The exabgp container is responsible for advertising the route toward the IP address that a service uses, to the route reflector.
 The route reflector aggregates the routing information advertised by load balancer pods and advertise them to the upstream router.
+The upstream router updates its routing table according to the advertisement.
 
-The exabgp is used in the load balancer pods because of the simplicity in setting as static route advertiser.
-On the other hand, gobgp is used in the router and the route reflector, because exabgp did not seem to support add-path\cite{rfc7911} needed for multi-path advertisement and Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018}.
-The gobgp supports the add-path, and the FIB manipulation through zebra\cite{osrg_gobgp_zebra}.
+All the nodes and route reflector are configured using Debian 9.5 with self compiled linux-4.16.12 kernel.  
+The author also used conventional Linux box as the upstream router for testing purpose, using the same OS as the nodes and route reflector.
+The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
+The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
+Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed,
+we could still test some of the advanced functions by using a Linux box as the router.
+
+Exabgp is used in the load balancer pods and gobgp is used in the route reflector and the upstream router.
+Exabgp can be configured as a static route advertiser in a much simpler way than gobgp or other software, which is preferable for load balancers.
+Gobgp supports add-path\cite{rfc7911} feature needed for multi-path advertisement, which is required for the route reflector.
+Gobgp also supports Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018}feature through zebra\cite{osrg_gobgp_zebra} for updating routing table in the upstream router.
+The add-path and FIB manipulation are not supported in exbgp.
 The configurations for the router is summarised in \ref{appendix:router_config}.
 
 The route reflector also uses a Linux box with gobgp and overlay network setup.
 The requirements for the BGP agent on the route reflector are dynamic-neighbours and add-paths features.
 The configurations for the route reflector is summarised in \ref{appendix:route_reflector_config}.
 
-\section{Ipvs container}\label{sec:ipvs}
+\subsection{Ipvs container}\label{sec:ipvs}
 
 \begin{figure}
 \includegraphics[width=0.8\columnwidth]{Figs/ipvs-ingress-schem}
@@ -49,7 +57,6 @@ The configurations for the route reflector is summarised in \ref{appendix:route_
 
 The proposed load balancer needs to dynamically reconfigure the IPVS balancing rules whenever {\em pods} are created/deleted. 
 Figure~\ref{fig:IPVS-ingress-schem} is a schematic diagram to show the dynamic reconfiguration of the IPVS rules.
-The right part of the figure shows the enlarged view of one of the nodes where the load balancer pod(LB2) is deployed.
 Two daemon programs, controller and keepalived, run in the container inside the LB2 pod are illustrated.
 The keepalived manages Linux kernel's IPVS rules depending on the ipvs.conf configuration file.
 It is also capable of health-checking the life of {\em real server}, 
@@ -64,8 +71,6 @@ Then, keepalived will reload the ipvs.conf and modify the kernel's IPVS rules ac
 The actual controller\cite{ktaka_ccmp_2017_826894} is implemented using the Kubernetes ingress controller\cite{K8sIngress2017} framework. 
 By importing existing Golang package, \enquote{k8s.io/ingress /core/pkg/ingress}, we could simplify the implementation, e.g. 
 120 lines of code.  
-
-%In this way, the IPVS's balancing rules inside Linux kernel are maintained so that it can distribute the incoming traffic only to the living pods.
 
 Configurations for capabilities were needed in the implementation: adding the CAP\_SYS\_MODULE capability 
 to the container to allow the kernel to load required kernel modules inside a container, 
@@ -130,7 +135,7 @@ using the masquerade mode(Masq) and
 the least connection(lc)\cite{Zhang2000} balancing algorithm.
 
 
-\section{BGP software container}\label{sec:bgp}
+\subsection{BGP software container}\label{sec:bgp}
 
 \begin{figure}[tb]
 
@@ -176,14 +181,13 @@ a routing rule to the dev docker0 is created in the node net namespace.
 A routing rule to accept the packets toward those IPs as local is also required in the container net namespace. 
 A configuration of exabgp is shown in \ref{appendix:exabgp_config}.
 
-\section{ingress controller}
-[Filled in later]
+\mytodo[inline]{Compare about OSS bgp softwares.}
+
+\FloatBarrier
+
+
 \mytodo[inline]{Write about ingress controller implementation.}
 
-\section{choice bgp software}
-[Filled in later]
-\mytodo[inline]{Write about OSS bgp softwares.}
 
 \section{Summary}
-[Filled in later]
 \mytodo[inline]{Write summary for implementation.}

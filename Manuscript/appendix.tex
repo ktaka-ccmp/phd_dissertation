@@ -336,7 +336,9 @@ Since experimnetal results agrees well with theory, the author concludes that wh
 \centering
 \includegraphics[width=0.8\columnwidth]{Figs/vrrp.png}
 \caption{
-  An alternative redundant load balancer architecture using VRRP. \\ %\par 
+  An alternative redundant load balancer architecture using VRRP.
+}
+\centering\parbox[c]{0.9\columnwidth}{
   The traffic from the internet is forwarded by the upstream router to a active lb node and then distributed by the lb pods to web pods using Linux kernel's ipvs.
   The active lb pod is selected using VRRP protocol.
 }
