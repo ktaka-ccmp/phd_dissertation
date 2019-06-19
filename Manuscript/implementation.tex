@@ -1,6 +1,6 @@
 \section{Implementation}
 
-Here we discuss the implementation of the experimental system to prove the concept of our proposed load balancers with ECMP redundancy in detail.
+In this section the author discusses the implementation of the experimental system to prove the concept of our proposed load balancers with ECMP redundancy in detail.
 
 \subsection{Experimental system architecture}\label{sec:poc}
 
@@ -32,8 +32,7 @@ All the nodes and route reflector are configured using Debian 9.5 with self comp
 The author also used conventional Linux box as the upstream router for testing purpose, using the same OS as the nodes and route reflector.
 The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
 The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
-Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed,
-we could still test some of the advanced functions by using a Linux box as the router.
+Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced functions by using a Linux box as the router.
 
 \begin{table}[H]
   \centering
@@ -47,7 +46,7 @@ we could still test some of the advanced functions by using a Linux box as the r
   \end{tabular}
   \caption{Comparison of open source BGP agents}
   \centering\parbox[c]{0.9\columnwidth}{
-    OSS BGP agents are compared in terms of the features required in the proposed systems. \par
+    Open source BGP agents are compared in terms of the features required in the proposed systems. \par
     \small
     $^{*}$ \phantom{$^{**}$} Injector is commandline or other programs other than the BGP daemon. \par
     $^{**}$ \phantom{$^{*}$} Add-path is the feature to support multipath advertisement. \par
@@ -56,7 +55,7 @@ we could still test some of the advanced functions by using a Linux box as the r
   \label{table:bgp_agents}
 \end{table}
 
-Table~\ref{table:bgp_agents} compares OSS BGP agents in terms of required features for the proposed architecture.
+Table~\ref{table:bgp_agents} compares open source BGP agents in terms of required features for the proposed architecture.
 Each load balancer container needs to advertise a static route for the service IP to itself. 
 For that purpose, exabgp is preferable due to its simplicity.
 As for the route reflector, add-path\cite{rfc7911} feature is needed for multi-path advertisement, which is supported by gobgp.
@@ -70,14 +69,16 @@ The configurations for the route reflector is summarised in \ref{appendix:route_
 \subsection{Ipvs container}\label{sec:ipvs}
 
 \begin{figure}[h]
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs-ingress-schem}
-  \caption{Implementation of ipvs container.}
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{Figs/ipvs-ingress-schem}
+    \caption{Implementation of ipvs container.}
 
-  \centering\parbox[c]{0.9\columnwidth}{
-    The controller checks the pod status every second.
-    Upon a change of the status, the controller updates the ipvs.conf and sends SIGHUP to keepalived.
-    The keepalived updates the load balance table in the kernel correctly.
-  }
+    \parbox[c]{0.9\columnwidth}{
+      The controller checks the pod status every second.
+      Upon a change of the status, the controller updates the ipvs.conf and sends SIGHUP to keepalived.
+      The keepalived updates the load balance table in the kernel correctly.
+    }
+  \end{center}
 
   \label{fig:IPVS-ingress-schem}
 \end{figure}
@@ -103,7 +104,7 @@ In order to avoid the connection errors to be seen by a human, HTTP client progr
 However, since the load balancer rule update is within a second, these errors can be regarded as the tolerable rare exceptions even without such re-initiations.
 
 The actual controller\cite{ktaka_ccmp_2017_826894} is implemented using the Kubernetes ingress controller\cite{K8sIngress2017} framework. 
-By importing existing Golang package, \enquote{k8s.io/ingress/core/pkg/ingress}, we could simplify the implementation, e.g. 
+By importing existing Golang package, \enquote{k8s.io/ingress/core/pkg/ingress}, the author could simplify the implementation, e.g. 
 120 lines of code.  
 %
 Keepalived and the controller are placed in the docker image of ipvs container.
@@ -112,42 +113,47 @@ The ipvs is the kernel function and namespace separation for container has alrea
 Configurations for capabilities were needed when deploying the ipvs container: adding the CAP\_SYS\_MODULE capability 
 to the container to allow the kernel to load required kernel modules inside a container, 
 and adding CAP\_NET\_ADMIN capability to the container to allow keepalived to manipulate the kernel's ipvs rules. 
-For the former case, we also needed to mount the \enquote{/lib/module} of the node's file system on the container's file system.
+For the former case, the author also needed to mount the \enquote{/lib/module} of the node's file system on the container's file system.
 
 \begin{figure}[h]
   \centering
-\begin{minipage}{0.7\columnwidth}
-\begin{lstlisting}[frame=single]
-  virtual_server fwmark 1 {
-    delay_loop 5
-    lb_algo lc
-    lb_kind NAT
-    protocol TCP
-    real_server 172.16.21.2 80 {
-      uthreshold 20000
-      TCP_CHECK {
-        connect_timeout 5
+  \begin{minipage}{0.7\columnwidth}
+    \begin{lstlisting}[frame=single]
+      virtual_server fwmark 1 {
+        delay_loop 5
+        lb_algo lc
+        lb_kind NAT
+        protocol TCP
+        real_server 172.16.21.2 80 {
+          uthreshold 20000
+          TCP_CHECK {
+            connect_timeout 5
         connect_port 80
+          }
+        }
+        real_server 172.16.80.2 80 {
+          uthreshold 20000
+          TCP_CHECK {
+            connect_timeout 5
+            connect_port 80
+          }
+        }
       }
-    }
-    real_server 172.16.80.2 80 {
-      uthreshold 20000
-      TCP_CHECK {
-        connect_timeout 5
-        connect_port 80
-      }
-    }
-  }
-\end{lstlisting}
-\end{minipage}
-\caption{An example of ipvs.conf}
-\label{fig:ipvs.conf}
+    \end{lstlisting}
+  \end{minipage}
+
+  \caption{An example of ipvs.conf}
+  \label{fig:ipvs.conf}
+
+  \begin{minipage}{0.9\columnwidth}
+    This configuration file is auto-generated by the controller.
+    The controller periodically accesses the apiserver on the master node and constantly monitor the status of running pods.
+  \end{minipage}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-%\begin{minipage}{\columnwidth}
-\rule{\columnwidth}{0.4pt}
+  \rule{\columnwidth}{0.4pt}
 \begin{verbatim}
 # kubectl exec -it IPVS-controller-4117154712-kv633 -- IPVSadm -L
 IP Virtual Server version 1.2.1 (size=4096)
@@ -158,9 +164,16 @@ FWM  1 lc
   -> 172.16.80.2:80      Masq    1      0          0
 \end{verbatim}
 \rule{\columnwidth}{0.4pt}
-%\end{minipage}
+
 \caption{Example of IPVS balancing rules}
 \label{fig:IPVS rule}
+
+\begin{minipage}{0.9\columnwidth}
+  This shows the forwarding (balancing) rule in a load balancer container.
+  The packet that has fwmark 0x01 will be forwarded to two real servers using the least connection balancing algorithm.
+  The fwmark is a parameter that is only valid in a socket buffer in a Linux kernel.
+  The fwmark is put and manipulated by the iptables program.
+\end{minipage}
 \end{figure}
 
 Figure~\ref{fig:ipvs.conf} and Figure~\ref{fig:IPVS rule} show an example of an ipvs.conf file 
@@ -170,21 +183,24 @@ to {\tt 172.16.21.2:80} and {\tt 172.16.80.2:80}
 using the masquerade mode(Masq) and 
 the least connection(lc)\cite{Zhang2000} balancing algorithm.
 
-
 \subsection{BGP software container}\label{sec:bgp}
 
 \begin{figure}[tb]
-
-  \begin{subfigure}[t]{\columnwidth}
-    \includegraphics[width=0.9\columnwidth]{Figs/exabgp}
-    \caption{}
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{Figs/exabgp}
+    \caption{Network path by the exabgp container}
     \label{fig:exabgp_schem}
-  \end{subfigure}
+  
+    \parbox[c]{0.9\columnwidth}{
+      The packets from Internet to a service IP in 10.1.1.0/24 is routed to the load balancer pod(green arrows) by the set of routing rules shown in Table~\ref{table:exabgp_setting}.
+      And then the ipvs forwards them to IP addresses of nginx pods(red arrows).
+      The IP address of any pod is dynamically assigned from 172.16.0.0/16 when the pod is started. 
+    }
+  \end{center}
+\end{figure}
 
-  \par\bigskip
-
-  \begin{subtable}{.9\textwidth}
-    \centering
+\begin{table}
+  \begin{center}
     \begin{tabular}{lllr}
       \hline 
       \multicolumn{4}{l}{[BGP announcement]} \\
@@ -195,33 +211,25 @@ the least connection(lc)\cite{Zhang2000} balancing algorithm.
       \hspace{15 mm} & \multicolumn{2}{l}{ip route add local 10.1.1.0/24 dev eth0} & ...(3) \\
       \hline
     \end{tabular}
-    \caption{}
-    \label{fig:exabgp_setting}
-  \end{subtable}
+    \caption{Required settings in the exabgp container}
+    \label{table:exabgp_setting}
+  
+    \parbox[c]{0.9\columnwidth}{
+      (1)The node IP address, 10.0.0.106 is used as next-hop for the IP range 10.1.1.0/24 used by a service in BGP announcement.
+      (2)In order to route the packets toward the IP used by the service to a container, a routing rule to the dev docker0 is created in the node net namespace.
+      (3)A routing rule to accept the packets as local is also required. 
+    }
+  \end{center}
+\end{table}
 
-  \caption{
-    (a) Network path by the exabgp container.
-    (b) Required settings in the exabgp container.
-  }
-  \centering\parbox[c]{0.9\columnwidth}{
-  (a): The packets from Internet to a service IP in 10.1.1.0/24 is routed to the load balancer pod(green arrows) by the set of routing rules shown in (b).
-  And then the ipvs forwards them to IP addresses of nginx pods(red arrows).
-  The IP address of any pod is dynamically assigned from 172.16.0.0/16 when the pod is started. 
-  (b): (1)The node IP address, 10.0.0.106 is used as next-hop for the IP range 10.1.1.0/24 used by a service in BGP announcement.
-  (2)In order to route the packets toward the IP used by the service to a container, a routing rule to the dev docker0 is created in the node net namespace.
-  (3)A routing rule to accept the packets as local is also required. 
-  }
-  \label{fig:exabgp}
-\end{figure}
-
-In order to implement the ECMP redundancy, we also containerized exabgp using Docker.
-Fig.\ref{fig:exabgp}~(\subref{fig:exabgp_schem}) shows a schematic diagram of the network path realized by the exabgp container.
-We used exabgp as the BGP advertiser as mentioned earlier.
-The traffic from the Internet is forwarded by ECMP routing table on the router to the node that hosts a load balancer pod, then routed to that pod by the set of routing rules in Fig.\ref{fig:exabgp}~(\subref{fig:exabgp_setting}). 
+In order to implement the ECMP redundancy, the author also containerized exabgp using Docker.
+Figure~\ref{fig:exabgp_schem} shows a schematic diagram of the network path realized by the exabgp container.
+The author used exabgp as the BGP advertiser as mentioned earlier.
+The traffic from the Internet is forwarded by ECMP routing table on the router to the node that hosts a load balancer pod, then routed to that pod by the set of routing rules in Figure~\ref{fig:exabgp_schem}.
 And then the ipvs forwards them to IP addresses of nginx pods.
 The IP address of any pod is dynamically assigned from 172.16.0.0/16 when the pod is started. 
 
-Fig.\ref{fig:exabgp}~(\subref{fig:exabgp_setting}) summarises some key settings required for the exabgp container to route the traffic to the ipvs container.
+Table~\ref{table:exabgp_setting} summarises some key settings required for the exabgp container to route the traffic to the ipvs container.
 In BGP announcements the node IP address, 10.0.0.106 is used as the next-hop for the IP range 10.1.1.0/24.
 Then on the node, in order to route the packets toward 10.1.1.0/24 to the ipvs container, 
 a routing rule to the dev docker0 is created in the node net namespace. 
@@ -234,4 +242,14 @@ A configuration for exabgp is shown in \ref{appendix:exabgp_config}.
 
 
 \section{Summary}
-\mytodo[inline]{Write summary for implementation.}
+In this chapter the author provided discussion of load balancer architecture suitable for container clusters.
+First the author discussed problems of conventions architecture, 
+and then the author proposed a portable software load balancer in container.
+After that the author discusse redundancy architecture using ECMP.
+
+This chapter also presented implementation of the proof of the concept system for the proposed load balancer architecture in detail.
+First overall architecure has been explained.
+Then ipvs containerization has been explained in detail
+Finally implementation of BGP software container has been explained.
+
+

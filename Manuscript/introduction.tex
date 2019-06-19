@@ -202,7 +202,7 @@ Container tools alleviate these problems by packing necessary libraries into arc
 
 Thanks to these benefits container technologies are very attractive for web applications and their migrations.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
-And to simplify the deployment of a complex web application that consists of interdependent container clusters, several container orchestrators(container management systems) have been in development.
+And to simplify the deployment of a complex web application that consists of interdependent container clusters, several container orchestrators(container management systems)\footnote{The author uses the word 'container orchestrator' and 'container management system' for the same meaning and uses them interchangably} have been in development.
 
 \subsection{Container Orchestrator}
 
@@ -379,8 +379,16 @@ In other words, users will become being able to deploy a complex web application
 
 The rest of the paper is organized as follows.
 Chapter \ref{chapter:related} and Chapter \ref{chapter:background} provides related works and the background information necessary to understand following chapters.
-Chapter \ref{chapter:architecture} provides the problems of existing load balancers and proposes suitable architectures.
-Chapter \ref{chapter:implemetation} presents implementation of the proposed load balancer architecture in detail.
+
+Chapter~\ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
+First the author discusses problems of conventions architecture in Section~\ref{Problem of Conventional Architecture}.
+Then the author proposes a portable software load balancer in container in Section~\ref{Load balancer in container}
+After that the author discusses redundancy architecture using ECMP in Section~\ref{Redundancy with ECMP}. 
+Chapter~\ref{chapter:Architecture and Implementation} also presents implementation of the proof of the concept system for the proposed load balancer architecture in detail.
+First overall architecure is explained in Section~\ref{sec:poc}.
+Then ipvs containerization is explained in detail in Section~\ref{sec:ipvs}.
+Finally implementation of BGP software container is explained in Section~\ref{sec:bgp}.
+
 Chapter \ref{chapter:portablelb} discusses portability and performance levels of the proposed load balancer in 1 Gbps network environment.
 Chapter \ref{chapter:redundancy} discusses the redundancy and scalability of the proposed load balancers.
 Chapter \ref{chapter:performance} present the performance levels of the proposed load balancer in 10 Gbps network environment and discuss the method to improve the performance of a software load balancer.
