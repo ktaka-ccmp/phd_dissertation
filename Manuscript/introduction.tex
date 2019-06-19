@@ -271,13 +271,13 @@ Because of the broader scope of applications, an out of box Mesos might not be p
     & \multicolumn{1}{c|}{Kuberenets} & \multicolumn{1}{c|}{Docker Swarm} & \multicolumn{1}{c|}{Mesos Marathon} \\ \hline
     Config file & Yaml & Yaml & Json  \\ \hline
     Scheduling & Yes &  Yes &  Yes  \\ \hline
-    Ingress routing & \begin{tabular}{c} Static\\ Cloud load balancer$^{**}$\end{tabular} & Static & Static \\ \hline
+    Ingress routing & \begin{tabular}{c} Static\\ Cloud load balancer$^{*}$\end{tabular} & Static & Static \\ \hline
     Internal routing & iptables DNAT & ipvs &  haproxy  \\ \hline
   \end{tabular}
   \caption{Container orchestrator comparison.}
   \centering\parbox[c]{0.9\columnwidth}{
     Important aspects of features as web application infrastructures are compared.
-    $^{**}$Support for Cloud load balancer is only avalable in limited infrastructures including GCP, AWS, Azure and Openstack.
+    $^{*}$Support for Cloud load balancer is only avalable in limited infrastructures including GCP, AWS, Azure and Openstack.
   }
   \label{table:orchestrator_comparison}
 \end{table}
