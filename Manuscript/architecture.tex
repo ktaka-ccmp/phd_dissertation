@@ -61,11 +61,13 @@ These include the bare metal load balancers for on-premise data centers.
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, and hence it would be very difficult to find out which node is malfunctioning.   
 
-Regarding the first problem, if there is no load balancer that is not supoorted by Kubernetes, users must set up the routing manually depending on the infrastructure.
+Regarding the first problem, if there is no load balancer that is not supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
 The traffic would be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
-However, this approach significantly degrades the portability of container clusters.
+However, in the cases where the upstream router is administered by different organizations, users are always required to negotiate with them about adding a route to their new application cluster.
+Therefore this approach significantly degrades the portability of container clusters.
+Furthermore, a static route usually lacks redundancy and scalability.
 
-In short, 1) Kubernetes can be used only in limited environments where the external load balancers are supported, and 2) the routes incoming traffic follow are very complex.
+In short, 1) while Kubernetes is effective in major cloud providers, it fails to provide portability for container clusters in environments where there is no supported load balancer, and 2) the routes incoming traffic follow are very complex.
 In order to address these problems, the author proposes a containerized software load balancer 
 that is deployable in any environment even if there are no external load balancers.
 
@@ -136,7 +138,8 @@ However, in practice, there are a lot of cases where this architecture is benefi
 For example, if a software load balancer is capable of handling 1 Gbps equivalent of traffic and the upstream router is capable of handling 10 Gbps, it still is worthwhile launching 10 of the software load balancer containers to fill up maximum throughput of the upstream router.
 
 %
-We place a node with the knowledge of the overlay network as a route reflector, to deal with the complexity due to the SNAT.
+We place a node with the knowledge of the overlay network as a route reflector, to deal with the complexity due to the overlay network. 
+Since the upstream router normally has no knowledge of overlay network used in a Kubernet clusters, and hence IP addresses that containers use, a container must use SNAT to communicate with the router.
 The SNAT caused a problem when we tried to co-host multiple load balancer containers for different services on a single node, and let them connect the upstream router directly.
 This was due to the fact that the BGP agent used in our experiment only used the source IP address of the connection to distinguish the BGP peer.
 The agent behaved as though different BGP connections from different containers belonged to a single BGP session because the source IP addresses were identical due to the SNAT.
