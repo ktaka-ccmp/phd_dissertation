@@ -1,4 +1,5 @@
-This chapter provides discussion of load balancer architecture suitable for container clusters.
+
+This chapter provides a discussion of load balancer architecture suitable for container clusters.
 First the author discusses problems of conventions architecture in Section~\ref{Problem of Conventional Architecture}.
 Then the author proposes a portable software load balancer in container in Section~\ref{Load balancer in container}
 After that the author discusses redundancy architecture using ECMP in Section~\ref{Redundancy with ECMP}. 
@@ -33,15 +34,19 @@ In this section the author discusses the architecture of a portable load balance
     \label{fig:K8sConventional_bm}
   \end{subfigure}
 
-  \caption{Conventional architecture of Kubernetes clusters in cloud infrastructure and on-premise data center}
-  
   \centering
-  \begin{minipage}{0.9\columnwidth}
-    In supported infrastructures, e.g., major cloud providers, Kubernetes automatically set up a route to an IP address for a service(the author calls this address, service IP), when web service providers a launch container cluster.
-    In unsupported infrastructures, e.g., on-premise data centers, they have to manually set up the route.
+
+  \begin{minipage}{1.0\columnwidth}
+    \caption[Conventional architecture of Kubernetes clusters]
+            {Conventional architecture of Kubernetes clusters in cloud infrastructure and on-premise data center.
+%\small
+(a) In supported infrastructures, e.g., major cloud providers, Kubernetes automatically send a request to set up a load balancer, when a container cluster is launched.
+ The load balancer distributes ingress traffic toward an IP address for a service(the author calls this address, service IP) to all the existing nodes.
+(b) In unsupported infrastructures, e.g., on-premise data centers, web application providers have to manually set up a route to one of the nodes.
+Packets that reached any of the nodes, having the service IP as the destination IP address, will be distributed to appropriate pods by the iptables DNAT based internal load balancer.
+            }
   \end{minipage}
 
-%  \label{fig:exabgp}
 \end{figure}
 
 The problem of Kubernetes is its partial support for the ingress traffic routing.
@@ -55,10 +60,10 @@ The proxy daemon will set up iptables DNAT rules that function as the internal l
 A {\em pod} is a group of containers that share the same network namespace and cgroup,
 and is the basic execution unit in a Kubernetes cluster.
 
-When a service is created, the master schedules where to run {\em pods} and kubelets on the nodes launch them accordingly.
+When a service is created, the master schedules where to run {\em pods}, and kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
 The proxy daemon on the nodes also setup iptables DNAT\cite{MartinA.Brown2017} rules. 
-The Ingress traffic will then be evenly distributed by the cloud load balancer to nodes, 
+The Ingress traffic will then be evenly distributed by the cloud load balancer to all the existing nodes, 
 after which it will be distributed again by the DNAT rules on the nodes to the designated {\em pods}. 
 The returning packets follows the exact same route as the incoming ones.
 
@@ -69,14 +74,17 @@ These include the bare metal load balancers for on-premise data centers.
 2) Distributing the traffic twice, first on the external load balancers and second on each node, complicates the administration of packet routing. 
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, and hence it would be very difficult to find out which node is malfunctioning.   
+3) The ingress traffic is distributed to all the existing nodes in the Kubernetes cluster. 
+Suppose there are 1,000 nodes and one of web applications only uses 10 nodes, it seems inefficient and rather complicated to distribute the ingress traffic to all the 1,000 nodes.
 
-Regarding the first problem, if there is no load balancer that is not supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
-The traffic would be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
-However, in the cases where the upstream router is administered by different organizations, users are always required to negotiate with them about adding a route to their new application cluster.
-Therefore this approach significantly degrades the portability of container clusters.
+Regarding the first problem, if there is no load balancer that is supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
+The traffic will be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
+In the cases where the upstream router is administered by a data center company, users must always negotiate with them about adding a route to their new application cluster.
+This approach significantly lacks simplicity, and degrades the portability of container clusters.
 Furthermore, a static route usually lacks redundancy and scalability.
 
-In short, 1) while Kubernetes is effective in major cloud providers, it fails to provide portability for container clusters in environments where there is no supported load balancer, and 2) the routes incoming traffic follow are very complex.
+In short, while Kubernetes is effective in major cloud providers, it fails to provide portability for container clusters in environments where there is no supported load balancer. 
+And the routes incoming traffic follow are very complex and inefficient.
 In order to address these problems, the author proposes a containerized software load balancer 
 that is deployable in any environment even if there are no external load balancers.
 
@@ -88,9 +96,9 @@ The author proposes a load balancer architecture, where a cluster of load balanc
 Figure~\ref{fig:K8sProposed} shows the proposed load balancer architecture for Kubernetes,
 which has the following characteristics;
 1) Each load balancer itself is run as a {\em pod} by Kubernetes. 
-2) Load balancing tables are dynamically updated based on information about running {\em pods}.
+2) Load balancing rules are dynamically updated based on the information about running {\em pods}.
 3) There exist multiple load balancers for redundancy and scalability.
-4) The routing table in the upstream router are updated dynamically using standard network protocol.
+4) The routing table in the upstream router is updated dynamically using standard network protocol.
 
 \begin{figure}[h]
   \begin{center}
@@ -98,10 +106,10 @@ which has the following characteristics;
   \caption{Kubernetes cluster with proposed load balancer.}
   \label{fig:K8sProposed}
   \begin{minipage}{0.9\columnwidth}
-  Each load balancer itself is run as a {\em pod} by Kubernetes. 
-  Load balancing tables are dynamically updated based on information about running {\em pods}.
+  Each load balancer itself is run as a {\em pod} in the Kubernetes cluster. 
+  Load balancing rules are dynamically updated based on the information about running {\em pods}.
   There exist multiple load balancers for redundancy and scalability.
-  The routing table in the upstream router are updated dynamically using standard network protocol.
+  The routing table in the upstream router is updated dynamically using standard network protocol.
   \end{minipage}
   \end{center}
 \end{figure}
@@ -136,16 +144,16 @@ Therefore users do not need to manually add the route every time new load balanc
 \vspace{1mm}
 
 \begin{minipage}{0.9\columnwidth}
-  The traffic from the internet is distributed by the upstream router to multiple of lb pods using hash-based ECMP(the solid green line) and then distributed by the lb pods to web pods using Linux kernel's ipvs(the solid red line).
-  The route to an IP address for a service(the author calls this address, service IP) is advertised to the route reflector(the dotted red line) and then advertised to the upstream router(the blue dotted line) using iBGP.
-  For the green lines, a service IP address is used. The red lines use the IP addresses of the overlay network. The blue line uses the IP addresses of the node network.
+   The traffic from the internet is distributed by the upstream router to multiple of load balancer(lb) pods using hash-based ECMP(the solid green line), after which distributed by the lb pods to web pods using Linux kernel's ipvs(the solid red line).
+  The route toward a service IP is advertised to the route reflector(the dotted red line), after which advertised to the upstream router(the blue dotted line) using iBGP.
+%  For the green lines, a service IP address is used. The red lines use the IP addresses of the overlay network. The blue line uses the IP addresses of the node network.
 \end{minipage}
 
 \label{fig:ecmp}
 \end{figure}
 
-While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container.
-The author proposes redundant architecture using ECMP with BGP for load balancer containers usable especially in on-premise data centers.
+While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the ingress traffic to the ipvs container.
+The author proposes redundant architecture using ECMP with BGP for proposed load balancer containers.
 
 Fig.~\ref{fig:ecmp} shows a schematic diagram to explain redundancy architecture with ECMP for the proposed load balancer.
 %
@@ -155,12 +163,12 @@ The multiple next hops and their cost are often populated using the BGP protocol
 %
 The notable benefit of the ECMP setup is its scalability.
 All the load balancers that claims as the next hop is active, i.e., all of them are utilized to increase the performance level.
-Since the traffic from the internet is distributed by the upstream router, the overall throughput is limited by performance levels of the router after all.
+Since the traffic from the internet is distributed by the upstream router, the overall throughput is, after all, limited by performance levels of the router.
 However, in practice, there are a lot of cases where this architecture is beneficial.
 For example, if a software load balancer is capable of handling 1 Gbps equivalent of traffic and the upstream router is capable of handling 10 Gbps, it still is worthwhile launching 10 of the software load balancer containers to fill up maximum throughput of the upstream router.
 
 %
-In the proposed redundant architecture, there exists a node with the knowledge of the overlay network as a route reflector
+In the proposed redundant architecture, there exists a node with the knowledge of the overlay network as a route reflector.
 A route reflector is a network component for BGP to reduce the number of peerings by aggregating the routing information\cite{rfc4456}.
 In the proposed architecture the author uses it as a delegater for load balancer containers towards the upstream router.
 
@@ -177,11 +185,11 @@ This is preferable in terms of security especially when a different organization
 
 By using the route reflector, we can have the following benefits.
 1) Each node can accommodate multiple load balancer containers. This was not possible when we tried to directly connect load balancers and the router through SNAT.
-2) The router does not need to allow peering connections from random IP addresses that may be used by load balancer containers. Now, the router only need to have the reflector information as the BGP peer definition.
+2) The router does not need to allow peering connections from random IP addresses that may be used by load balancer containers. Now, the router only need to have the reflector information in the BGP peer definition.
 
-Since a standard Linux box is used for the route reflector, it can be configured as the user likes;
-a) It can be configured to belong to the overlay network so that multiple BGP sessions from a single node can be established.
-b) A BGP agent that supports dynamic neighbor (or dynamic peer) can be used, where one only needs to define the IP range as a peer group and does away with specifying every possible IP that load balancers may use.
+Since a standard Linux box is used for the route reflector, it can be configured as we like;
+a) It can be configured to belong to the overlay network so that multiple BGP sessions from containers on a single node can be properly distinguished.
+b) One can select a BGP agent that supports dynamic neighbor (or dynamic peer), where he only needs to define the IP range as a peer group and does away with specifying every possible IP that load balancers may use.
 Although not shown in the Fig.~\ref{fig:ecmp}, it is possible to have another route reflector for redundancy purpose.
 
 \FloatBarrier
