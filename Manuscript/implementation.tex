@@ -243,23 +243,24 @@ A configuration for exabgp is shown in \ref{appendix:exabgp_config}.
 
 
 \section{Summary}
-In this chapter the author provided discussion of load balancer architecture and its implementations suitable for container clusters.
 
-First the author discussed problems of conventional architecture. 
-Since Kubernetes is dependent on external load balancers provided by the cloud infrastructures, 
-it failed to provide portability of a web application in environments where there was no supported load balancer. 
-Furthermore the routes ingress traffic from the internet follow were very complex and inefficient.
+In this chapter, the author provided a discussion of load balancer architecture and its implementations suitable for container clusters.
+%
+First, the author discussed the problems of conventional architecture.
+Since Kubernetes is dependent on external load balancers provided by the cloud infrastructures,
+it failed to provide portability of a web application in environments where there was no supported load balancer.
+Furthermore, the routes that ingress traffic from the internet follow were very complex and inefficient.
 
 In order to alleviate these problems, the author proposed a cluster of software load balancers in containers.
-The proposed load balancers utilized container technotlogy and was managed by Kubernetes.
-As a result, it is runnable on any environment including cloud infrastructures and on-premise data centes.
-Furthermore, since Kubernetes manages load balancer containers, it can quickly scale the number containers depending on the demand.
-
+The proposed load balancers utilized container technology and were managed by Kubernetes.
+As a result, it is runnable on any environment including cloud infrastructures and on-premise data centers.
+Furthermore, since Kubernetes manages load balancer containers, it can quickly scale the number of containers depending on the demand.
+%
 The author also discussed redundant architecture using ECMP with BGP for proposed load balancer containers.
-By using the ECMP, the upstream router can route the ingress traffic to a cluster of load balancer containers in a redundant and scalable mannar.
+By using the ECMP, the upstream router can route the ingress traffic to a cluster of load balancer containers in a redundant and scalable manner.
 By using BGP, which is the standard protocol, ECMP routing rules in the upstream router are automatically populated, upon the launch of load balancer containers.
 
 As a result users, i.e., web application providers can quickly and automatically set up routes to their web application, upon its launch.
-This will greatly improve the portability of a web application and there by enables migrations.
+This will greatly improve the portability of a web application and thereby enables migrations.
 
 
