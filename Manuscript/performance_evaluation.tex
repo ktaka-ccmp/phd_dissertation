@@ -394,14 +394,16 @@ From the first look of the results, since changing CPU counts changed the load b
 However, since there are cases in the cloud environment, where changing the VM types or CPU counts also changes the network bandwidth limit, a detailed analysis is further required in the future to clarify which factor limits the throughput in the cases of these cloud environments.
 Still, we can say that the proposed ipvs load balancers can be run in GCP and AWS, and function properly.
 
+\mytodo[inline]{Mention that BGP peering is unavailable in cloud , in somewhere.}
+
 \FloatBarrier
 
 \section{Redundancy with ECMP}
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container in a redundant and scalable manner.
 The ECMP technique is expected to make the load balancers redundant and scalable since all the load balancer containers act as active.
-We examined the behavior of the ECMP routing table updates, by changing the number of the load balancers.
-After that, in order to explore the scalability, we also measured the throughput from a benchmark client with ECMP routes when multiple of the ipvs container load balancers are deployed.
+The author examined the behavior of the ECMP routing table updates, by changing the number of the load balancers.
+After that, in order to explore the scalability, the author also measured the throughput from a benchmark client with ECMP routes when multiple of the ipvs container load balancers are deployed.
 
 \begin{figure}[h]
   \centering
@@ -449,8 +451,8 @@ After that, in order to explore the scalability, we also measured the throughput
 \end{table}
 }
 
-Fig.~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experimental setup and also summarizes hardware and software specifications.
-Notable differences from the previous throughput experiment in Fig.~\ref{fig:benchmark-schem} are as follows;
+Figure~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experimental setup. Table~\ref{tab:ecmp-hw_sw_spec} summarizes hardware and software specifications.
+Notable differences from the previous throughput experiment in Figure~\ref{fig:benchmark-schem} and Table~\ref{tab:hw_machine_spec} are as follows;
 1) Each load balancer pods now consists of both an ipvs container and an exabgp container.
 2) The routing table of the benchmark client is updated by BGP protocol through a route reflector.
 3) The NIC of the benchmark client has been changed to 10 Gbps card since now we have multiple of ipvs container load balancers that are capable of filling up 1 Gbps bandwidth.
@@ -518,24 +520,24 @@ Notable differences from the previous throughput experiment in Fig.~\ref{fig:ben
 \end{table}
 }
 
-First, we examined ECMP functionality by watching the routing table on the benchmark client.
-Fig.~\ref{fig:exabgp_routing_table}~(\subref{fig:single}) shows the routing table entry on the router when a single load balancer pod exists.
-From this entry, we can tell that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
+First, the author examined ECMP functionality by watching the routing table on the benchmark client.
+Table~\ref{tab:exabgp_routing_table}~(\subref{tab:single}) shows the routing table entry on the router when a single load balancer pod exists.
+From this entry, it is seen that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
 It also shows that this routing rule is updated by zebra.
 
-When the number of the load balancer pods is increased to three, we can see the routing table entry in Fig.~\ref{fig:exabgp_routing_table}~(\subref{fig:three}).
-We have three next hops towards 10.1.1.0/24 each of which being the node where the load balancer pods are running.
+The routing table entry in Table~\ref{tab:exabgp_routing_table}~(\subref{tab:three}) is seen when the number of the load balancer pods is increased to three.
+There are three next hops towards 10.1.1.0/24 each of which being the node where the load balancer pods are running.
 The weights of the three next-hops are all 1.
 The update of the routing entry was almost instant as we increased the number of the load balancers.
 
-Fig.~\ref{fig:exabgp_routing_table}~(\subref{fig:double_svc}) shows the case where we additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
-We could accommodate two different services with different service IPs, one with three load balancers and the other with two load balancers on a group of nodes(10.0.0,105,10.0.0,106,10.0.0,107).
+Table~\ref{tab:exabgp_routing_table}~(\subref{tab:double_svc}) shows the case where the author additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
+It was possible to accommodate two different services with different service IPs, one with three load balancers and the other with two load balancers on a group of nodes(10.0.0,105,10.0.0,106,10.0.0,107).
 The update of the routing entry was almost instant as we started the load balancers for the second service.
 
 As far as the route withdrawal is concerned, if an exabgp is killed by SIGKILL or SIGTERM the kernel of the node close the BGP connection by sending out a packet with FIN flag to the peer gobgpd on the route reflector, and thus the route is withdrawn immediately.
 The gobgp on the route reflector also periodically check the BGP connection, and if the peer exabgp container is unresponsive for more than the specified duration, “hold-time“ setting in gobgpd, it will also terminate the connection and withdraw the route.
 The packets arriving within the duration will be dropped.
-However, we can set up the “hold-time” short enough so that the retransmitted TCP packets from the client will be forwarded correctly to functioning load balancers.
+However, it is possible to set up the “hold-time” short enough so that the retransmitted TCP packets from the client will be forwarded correctly to functioning load balancers.
 
 \FloatBarrier
 
@@ -579,34 +581,47 @@ However, we can set up the “hold-time” short enough so that the retransmitte
   \label{fig:ecmp_delay_histgram_ieice}
 \end{figure}
 
-We also carried out throughput measurement to show that our proposed architecture increases the throughput as we increase the number of the load balancers.
-Fig.~\ref{fig:ecmp_scalability}~(\subref{fig:ecmp_lb_cubic_ieice}) shows the results of the measurements.
-There are four solid lines in the figure, each corresponding the throughput result when there are one through four of the proposed load balancers.
+The author also carried out throughput measurement to show that the proposed architecture increases the throughput as the number of the load balancers is increased.
+Figure~\ref{fig:ecmp_lb_cubic_ieice} shows the results of the measurements.
+There are four solid lines in the figure, each corresponding to the throughput result when there are one through four of the proposed load balancers.
 The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods(lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). The performance level increases linearly as we increases the number of the load balancers up to four of the ipvs load balancers, but did not scale further.
-This was because we used up CPU power of the benchmark client since the CPU usage was 100\% when there were more than four load balancers.
-We expect that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can access the load balancers through an ECMP router, will improve the performance level further.
+This was because the benchmark program used up CPU power of the benchmark client, i.e., the CPU usage was 100\% when there were more than four load balancers.
+The author expect that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can access the load balancers through an ECMP router, will improve the performance level further.
 
-Fig.~\ref{fig:ecmp_scalability}~(\subref{fig:ecmp_response_ieice}) shows the throughput measurement results when we periodically changed the number of the load balancers. 
-The red line in the figure shows the number of the ipvs load balancer pods, which we changed randomly every 60 seconds.
+Figure~\ref{fig:ecmp_response_ieice} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
+The red line in the figure shows the number of ipvs load balancer pods, which is changed randomly every 60 seconds.
 The blue line corresponds to the resulting throughput.
-As we can see from the figure, the blue line nicely follows the shape of the red line.
+As can be seen from the figure, the blue line nicely follows the shape of the red line.
 This indicates that new load balancers are immediately utilized after they are created, and after removing some load balancers, the traffic to them is immediately directed to the existing load balancers.
 
-Fig.~\ref{fig:ecmp_scalability}~(\subref{fig:ecmp_delay_histgram_ieice}) shows histogram of the ECMP update delay, where we measured the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, as we change the number of the ipvs pods randomly every 60 seconds for 20 hours.
-As we can see from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
-We can conclude that ECMP routing update in our proposed architecture is quick enough.
+Figure~\ref{fig:ecmp_delay_histgram_ieice} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, as the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
+As can be seen from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
+The author concludes that ECMP routing update in the proposed architecture is quick enough.
 
 \FloatBarrier
 
 \section{Summary}\label{Conclusions}
 
-In this paper, we proposed a portable load balancer with ECMP redundancy for the Kubernetes cluster systems that is aimed at facilitating migration of container clusters for web services.
-We implemented an experimental web cluster system with multiple of load balancers and web servers using Kubernetes and OSSs on top of standard Linux boxes to prove the functionality of the proposed architecture.
-We conducted performance measurements and found that the ipvs based load balancer in container functioned properly both in on-premise data center and cloud environments while it showed the comparable performance levels as the existing iptables DNAT based load balancer.
-We also carried out experiments to verify the feasibility of ECMP redundancy in on-premise data center, and revealed that it functions properly with linear scalability up to four load balancers.
+In this chapter, the author conducted performance measurements in order to verify the feasibility of the proposed load balancer architecture.
+The author confirmed that the proposed load balancer is portable, and the ECMP routing is redundant and scalable.
+From the evaluation the author confirmed the followings;
 
-The current limitations of this study are;
-1) Currently, BGP peering is not supported in GCP and AWS, and thus redundancy is achieved only by route update through cloud API upon the start of a load balancer.
-The authors expect the cloud providers to support it in the future.
-2) Most of the experiments are in 1Gbps network environments.
-For future work, we plan to carry out throughput measurement in 10Gbps network environments and also improve the performance of a single software load balancer on standard Linux box using XDP technology.
+The author evaluated the basic characteristics of the proposed load balancer  using physical servers in the on-premise data center, and compared performance level with iptables DNAT and nginx as a load balancer.
+The throughput linearly increased as the number of nginx {\em pod}s increased and then it eventually saturated.
+The throughput depends on the multicore packet processing settings and overlay network settings.
+The throughput increased as more CPU cores were utilized for packet processing.
+The throughput of the host-gw mode without any encapsulation was higher than vxlan mode and udp mode, where the packet is encapsulated.
+The throughput of the ipvs in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
+This was due to the fact that maximum throughput was limited by the bandwidth of the network interface.
+By utilizing ipvs-tun mode, i.e. L3DSR, the throughput of the ipvs in container improved 1.5 times.
+
+The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
+While the performance levels of the proposed load balancers in cloud environments were inferior to those in on-premise data centers, the author confirmed the ipvs in container was runnable in GCP and AWS.
+
+The author evaluated ECMP functionality by watching routing table updates on the router when the new load balancer is added or removed.
+The author also evaluated the performance level by changing the number of load balancers.
+The ECMP routing update in the proposed architecture was properly functioning and quick enough.
+The linear scalability of the ECMP throughput has been confirmed up to 4x load balancers.
+
+
+
