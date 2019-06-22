@@ -83,17 +83,17 @@ Transfer/sec:     38.86MB
     & Memory: 32GB \\
     & NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps \\
     & (Node x 6, Load Balacner x 1, Client x 1) \\
-    \hline 
+%    \hline 
     & \\
-    \hline 
+%    \hline 
     \multicolumn{2}{l}{[Node Software]}  \\
     & OS: Debian 8.7, linux-3.16.0-4-amd64 \\
     & Kubernetes v1.10.6 \\
     & flannel v0.7.0 \\
     & etcd version: 3.0.15 \\
-    \hline 
+%    \hline 
     & \\
-    \hline 
+%    \hline 
     \multicolumn{2}{l}{[Container Software]}   \\
     & Keepalived: v1.3.2 (12/03,2016) \\
     & nginx : 1.11.1(load balancer), 1.13.0(web server) \\
@@ -268,7 +268,7 @@ These may not be considered a significant difference; however, this indicates th
 
 Fig.~\ref{fig:cpu_usage} compares the CPU usage for proposed load balancer(ipvs in a container) and iptables DNAT at the time of the throughput measurement in the on-premise data center.
 Since the CPU usage was higher for the ipvs in a container, the proposed load balancer may be less efficient compared with the iptables DNAT.
-However since single hardware can accommodate 1 Gbps traffic with CPU usage of about 60\%, the authors regard this as a tolerable overhead.
+However, since single hardware can accommodate 1 Gbps traffic with CPU usage of about 60\%, the authors regard this as a tolerable overhead.
 
 \mytodo[inline]{Change this sentence depending on the XDP section.}
 (The authors plan to improve the efficiency of the proposed load balancer by developing a software load balancer using eXpress data path(XDP) technology\cite{hoiland2018express} in the future work and thereby improving the performance levels of the portable load balancer.)
@@ -324,7 +324,6 @@ By using the ipvs-tun (L3DSR mode), the throughput of the proposed load balancer
 
 \section{Cloud experiment}
 
-Throughput were also measured in the cloud.
 
 {
 \setlength{\tabcolsep}{3em}
@@ -338,14 +337,14 @@ Throughput were also measured in the cloud.
     & Instance type: custom instance \\
     & CPU: Xeon 2.2GHz, 8, 16, 32 cpus \hspace{2cm} \\
     & Memory: 16GB \\
-    & NIC: virtio\_net /w 16 rx-queues, 1Gbps \\
+    & NIC: virtio\_net /w 16 rx-queues \\
     & (Node x 6, Load balancer x 1, Client x 1) \\
     & \\
     \multicolumn{2}{l}{[AWS VM Instance Specification]}   \\
     & Instance type: c4.2xlarge, c4.4xlarge, c4.8xlarge  \\
     & CPU: Xeon E5-2666 v3 2.90GHz, 8, 16, 32 cpus \\
     & Memory: 64GB \\
-    & NIC: ixgbevf /w 2 rx-queues, 1Gbps \\
+    & NIC: ixgbevf /w 2 rx-queues \\
     & (Node x 6, Load balancer x 1, Client x 1) \\
     \hline
   \end{tabular}
@@ -356,16 +355,28 @@ Throughput were also measured in the cloud.
 
 \begin{figure}[h]
     \includegraphics[width=0.9\columnwidth]{Figs/gcp_all_ieice}
-    \caption[Throughput measurement results in GCP]{Throughput measurement results in GCP.}
+    \caption[Throughput measurement results in GCP]{
+Throughput measurement results in GCP.
+The maximum throughput is larger for instances with more virtual CPUs.
+    }
     \label{fig:gcp_all_ieice}
 \end{figure}
 
 
 \begin{figure}[h]
     \includegraphics[width=0.9\columnwidth]{Figs/aws_c4_ieice}
-    \caption[Throughput measurement results in AWS]{Throughput measurement results in AWS.}
+    \caption[Throughput measurement results in AWS]{
+Throughput measurement results in AWS.
+The maximum throughput is larger for instances with more virtual CPUs.
+    }
     \label{fig:aws_c4_ieice}
 \end{figure}
+
+The throughput measurements were also carried in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
+Table~\ref{fig:cloud_machine_spec} shows the virtual machine specifications for the experiment.
+
+The vxlan mode of the flannel is used for the overlay network in both of the cloud environment.
+The setting \enquote{(RSS, RPS) = (off, on)} is used for the experiments in both of the environment.
 
 Figure~\ref{fig:gcp_all_ieice} and Figure~\ref{fig:aws_c4_ieice} show the load balancer performance levels that are measured in GCP and AWS, respectively. In the case of GCP, custom instance with 32Gbyte memory and with 8, 16, and 32 CPU are used.
 And in the case of AWS instance type of c4.2xlarge, c4.4xlarge, and c4.8xlarge are used.
@@ -373,6 +384,12 @@ These are aimed to show that our proposed load balancer can be run in cloud envi
 
 Both results show similar characteristics as the experiment in an on-premise data center in Figure~\ref{fig:ipvs-iptables-nginx}, where throughput increased linearly to a certain saturation level that is determined by either network speed or machine specifications.
 Since in the cases of cloud environments we can easily change the machine specifications, especially CPU counts, we measured throughput with several conditions of them.
+
+In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even if much more logical CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
+For example, while the maximum throughput of the ipvs load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center(Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 virtual CPUs.
+This is probably due to the inefficiency of the virtual machines as opposed to Bare Metal servers.
+The author leaves a detailed analysis for future work.
+
 From the first look of the results, since changing CPU counts changed the load balancer's throughput saturation levels, we thought VM's computation power limited the performance levels.
 However, since there are cases in the cloud environment, where changing the VM types or CPU counts also changes the network bandwidth limit, a detailed analysis is further required in the future to clarify which factor limits the throughput in the cases of these cloud environments.
 Still, we can say that the proposed ipvs load balancers can be run in GCP and AWS, and function properly.
@@ -381,6 +398,7 @@ Still, we can say that the proposed ipvs load balancers can be run in GCP and AW
 
 \section{Redundancy with ECMP}
 
+While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container in a redundant and scalable manner.
 The ECMP technique is expected to make the load balancers redundant and scalable since all the load balancer containers act as active.
 We examined the behavior of the ECMP routing table updates, by changing the number of the load balancers.
 After that, in order to explore the scalability, we also measured the throughput from a benchmark client with ECMP routes when multiple of the ipvs container load balancers are deployed.
