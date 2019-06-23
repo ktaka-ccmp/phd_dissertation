@@ -24,10 +24,10 @@ The throughput is measured by sending out HTTP requests from the wrk towards a l
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figs/benchmark-schem}
+  \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem}
   \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Benchmark setup]{
 Benchmark setup.
 There are nodes on which nginx pods are deployed as web servers.
@@ -159,10 +159,10 @@ The saturated performance levels of iptables DNAT are higher than those of ipvs,
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figs/ipvs_mcore_proccessing}
-
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_mcore_proccessing}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Effect of multicore packet processing on ipvs throughput]{
 Effect of multicore packet processing on ipvs throughput.
 Throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
@@ -175,10 +175,10 @@ The throughput is highest for the setting with eight cores (rps is on), followed
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figs/iptables_mcore_proccessing}
-
+  \includegraphics[width=0.8\columnwidth]{Figs/iptables_mcore_proccessing}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Effect of multicore packet processing on iptables DNAT throughput]{
 Effect of multicore packet processing iptables throughput.
 Throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
@@ -212,10 +212,11 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figs/ipvs_flannel_mode}
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_flannel_mode}
 
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Effect of flannel backend modes on ipvs throughput]{
       Effect of flannel backend modes on ipvs throughput.
       the host-gw mode where no encapsulation is conducted shows the highest performance level,
@@ -228,10 +229,11 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\columnwidth]{Figs/iptables_flannel_mode}
+    \includegraphics[width=0.8\columnwidth]{Figs/iptables_flannel_mode}
 
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Effect of flannel backend modes on iptables DNAT throughput]{
       Effect of flannel backend modes on  iptables DNAT throughput.
       the host-gw mode where no encapsulation is conducted shows the highest performance level,
@@ -247,9 +249,13 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 \subsubsection{Comparison of different load balancer}
 
 \begin{figure}[h]
-  \includegraphics[width=0.9\columnwidth]{Figs/ipvs-iptables-nginx}
-  \caption{Throughput measurement results of the proposed load balancer in on-premise data center.}
-  \label{fig:ipvs-iptables-nginx}
+  \includegraphics[width=0.8\columnwidth]{Figs/ipvs-iptables-nginx}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
+    \caption{Throughput measurement results of the proposed load balancer in on-premise data center.}
+    \label{fig:ipvs-iptables-nginx}
+  \end{minipage}
 \end{figure}
 
 \interfootnotelinepenalty=10000
@@ -278,8 +284,12 @@ This means that the proposed ipvs container load balancer is at least as good as
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
-  \caption{Latency cumulative distribution function.}
-  \label{fig:latency_cdf_rps_40pods}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
+    \caption{Latency cumulative distribution function.}
+    \label{fig:latency_cdf_rps_40pods}
+  \end{minipage}
 \end{figure}
 
 Figure~\ref{fig:latency_cdf_rps_40pods} compares Cumulative Distribution Function(CDF) of the load balancer latency at the two constant loads, 160K[req/sec] and 180K[req/sec] for ipvs and iptables DNAT.
@@ -299,8 +309,12 @@ The authors plan to improve the efficiency of the proposed load balancer by deve
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/cpu_usage}
-  \caption{CPU usage of the ipvs and iptables DNAT.}
-  \label{fig:cpu_usage}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
+    \caption{CPU usage of the ipvs and iptables DNAT.}
+    \label{fig:cpu_usage}
+  \end{minipage}
 \end{figure}
 
 \FloatBarrier
@@ -322,8 +336,9 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem-dsr}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption{Physical configuration for L3DSR experiment.}
     \label{fig:benchmark-schem-dsr}
   \end{minipage}
@@ -332,8 +347,12 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_1g.png}
-  \caption{Throughput of ipvs l3dsr @1Gbps.}
-  \label{fig:ipvs_l3dsr_1g.png}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
+    \caption{Throughput of ipvs l3dsr @1Gbps.}
+    \label{fig:ipvs_l3dsr_1g.png}
+  \end{minipage}
 \end{figure}
 
 The author carried out throughput measurement using the experimental setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
@@ -352,6 +371,15 @@ For example, the throughput of ipvs-tun is 1.5 times higher than those of conven
 
 \section{Cloud experiment}
 
+The throughput measurements were also carried in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
+The specifications of virtual machines used for the experiment in both environment are summarized in Table~\ref{fig:gcp_machine_spec} and Table~\ref{fig:aws_machine_spec}.
+In the cases of cloud environments, it is easy to change the machine specifications, especially CPU counts.
+Therefore, the author measured throughput with several conditions of them.
+In the case of GCP, custom instance with 32Gbyte memory and with 8, 16, and 32 CPU are used.
+And in the case of AWS instance type of c4.2xlarge, c4.4xlarge, and c4.8xlarge are used.
+The vxlan mode of the flannel is used for the overlay network in both of the cloud environment.
+As for multicore packet processing, different settings depending on the number of prepared queues for VMs. 
+The setting \enquote{(RSS, RPS) = (on, off)} is used in GCP and the setting \enquote{(RSS, RPS) = (off, on)} is used in AWS.
 
 {
 \setlength{\tabcolsep}{3em}
@@ -361,14 +389,14 @@ For example, the throughput of ipvs-tun is 1.5 times higher than those of conven
   \centering
   \begin{tabular}{ll}
     \hline 
-    \multicolumn{2}{l}{[VM Instance Specification for Client and Web Server Nodes ]}   \\
+    \multicolumn{2}{l}{[GCP VM Instance Specification for Client and Web Server Nodes ]}   \\
     & Instance type: custom instance \\
     & CPU: Xeon 2.2GHz, 16 cpus \hspace{2cm} \\
     & Memory: 16GB \\
     & NIC: virtio\_net /w 16 rx-queues \\
     & (Node x 6, Client x 1) \\
     & \\
-    \multicolumn{2}{l}{[VM Instance Specification for Load balancer Node ]}   \\
+    \multicolumn{2}{l}{[GCP VM Instance Specification for Load balancer Node ]}   \\
     & Instance type: custom instance \\
     & CPU: Xeon 2.2GHz, 8, 16, 32 cpus \hspace{2cm} \\
     & Memory: 16GB \\
@@ -376,8 +404,9 @@ For example, the throughput of ipvs-tun is 1.5 times higher than those of conven
     & (Load balancer x 1) \\
     \hline
   \end{tabular}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Virtual Machine specifications in GCP experiment]{
 Virtual Machine specifications in GCP experiment.
 The author measured throuputs using load balancer nodes with 8 cpus, 16 cpus and 32 cpus.
@@ -397,14 +426,14 @@ Since the same number of rx-queues as the number f CPU is prepared, the setting 
   \centering
   \begin{tabular}{ll}
     \hline 
-    \multicolumn{2}{l}{[AWS VM Instance Specification]}   \\
+    \multicolumn{2}{l}{[AWS VM Instance Specification for Client and Web Server Nodes ]}   \\
     & Instance type: m4.4xlarge \\
     & CPU: Xeon E5-2686 v4 2.30GHz, 16 cpus \\
     & Memory: 64GB \\
     & NIC: ixgbevf /w 2 rx-queues \\
     & (Node x 6, Client x 1) \\
     & \\
-    \multicolumn{2}{l}{[AWS VM Instance Specification]}   \\
+    \multicolumn{2}{l}{[AWS VM Instance Specification for Load balancer Node ]}   \\
     & Instance type: c4.2xlarge, c4.4xlarge, c4.8xlarge  \\
     & CPU: Xeon E5-2666 v3 2.90GHz, 8, 16, 36 cpus \\
     & Memory: 15GB, 30GB, 60GB \\
@@ -412,7 +441,9 @@ Since the same number of rx-queues as the number f CPU is prepared, the setting 
     & (Load balancer x 1) \\
     \hline
   \end{tabular}
-  \begin{minipage}{0.9\columnwidth}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
     \caption[Virtual Machine specifications in AWS experiment]{
 Virtual Machine specifications in AWS experiment.
 The author measured throuputs using load balancer nodes with 8 cpus, 16 cpus and 36 cpus.
@@ -425,45 +456,48 @@ Since there are only two rx-queues, the setting with \enquote{(rss, rps) = (off,
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.9\columnwidth]{Figs/gcp_all_ieice}
+    \includegraphics[width=0.8\columnwidth]{Figs/gcp_all_tp}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
     \caption[Throughput measurement results in GCP]{
 Throughput measurement results in GCP.
+The throughput increases linearly as the number of nginx {\em pod}s increases until it reaches the saturation level.
 The maximum throughput is larger for instances with more virtual CPUs.
     }
-    \label{fig:gcp_all_ieice}
+    \label{fig:gcp_all_tp}
+  \end{minipage}
 \end{figure}
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.9\columnwidth]{Figs/aws_c4_ieice}
+  \includegraphics[width=0.8\columnwidth]{Figs/aws_c4_tp}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.8\columnwidth}
     \caption[Throughput measurement results in AWS]{
 Throughput measurement results in AWS.
+The throughput increases linearly as the number of nginx {\em pod}s increases until it reaches the saturation level.
 The maximum throughput is larger for instances with more virtual CPUs.
     }
-    \label{fig:aws_c4_ieice}
+    \label{fig:aws_c4_tp}
+  \end{minipage}
 \end{figure}
 
-The throughput measurements were also carried in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
-The specifications of virtual machines used for the experiment in both environment are summarized in Table~\ref{fig:gcp_machine_spec} and Table~\ref{fig:aws_machine_spec}.
-In the case of GCP, custom instance with 32Gbyte memory and with 8, 16, and 32 CPU are used.
-And in the case of AWS instance type of c4.2xlarge, c4.4xlarge, and c4.8xlarge are used.
-The vxlan mode of the flannel is used for the overlay network in both of the cloud environment.
-As for multicore packet processing, different settings depending on the number of prepared queues for VMs. 
-The setting \enquote{(RSS, RPS) = (on, off)} is used in GCP and the setting \enquote{(RSS, RPS) = (off, on)} is used in AWS.
-
-Figure~\ref{fig:gcp_all_ieice} and Figure~\ref{fig:aws_c4_ieice} show the load balancer performance levels that are measured in GCP and AWS, respectively. 
+Figure~\ref{fig:gcp_all_tp} and Figure~\ref{fig:aws_c4_tp} show the load balancer performance levels that are measured in GCP and AWS, respectively. 
 Both results show similar characteristics as the experiment in an on-premise data center in Figure~\ref{fig:ipvs-iptables-nginx}, where throughput increased linearly to a certain saturation level that is determined by either network speed or machine specifications.
-Since in the cases of cloud environments we can easily change the machine specifications, especially CPU counts, we measured throughput with several conditions of them.
 It is also seen that the performance levels are higher for load balancer nodes with more CPUs in both GCP and AWS. 
+These results indicate that the proposed ipvs load balancers can be run in GCP and AWS, and function properly.
 
 In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even though much more powerful CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
 For example, while the maximum throughput of the ipvs load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center(Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 and 36 virtual CPUs.
-This is probably due to the inefficiency of the virtual machines as opposed to Bare Metal servers.
+Although the author suspects that this is probably due to the inefficiency of the virtual machines as opposed to Bare Metal servers,
+it is not clear what limits the maximum performance levels of cloud environments. 
 The author leaves a detailed analysis for future work.
 
-From the first look of the results, since changing CPU counts changed the load balancer's throughput saturation levels, we thought VM's computation power limited the performance levels.
-However, since there are cases in the cloud environment, where changing the VM types or CPU counts also changes the network bandwidth limit, a detailed analysis is further required in the future to clarify which factor limits the throughput in the cases of these cloud environments.
-Still, we can say that the proposed ipvs load balancers can be run in GCP and AWS, and function properly.
+%% From the first look of the results, since changing CPU counts changed the load balancer's throughput saturation levels, we thought VM's computation power limited the performance levels.
+%% However, since there are cases in the cloud environment, where changing the VM types or CPU counts also changes the network bandwidth limit, a detailed analysis is further required in the future to clarify which factor limits the throughput in the cases of these cloud environments.
+%% Still, we can say that 
 
 \mytodo[inline]{Mention that BGP peering is unavailable in cloud , in somewhere.}
 
@@ -478,10 +512,11 @@ After that, in order to explore the scalability, the author also measured the th
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\columnwidth]{Figs/lb_ecmp_schem}
+  \includegraphics[width=0.8\columnwidth]{Figs/lb_ecmp_schem}
 
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Benchmark setup]{Benchmark setup.}
     \label{fig:ecmp-benchmark-schem}
   \end{minipage}
@@ -517,6 +552,7 @@ After that, in order to explore the scalability, the author also measured the th
     & nginx : 1.15.4(web server) \\
   \hline 
   \end{tabular}
+  \par\bigskip
   \caption{Hardware and software specifications.}
   \label{tab:ecmp-hw_sw_spec}
 \end{table}
@@ -614,58 +650,61 @@ However, it is possible to set up the “hold-time” short enough so that the r
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_lb_cubic_ieice}
+  \includegraphics[width=0.8\columnwidth,left]{Figs/ecmp_lb_cubic}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
         \caption[Throughput of ECMP redundant load balancer]{
           Throughput of ECMP redundant load balancer.
           The throughputs are measured for a single load balancer(lb x1), two(lb x2), three(lb x3) and four(lb x4) load balancers.
         }
   \end{minipage}
-  \label{fig:ecmp_lb_cubic_ieice}
+  \label{fig:ecmp_lb_cubic}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.98\columnwidth,left]{Figs/ecmp_response_ieice}
+  \includegraphics[width=0.8\columnwidth,left]{Figs/ecmp_response}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[Throughput responsiveness]{
       Throughput responsiveness.
       This shows the throughput responsiveness when the number of the load balancers was changed randomly in every 60 seconds.
     }
   \end{minipage}
-  \label{fig:ecmp_response_ieice}
+  \label{fig:ecmp_response}
 \end{figure}
 
 
 \begin{figure}[h]
-  \includegraphics[width=0.9\columnwidth,left]{Figs/ecmp_delay_histgram_ieice}
+  \includegraphics[width=0.8\columnwidth,left]{Figs/ecmp_delay_histgram}
+  \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.8\columnwidth}
     \caption[A histogram of the ECMP update delay]{
       A histogram of the ECMP update delay.
       This shows the delays until the number of running ipvs pods is reflected into the routing table on the benchmark client,
     when the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
     }
   \end{minipage}
-  \label{fig:ecmp_delay_histgram_ieice}
+  \label{fig:ecmp_delay_histgram}
 \end{figure}
 
 The author also carried out throughput measurement to show that the proposed architecture increases the throughput as the number of the load balancers is increased.
-Figure~\ref{fig:ecmp_lb_cubic_ieice} shows the results of the measurements.
+Figure~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
 There are four solid lines in the figure, each corresponding to the throughput result when there are one through four of the proposed load balancers.
 The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods(lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). The performance level increases linearly as we increases the number of the load balancers up to four of the ipvs load balancers, but did not scale further.
 This was because the benchmark program used up CPU power of the benchmark client, i.e., the CPU usage was 100\% when there were more than four load balancers.
 The author expect that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can access the load balancers through an ECMP router, will improve the performance level further.
 
-Figure~\ref{fig:ecmp_response_ieice} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
+Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
 The red line in the figure shows the number of ipvs load balancer pods, which is changed randomly every 60 seconds.
 The blue line corresponds to the resulting throughput.
 As can be seen from the figure, the blue line nicely follows the shape of the red line.
 This indicates that new load balancers are immediately utilized after they are created, and after removing some load balancers, the traffic to them is immediately directed to the existing load balancers.
 
-Figure~\ref{fig:ecmp_delay_histgram_ieice} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, as the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
+Figure~\ref{fig:ecmp_delay_histgram} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, as the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
 As can be seen from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
 The author concludes that ECMP routing update in the proposed architecture is quick enough.
 
