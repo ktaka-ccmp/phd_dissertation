@@ -5,7 +5,7 @@ The author evaluated the basic characteristics of the load balancer using physic
 (2) Portability:
 The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
 (3) Redundancy and Scalability:
-The author evaluated ECMP functionality by watching routing table updates on the router when the new load balancer is added or removed.
+The author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
 The author also evaluated the performance level by changing the number of load balancers.
 
 \section{Performance analysis of proposed load balancer}
@@ -27,15 +27,15 @@ The throughput is measured by sending out HTTP requests from the wrk towards a l
   \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Benchmark setup]{
-Benchmark setup.
-There are nodes on which nginx pods are deployed as web servers.
-On one of the nodes, ipvs pod and nginx pod are deployed.
-Iptables DNAT rules exist on every Kubernetes node as an internal load balancer.
-Throughput measurements are performed against ipvs pod, nginx pod, and iptables DNAT rules.
-HTTP request packets are sent out from wrk to each of the load balancers, and each of them distributes the packets to the nginx web servers.
-The response packets from the nginx web servers follow the same route as the request packets.  
+      Benchmark setup.
+      There are nodes on which nginx pods are deployed as web servers.
+      There is another node where ipvs pod and nginx pod are deployed.
+      Iptables DNAT rules exist on every Kubernetes node as an internal load balancer.
+      Throughput measurements are performed against ipvs pod, nginx pod, and iptables DNAT rules.
+      Each of the load balancers distributes the packets from the wrk to the nginx web servers.
+      The response packets from the nginx web servers follow the same route as the request packets.  
     }
     \label{fig:benchmark-schem}
   \end{minipage}
@@ -46,44 +46,59 @@ The command-line in Table~\ref{tab:bench_example} will generate 40 wrk program t
 and allow those threads to send out a total of 800 concurrent HTTP requests over the period of 30 seconds.
 The output example shows information including per-thread statistics, error counts, throughput in [Request/sec] and data rate in [Transfer/sec].
 
-\begin{table}[h]
-  \centering
-  \begin{tabular}{l}
-    \hline
-    \begin{minipage}{0.8\columnwidth}
-      \begin{verbatim}
-
-[Command line] 
- wrk -c800 -t40 -d30s http://172.16.72.2:8888/ 
--c: concurrency, -t: # of thread, -d: duration 
-      \end{verbatim}
-    \end{minipage}
-    \\ \hline
-
-    \\ \hline
-    \begin{minipage}{0.8\columnwidth}
-      \begin{verbatim}
-
-[Output example] 
- Running 30s test @ http://10.254.0.10:81/ 
-  40 threads and 800 connections 
-  Thread Stats   Avg      Stdev     Max   +/- Stdev 
-    Latency    15.82ms   41.45ms   1.90s    91.90\% 
-    Req/Sec     4.14k   342.26     6.45k    69.24\% 
-  4958000 requests in 30.10s, 1.14GB read 
-  Socket errors: connect 0, read 0, write 0, timeout 1 
-Requests/sec: 164717.63 
-Transfer/sec:     38.86MB 
-      \end{verbatim}
-    \end{minipage}
-    \\ \hline
-  \end{tabular}
-  \caption[Benchmark command line and output example]{Benchmark command line and output example.}
-  \label{tab:bench_example}
-\end{table}
 
 {
-\setlength{\tabcolsep}{3em}
+%\setlength{\tabcolsep}{3em}
+\renewcommand{\arraystretch}{1.1}
+
+\begin{table}[h]
+
+  \begin{subtable}{1\textwidth}
+    \centering
+    \begin{tabular}{lll}
+      \hline
+      &\verb|  wrk -c800 -t40 -d30s http://172.16.72.2:8888/       |& \\
+      &\verb|      -c: concurrency, -t: # of thread, -d: duration  |& \\
+      \hline
+    \end{tabular}
+    \centering\caption{Command line}
+  \end{subtable}
+ 
+\par\bigskip
+ 
+  \begin{subtable}{1\textwidth}
+    \centering
+    \begin{tabular}{lll}
+      \hline
+      &\verb| Running 30s test @ http://10.254.0.10:81/            |& \\ 
+      &\verb|  40 threads and 800 connections                      |& \\
+      &\verb|  Thread Stats   Avg      Stdev     Max   +/- Stdev   |& \\
+      &\verb|    Latency    15.82ms   41.45ms   1.90s    91.90\%   |& \\
+      &\verb|    Req/Sec     4.14k   342.26     6.45k    69.24\%   |& \\
+      &\verb|  4958000 requests in 30.10s, 1.14GB read             |& \\
+      &\verb|  Socket errors: connect 0, read 0, write 0, timeout 1|& \\
+      &\verb|Requests/sec: 164717.63                               |& \\
+      &\verb|Transfer/sec:     38.86MB                             |& \\
+      \hline
+    \end{tabular}
+    \centering\caption{Output example}
+  \end{subtable}
+
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Benchmark command line and output example]{
+      Benchmark command line and output example.
+      (a) This command line will generate 40 wrk program threads and allow those threads to send out a total of 800 concurrent HTTP requests over the period of 30 seconds.
+      (b) The output example shows information including per-thread statistics, error counts, throughput in [Request/sec] and data rate in [Transfer/sec].
+      The throughput is 164717.63 [Request/sec] in this example.
+    }
+    \label{tab:bench_example}
+  \end{minipage}
+\end{table}
+}
+
+{
+\setlength{\tabcolsep}{2em}
 \renewcommand{\arraystretch}{1.1}
 
 \begin{table}[h]
@@ -111,8 +126,15 @@ Transfer/sec:     38.86MB
     & nginx : 1.11.1(load balancer), 1.13.0(web server) \\
     \hline
   \end{tabular}
-  \caption[Hardware and software specifications]{Hardware and software specifications.}
+
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Hardware and software specifications]{
+      Hardware and software specifications.
+      The hardware had eight physical CPU cores and a network interface card (NIC) with four rx-queues.
+    }
     \label{tab:hw_machine_spec}
+  \end{minipage}
 \end{table}
 }
 
@@ -159,10 +181,10 @@ The saturated performance levels of iptables DNAT are higher than those of ipvs,
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_mcore_proccessing}
+  \includegraphics[width=0.75\columnwidth]{Figs/ipvs_mcore_proccessing}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Effect of multicore packet processing on ipvs throughput]{
 Effect of multicore packet processing on ipvs throughput.
 Throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
@@ -175,12 +197,12 @@ The throughput is highest for the setting with eight cores (rps is on), followed
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/iptables_mcore_proccessing}
+  \includegraphics[width=0.75\columnwidth]{Figs/iptables_mcore_proccessing}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Effect of multicore packet processing on iptables DNAT throughput]{
-Effect of multicore packet processing iptables throughput.
+Effect of multicore packet processing iptables DNAT throughput.
 Throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
 The throughput is highest for the setting with eight cores (rps is on), followed by four cores (rss is on), then single core (none).
     }
@@ -212,16 +234,15 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_flannel_mode}
+  \includegraphics[width=0.75\columnwidth]{Figs/ipvs_flannel_mode}
 
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Effect of flannel backend modes on ipvs throughput]{
       Effect of flannel backend modes on ipvs throughput.
-      the host-gw mode where no encapsulation is conducted shows the highest performance level,
-      followed by the vxlan mode where the Linux kernel encapsulate the Ethernet frame.
-      The udp mode where flanneld itself encapsulate the IP packet shows significantly lower performances levels.
+      The host-gw mode shows the highest performance level, followed by the vxlan mode.
+      The udp mode shows significantly lower performances levels.
     }
     \label{fig:ipvs_flannel_mode}
   \end{minipage}
@@ -229,16 +250,15 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\columnwidth]{Figs/iptables_flannel_mode}
+    \includegraphics[width=0.75\columnwidth]{Figs/iptables_flannel_mode}
 
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Effect of flannel backend modes on iptables DNAT throughput]{
-      Effect of flannel backend modes on  iptables DNAT throughput.
-      the host-gw mode where no encapsulation is conducted shows the highest performance level,
-      followed by the vxlan mode where the Linux kernel encapsulate the Ethernet frame.
-      The udp mode where flanneld itself encapsulate the IP packet shows significantly lower performances levels.
+      Effect of flannel backend modes on iptables DNAT throughput.
+      the host-gw mode shows the highest performance level, followed by the vxlan mode.
+      The udp mode shows significantly lower performances levels.
     }
     \label{fig:iptables_flannel_mode}
   \end{minipage}
@@ -249,11 +269,16 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 \subsubsection{Comparison of different load balancer}
 
 \begin{figure}[h]
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs-iptables-nginx}
+  \centering
+  \includegraphics[width=0.75\columnwidth]{Figs/ipvs-iptables-nginx}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption{Throughput measurement results of the proposed load balancer in on-premise data center.}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Throughput of ipvs, iptables DNAT and nginx]{
+      Throughput of ipvs, iptables DNAT and nginx.
+      The performance levels of ipvs and iptables DNAT are almost the same.
+      The nginx as a load balancer does not perform well in the experiment.
+    }
     \label{fig:ipvs-iptables-nginx}
   \end{minipage}
 \end{figure}
@@ -283,11 +308,15 @@ This means that the proposed ipvs container load balancer is at least as good as
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/latency_cdf_rps_40pods}
+  \includegraphics[width=0.75\columnwidth]{Figs/latency_cdf_rps_40pods}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption{Latency cumulative distribution function.}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Latency for ipvs and iptables DNAT]{
+      Latency for ipvs and iptables DNAT.
+      Cumulative Distribution Function(CDF) of the latency for ipvs and iptables DNAT are compared, at the two constant loads, 160K[req/sec] and 180K[req/sec] .
+      Smaller latencies are observed for ipvs.
+}
     \label{fig:latency_cdf_rps_40pods}
   \end{minipage}
 \end{figure}
@@ -308,23 +337,27 @@ The authors plan to improve the efficiency of the proposed load balancer by deve
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/cpu_usage}
+  \includegraphics[width=0.75\columnwidth]{Figs/cpu_usage}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption{CPU usage of the ipvs and iptables DNAT.}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[CPU usage of the ipvs and iptables DNAT]{
+      CPU usage of the ipvs and iptables DNAT.
+      CPU usage of ipvs is higher than that of iptables DNAT.
+    }
     \label{fig:cpu_usage}
   \end{minipage}
 \end{figure}
 
 \FloatBarrier
 
-\subsubsection{L3DSR using ipvs tun}
+\subsubsection{L3DSR using ipvs-tun}
 
 The performance levels of ipvs and iptables DNAT have been limited by 1 Gbps bandwidth.
 This can be alleviated in the case of ipvs by using so-called Layer 3 Direct Server Return(L3DSR) setup.
 Figure~\ref{fig:benchmark-schem-dsr} shows the schematic diagram illustrating the packet flow of the L3DSR experiment.
 The red arrows indicate the route HTTP request packets follow and the blue arrows indicate the route response packets follow.
+Since the response packets directly return to the client, the load balance is expected to perform better.
 
 The ipvs has a mode called ipvs-tun.
 When the ipvs-tun send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet that is destined to real servers.
@@ -338,19 +371,26 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
   \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem-dsr}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption{Physical configuration for L3DSR experiment.}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Experimental setup for L3DSR throughput measurement]{
+      Experimental setup for L3DSR throughput measurement.
+      The red arrows indicate the route HTTP request packets follow and the blue arrows indicate the route response packets follow.
+      Since the response packets directly return to the client, the load balance is expected to perform better.
+    }
     \label{fig:benchmark-schem-dsr}
   \end{minipage}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ipvs_l3dsr_1g.png}
+  \includegraphics[width=0.75\columnwidth]{Figs/ipvs_l3dsr_1g.png}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption{Throughput of ipvs l3dsr @1Gbps.}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Throughput of L3DSR using ipvs-tun.]{
+      Throughput of L3DSR using ipvs-tun.
+      The throughput of ipvs-tun is 1.5 times higher than those of conventional ipvs and iptables DNAT.
+    }
     \label{fig:ipvs_l3dsr_1g.png}
   \end{minipage}
 \end{figure}
@@ -406,12 +446,12 @@ The setting \enquote{(RSS, RPS) = (on, off)} is used in GCP and the setting \enq
   \end{tabular}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Virtual Machine specifications in GCP experiment]{
 Virtual Machine specifications in GCP experiment.
-The author measured throuputs using load balancer nodes with 8 cpus, 16 cpus and 32 cpus.
+The author measured throughputs using load balancer nodes with 8 CPUs, 16 CPUs, and 32 cups.
 The number of rx-queues of each node was 8, 16 and 32, respectively.
-Since the same number of rx-queues as the number f CPU is prepared, the setting with \enquote{(rss, rps) = (on, off)} is used.
+Since the same number of rx-queues as the number CPU is prepared, the setting with \enquote{(rss, rps) = (on, off)} is used.
     }
     \label{fig:gcp_machine_spec}
   \end{minipage}
@@ -443,10 +483,10 @@ Since the same number of rx-queues as the number f CPU is prepared, the setting 
   \end{tabular}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Virtual Machine specifications in AWS experiment]{
 Virtual Machine specifications in AWS experiment.
-The author measured throuputs using load balancer nodes with 8 cpus, 16 cpus and 36 cpus.
+The author measured throughputs using load balancer nodes with 8 CPUs, 16 CPUs, and 36 CPUs.
 Since there are only two rx-queues, the setting with \enquote{(rss, rps) = (off, on)} is used.
     }
     \label{fig:aws_machine_spec}
@@ -456,14 +496,15 @@ Since there are only two rx-queues, the setting with \enquote{(rss, rps) = (off,
 
 
 \begin{figure}[h]
-    \includegraphics[width=0.8\columnwidth]{Figs/gcp_all_tp}
+  \centering
+  \includegraphics[width=0.75\columnwidth]{Figs/gcp_all_tp}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Throughput measurement results in GCP]{
 Throughput measurement results in GCP.
 The throughput increases linearly as the number of nginx {\em pod}s increases until it reaches the saturation level.
-The maximum throughput is larger for instances with more virtual CPUs.
+The maximum throughput is higher for instances with more virtual CPUs.
     }
     \label{fig:gcp_all_tp}
   \end{minipage}
@@ -471,14 +512,15 @@ The maximum throughput is larger for instances with more virtual CPUs.
 
 
 \begin{figure}[h]
-  \includegraphics[width=0.8\columnwidth]{Figs/aws_c4_tp}
+  \centering
+  \includegraphics[width=0.75\columnwidth]{Figs/aws_c4_tp}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Throughput measurement results in AWS]{
 Throughput measurement results in AWS.
 The throughput increases linearly as the number of nginx {\em pod}s increases until it reaches the saturation level.
-The maximum throughput is larger for instances with more virtual CPUs.
+The maximum throughput is higher for instances with more virtual CPUs.
     }
     \label{fig:aws_c4_tp}
   \end{minipage}
@@ -512,12 +554,16 @@ After that, in order to explore the scalability, the author also measured the th
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/lb_ecmp_schem}
+  \includegraphics[width=0.9\columnwidth]{Figs/lb_ecmp_schem}
 
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption[Benchmark setup]{Benchmark setup.}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Benchmark setup for ECMP experiment]{
+      Benchmark setup for ECMP experiment.
+      Each load balancer pods consists of both an ipvs container and an exabgp container.
+      The routing table of the benchmark client is updated by BGP protocol through a route reflector.
+    }
     \label{fig:ecmp-benchmark-schem}
   \end{minipage}
 \end{figure}
@@ -533,7 +579,7 @@ After that, in order to explore the scalability, the author also measured the th
     \multicolumn{2}{l}{[Hardware Specification]}   \\
     & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
     & Memory: 32GB \\
-    & NIC: Broadcom BCM5720 Giga bit \\
+    & NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps \\
     & (Node x 6, Load Balancer x 4) \\
     & \\
     & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
@@ -553,7 +599,10 @@ After that, in order to explore the scalability, the author also measured the th
   \hline 
   \end{tabular}
   \par\bigskip
-  \caption{Hardware and software specifications.}
+  \caption[Hardware and software specifications for ECMP experiment]{
+    Hardware and software specifications for ECMP experiment.
+    The NIC of the benchmark client is 10 Gbps card to measure the aggregated throughput of 1Gbps load balancers.
+  }
   \label{tab:ecmp-hw_sw_spec}
 \end{table}
 }
@@ -586,74 +635,86 @@ Notable differences from the previous throughput experiment in Figure~\ref{fig:b
 
   \par\bigskip
 
-\begin{subtable}{.9\textwidth}
-  \centering
-  \begin{tabular}{ll}
-    \hline
-    \multicolumn{2}{l}{10.1.1.0/24 proto zebra metric 20 } \\
-    \hspace{15 mm}
-    & nexthop via 10.0.0.105  dev eth0 weight 1 \\
-    & nexthop via 10.0.0.106  dev eth0 weight 1 \\
-    & nexthop via 10.0.0.107  dev eth0 weight 1 \\
-    \hline
-  \end{tabular}
-  \caption{With three load balancer {\em pod}s.}
-  \label{tab:three}
-\end{subtable}
-
+  \begin{subtable}{.9\textwidth}
+    \centering
+    \begin{tabular}{ll}
+      \hline
+      \multicolumn{2}{l}{10.1.1.0/24 proto zebra metric 20 } \\
+      \hspace{15 mm}
+      & nexthop via 10.0.0.105  dev eth0 weight 1 \\
+      & nexthop via 10.0.0.106  dev eth0 weight 1 \\
+      & nexthop via 10.0.0.107  dev eth0 weight 1 \\
+      \hline
+    \end{tabular}
+    \caption{With three load balancer {\em pod}s.}
+    \label{tab:three}
+  \end{subtable}
+  
   \par\bigskip
-
-\begin{subtable}{.9\textwidth}
+  
+  \begin{subtable}{.9\textwidth}
+    \centering
+    \begin{tabular}{ll}
+      \hline
+      \multicolumn{2}{l}{10.1.1.0/24 pro to zebra metric 20 } \\
+      \hspace{15 mm}
+      & nexthop via 10.0.0.107  dev eth0 weight 1 \\
+      & nexthop via 10.0.0.105  dev eth0 weight 1 \\
+      & nexthop via 10.0.0.106  dev eth0 weight 1 \\
+      \multicolumn{2}{l}{10.1.2.0/24 proto zebra metric 20 } \\
+      \hspace{15 mm}
+      & nexthop via 10.0.0.107  dev eth0 weight 1 \\
+      & nexthop via 10.0.0.106  dev eth0 weight 1 \\
+      \hline
+    \end{tabular}
+    \caption{For a service with three load balancer {\em pod}s and a service with two load balancer {\em pod}s.}
+    \label{tab:double_svc}
+  \end{subtable}
+  
+  \par\bigskip
   \centering
-  \begin{tabular}{ll}
-    \hline
-    \multicolumn{2}{l}{10.1.1.0/24 pro to zebra metric 20 } \\
-    \hspace{15 mm}
-    & nexthop via 10.0.0.107  dev eth0 weight 1 \\
-    & nexthop via 10.0.0.105  dev eth0 weight 1 \\
-    & nexthop via 10.0.0.106  dev eth0 weight 1 \\
-    \multicolumn{2}{l}{10.1.2.0/24 proto zebra metric 20 } \\
-    \hspace{15 mm}
-    & nexthop via 10.0.0.107  dev eth0 weight 1 \\
-    & nexthop via 10.0.0.106  dev eth0 weight 1 \\
-    \hline
-  \end{tabular}
-  \caption{For a service with three load balancer {\em pod}s and a service with two load balancer {\em pod}s.}
-  \label{tab:double_svc}
-\end{subtable}
-
-\caption{ECMP routing tables.}
-\label{tab:exabgp_routing_table}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[ECMP routing tables]{
+ECMP routing tables. All the routing rules are updated by zebra.
+(a) According to this entry, packets toward 10.1.1.0/24 are forwarded to 10.0.0.106.
+(b) There is a routing rule with three next hops towards 10.1.1.0/24, each of which is the node where the load balancer pods are running.
+The weights of the three next-hops are all 1.
+(c) There are two routing rules regarding the services with different service IPs, one with three load balancers and the other with two load balancers.
+These load balancers share the same group of nodes, i.e., (10.0.0.105,10.0.0.106,10.0.0.107).
+    }
+    \label{tab:exabgp_routing_table}
+  \end{minipage}
 \end{table}
 }
 
-First, the author examined ECMP functionality by watching the routing table on the benchmark client.
+First, the author examined ECMP functionality by monitoring the routing table on the benchmark client.
 Table~\ref{tab:exabgp_routing_table}~(\subref{tab:single}) shows the routing table entry on the router when a single load balancer pod exists.
 From this entry, it is seen that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
 It also shows that this routing rule is updated by zebra.
 
 The routing table entry in Table~\ref{tab:exabgp_routing_table}~(\subref{tab:three}) is seen when the number of the load balancer pods is increased to three.
-There are three next hops towards 10.1.1.0/24 each of which being the node where the load balancer pods are running.
+There are three next hops towards 10.1.1.0/24, each of which is the node where the load balancer pods are running.
 The weights of the three next-hops are all 1.
-The update of the routing entry was almost instant as we increased the number of the load balancers.
+The update of the routing entry was almost instant as the author increased the number of the load balancers.
 
 Table~\ref{tab:exabgp_routing_table}~(\subref{tab:double_svc}) shows the case where the author additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
-It was possible to accommodate two different services with different service IPs, one with three load balancers and the other with two load balancers on a group of nodes(10.0.0,105,10.0.0,106,10.0.0,107).
-The update of the routing entry was almost instant as we started the load balancers for the second service.
+It was possible to accommodate two services with different service IPs on the same group of nodes(10.0.0.105, 10.0.0.106, 10.0.0.107). 
+The one has three load balancers and the other has two load balancers.
+The update of the routing entry was almost instant as the author started the load balancers for the second service.
 
 As far as the route withdrawal is concerned, if an exabgp is killed by SIGKILL or SIGTERM the kernel of the node close the BGP connection by sending out a packet with FIN flag to the peer gobgpd on the route reflector, and thus the route is withdrawn immediately.
 The gobgp on the route reflector also periodically check the BGP connection, and if the peer exabgp container is unresponsive for more than the specified duration, “hold-time“ setting in gobgpd, it will also terminate the connection and withdraw the route.
-The packets arriving within the duration will be dropped.
+The packets arriving within that duration will be dropped.
 However, it is possible to set up the “hold-time” short enough so that the retransmitted TCP packets from the client will be forwarded correctly to functioning load balancers.
 
 \FloatBarrier
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth,left]{Figs/ecmp_lb_cubic}
+  \includegraphics[width=0.9\columnwidth]{Figs/ecmp_lb_cubic}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
         \caption[Throughput of ECMP redundant load balancer]{
           Throughput of ECMP redundant load balancer.
           The throughputs are measured for a single load balancer(lb x1), two(lb x2), three(lb x3) and four(lb x4) load balancers.
@@ -664,13 +725,13 @@ However, it is possible to set up the “hold-time” short enough so that the r
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth,left]{Figs/ecmp_response}
+  \includegraphics[width=0.9\columnwidth]{Figs/ecmp_response}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
+  \begin{minipage}{0.9\columnwidth}
     \caption[Throughput responsiveness]{
       Throughput responsiveness.
-      This shows the throughput responsiveness when the number of the load balancers was changed randomly in every 60 seconds.
+      Throughput responsiveness when the number of load balancers is changed randomly in every 60 seconds is shown.
     }
   \end{minipage}
   \label{fig:ecmp_response}
@@ -678,14 +739,14 @@ However, it is possible to set up the “hold-time” short enough so that the r
 
 
 \begin{figure}[h]
-  \includegraphics[width=0.8\columnwidth,left]{Figs/ecmp_delay_histgram}
+  \centering
+  \includegraphics[width=0.9\columnwidth]{Figs/ecmp_delay_histgram}
   \par\bigskip
   \centering
-  \begin{minipage}{0.8\columnwidth}
-    \caption[A histogram of the ECMP update delay]{
-      A histogram of the ECMP update delay.
-      This shows the delays until the number of running ipvs pods is reflected into the routing table on the benchmark client,
-    when the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
+  \begin{minipage}{0.9\columnwidth}
+    \caption[ECMP update delay histogram]{
+      ECMP update delay histogram.
+      This shows the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, when the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
     }
   \end{minipage}
   \label{fig:ecmp_delay_histgram}
@@ -694,9 +755,10 @@ However, it is possible to set up the “hold-time” short enough so that the r
 The author also carried out throughput measurement to show that the proposed architecture increases the throughput as the number of the load balancers is increased.
 Figure~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
 There are four solid lines in the figure, each corresponding to the throughput result when there are one through four of the proposed load balancers.
-The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods(lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). The performance level increases linearly as we increases the number of the load balancers up to four of the ipvs load balancers, but did not scale further.
-This was because the benchmark program used up CPU power of the benchmark client, i.e., the CPU usage was 100\% when there were more than four load balancers.
-The author expect that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can access the load balancers through an ECMP router, will improve the performance level further.
+The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods(lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). 
+The performance level increases linearly as the number of the load balancers increases up to four of the ipvs load balancers, but does not scale further.
+This is because the benchmark program uses up CPU power of the benchmark client, i.e., the CPU usage is 100\% when there are more than four load balancers.
+The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can access the load balancers through an ECMP router, will improve the performance level further.
 
 Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
 The red line in the figure shows the number of ipvs load balancer pods, which is changed randomly every 60 seconds.
@@ -712,26 +774,24 @@ The author concludes that ECMP routing update in the proposed architecture is qu
 
 \section{Summary}\label{Conclusions}
 
-In this chapter, the author conducted performance measurements in order to verify the feasibility of the proposed load balancer architecture.
+In this chapter, the results of the performance evaluation for the proposed load balancer. 
+The author carried out throughput measurement to verify the feasibility of the load balancer.
 The author confirmed that the proposed load balancer is portable, and the ECMP routing is redundant and scalable.
-From the evaluation the author confirmed the followings;
 
-The author evaluated the basic characteristics of the proposed load balancer  using physical servers in the on-premise data center, and compared performance level with iptables DNAT and nginx as a load balancer.
-The throughput linearly increased as the number of nginx {\em pod}s increased and then it eventually saturated.
+From the throughput measurement of the proposed load balancer using physical servers in the on-premise data center, the author confirmed the followings;
+The throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
 The throughput depends on the multicore packet processing settings and overlay network settings.
-The throughput increased as more CPU cores were utilized for packet processing.
-The throughput of the host-gw mode without any encapsulation was higher than vxlan mode and udp mode, where the packet is encapsulated.
+The throughput increases as the number of CPU cores that are utilized for packet processing.
+The throughput of the host-gw mode without any encapsulation is higher than vxlan mode and udp mode, where the packet is encapsulated.
 The throughput of the ipvs in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
-This was due to the fact that maximum throughput was limited by the bandwidth of the network interface.
-By utilizing ipvs-tun mode, i.e. L3DSR, the throughput of the ipvs in container improved 1.5 times.
+This is due to the bandwidth limitation of the experimental network.
+By utilizing ipvs-tun mode, i.e., L3DSR, the throughput of the ipvs container can be further improved, up to 1.5 times.
 
-The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
-While the performance levels of the proposed load balancers in cloud environments were inferior to those in on-premise data centers, the author confirmed the ipvs in container was runnable in GCP and AWS.
+The author also carried out the same throughput measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
+While the performance levels of the proposed load balancers in cloud environments are inferior to those in on-premise data centers, the ipvs container can run and function properly, in both GCP and AWS.
 
-The author evaluated ECMP functionality by watching routing table updates on the router when the new load balancer is added or removed.
-The author also evaluated the performance level by changing the number of load balancers.
-The ECMP routing update in the proposed architecture was properly functioning and quick enough.
+Finally, the author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
+The author also measured throughput by changing the number of load balancers.
 The linear scalability of the ECMP throughput has been confirmed up to 4x load balancers.
-
-
+The ECMP routing update in the proposed architecture is properly functioning and quick enough.
 
