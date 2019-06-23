@@ -309,7 +309,8 @@ The authors plan to improve the efficiency of the proposed load balancer by deve
 
 The performance levels of ipvs and iptables DNAT have been limited by 1 Gbps bandwidth.
 This can be alleviated in the case of ipvs by using so-called Layer 3 Direct Server Return(L3DSR) setup.
-Figure~\ref{fig:benchmark-schem-dsr} shows the schematic diagram illustrating packet flow for the HTTP request packet(the red arrows) and response packet(the blue arrow).
+Figure~\ref{fig:benchmark-schem-dsr} shows the schematic diagram illustrating the packet flow of the L3DSR experiment.
+The red arrows indicate the route HTTP request packets follow and the blue arrows indicate the route response packets follow.
 
 The ipvs has a mode called ipvs-tun.
 When the ipvs-tun send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet that is destined to real servers.
@@ -335,16 +336,17 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
   \label{fig:ipvs_l3dsr_1g.png}
 \end{figure}
 
-The author carried out throughput measurement using the physical setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
-Figure~\ref{fig:ipvs_l3dsr_1g.png} shows the throughput of the ipvs-tun, conventional ipvs and iptables DNAT.
-As can be seen in the figure, while the performance levels for ipvs (conventional) and iptables DNAT exactly match, the performance levels for ipvs-tun is much higher than that, e.g., 1.5 times larger throughput than that for ipvs (conventional) and iptables DNAT.
+The author carried out throughput measurement using the experimental setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
+Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the ipvs-tun, conventional ipvs and iptables DNAT.
+As can be seen in the figure, while the performance levels for ipvs and iptables DNAT exactly match, the performance level of ipvs-tun is much higher than those.
+For example, the throughput of ipvs-tun is 1.5 times higher than those of conventional ipvs and iptables DNAT.
 
-\mytodo[inline]{Add settings for L3DSR, if there is enough time.}
+\mytodo[inline]{Add tunneling setup needed on web container for L3DSR, if there is enough time.}
 
-The author summarises this section as follows;
-In experiments in 1Gbps network, the proposed load balancer, i.e., ipvs in container showed equivalent performance level as the iptables DNAT as a load balancer.
-The efficiency of the ipvs may be inferior to that of iptables DNAT.
-By using the ipvs-tun (L3DSR mode), the throughput of the proposed load balancer improved 1.5 times.
+%% The author summarises this section as follows;
+%% In experiments in 1Gbps network, the proposed load balancer, i.e., ipvs in container showed equivalent performance level as the iptables DNAT as a load balancer.
+%% The efficiency of the ipvs may be inferior to that of iptables DNAT.
+%% By using the ipvs-tun (L3DSR mode), the throughput of the proposed load balancer improved 1.5 times.
 
 \FloatBarrier
 
@@ -359,25 +361,68 @@ By using the ipvs-tun (L3DSR mode), the throughput of the proposed load balancer
   \centering
   \begin{tabular}{ll}
     \hline 
-    \multicolumn{2}{l}{[GCP VM Instance Specification]}   \\
+    \multicolumn{2}{l}{[VM Instance Specification for Client and Web Server Nodes ]}   \\
+    & Instance type: custom instance \\
+    & CPU: Xeon 2.2GHz, 16 cpus \hspace{2cm} \\
+    & Memory: 16GB \\
+    & NIC: virtio\_net /w 16 rx-queues \\
+    & (Node x 6, Client x 1) \\
+    & \\
+    \multicolumn{2}{l}{[VM Instance Specification for Load balancer Node ]}   \\
     & Instance type: custom instance \\
     & CPU: Xeon 2.2GHz, 8, 16, 32 cpus \hspace{2cm} \\
     & Memory: 16GB \\
-    & NIC: virtio\_net /w 16 rx-queues \\
-    & (Node x 6, Load balancer x 1, Client x 1) \\
+    & NIC: virtio\_net /w 8, 16, 32 rx-queues \\
+    & (Load balancer x 1) \\
+    \hline
+  \end{tabular}
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Virtual Machine specifications in GCP experiment]{
+Virtual Machine specifications in GCP experiment.
+The author measured throuputs using load balancer nodes with 8 cpus, 16 cpus and 32 cpus.
+The number of rx-queues of each node was 8, 16 and 32, respectively.
+Since the same number of rx-queues as the number f CPU is prepared, the setting with \enquote{(rss, rps) = (on, off)} is used.
+    }
+    \label{fig:gcp_machine_spec}
+  \end{minipage}
+\end{table}
+}
+
+{
+\setlength{\tabcolsep}{3em}
+\renewcommand{\arraystretch}{1.1}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{ll}
+    \hline 
+    \multicolumn{2}{l}{[AWS VM Instance Specification]}   \\
+    & Instance type: m4.4xlarge \\
+    & CPU: Xeon E5-2686 v4 2.30GHz, 16 cpus \\
+    & Memory: 64GB \\
+    & NIC: ixgbevf /w 2 rx-queues \\
+    & (Node x 6, Client x 1) \\
     & \\
     \multicolumn{2}{l}{[AWS VM Instance Specification]}   \\
     & Instance type: c4.2xlarge, c4.4xlarge, c4.8xlarge  \\
-    & CPU: Xeon E5-2666 v3 2.90GHz, 8, 16, 32 cpus \\
-    & Memory: 64GB \\
+    & CPU: Xeon E5-2666 v3 2.90GHz, 8, 16, 36 cpus \\
+    & Memory: 15GB, 30GB, 60GB \\
     & NIC: ixgbevf /w 2 rx-queues \\
-    & (Node x 6, Load balancer x 1, Client x 1) \\
+    & (Load balancer x 1) \\
     \hline
   \end{tabular}
-  \caption[Virtual Machine specifications]{Virtual Machine specifications.}
-  \label{fig:cloud_machine_spec}
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Virtual Machine specifications in AWS experiment]{
+Virtual Machine specifications in AWS experiment.
+The author measured throuputs using load balancer nodes with 8 cpus, 16 cpus and 36 cpus.
+Since there are only two rx-queues, the setting with \enquote{(rss, rps) = (off, on)} is used.
+    }
+    \label{fig:aws_machine_spec}
+  \end{minipage}
 \end{table}
 }
+
 
 \begin{figure}[h]
     \includegraphics[width=0.9\columnwidth]{Figs/gcp_all_ieice}
@@ -399,20 +444,20 @@ The maximum throughput is larger for instances with more virtual CPUs.
 \end{figure}
 
 The throughput measurements were also carried in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
-Table~\ref{fig:cloud_machine_spec} shows the virtual machine specifications for the experiment.
-
-The vxlan mode of the flannel is used for the overlay network in both of the cloud environment.
-The setting \enquote{(RSS, RPS) = (off, on)} is used for the experiments in both of the environment.
-
-Figure~\ref{fig:gcp_all_ieice} and Figure~\ref{fig:aws_c4_ieice} show the load balancer performance levels that are measured in GCP and AWS, respectively. In the case of GCP, custom instance with 32Gbyte memory and with 8, 16, and 32 CPU are used.
+The specifications of virtual machines used for the experiment in both environment are summarized in Table~\ref{fig:gcp_machine_spec} and Table~\ref{fig:aws_machine_spec}.
+In the case of GCP, custom instance with 32Gbyte memory and with 8, 16, and 32 CPU are used.
 And in the case of AWS instance type of c4.2xlarge, c4.4xlarge, and c4.8xlarge are used.
-These are aimed to show that our proposed load balancer can be run in cloud environments and also functions properly.
+The vxlan mode of the flannel is used for the overlay network in both of the cloud environment.
+As for multicore packet processing, different settings depending on the number of prepared queues for VMs. 
+The setting \enquote{(RSS, RPS) = (on, off)} is used in GCP and the setting \enquote{(RSS, RPS) = (off, on)} is used in AWS.
 
+Figure~\ref{fig:gcp_all_ieice} and Figure~\ref{fig:aws_c4_ieice} show the load balancer performance levels that are measured in GCP and AWS, respectively. 
 Both results show similar characteristics as the experiment in an on-premise data center in Figure~\ref{fig:ipvs-iptables-nginx}, where throughput increased linearly to a certain saturation level that is determined by either network speed or machine specifications.
 Since in the cases of cloud environments we can easily change the machine specifications, especially CPU counts, we measured throughput with several conditions of them.
+It is also seen that the performance levels are higher for load balancer nodes with more CPUs in both GCP and AWS. 
 
-In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even if much more logical CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
-For example, while the maximum throughput of the ipvs load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center(Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 virtual CPUs.
+In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even though much more powerful CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
+For example, while the maximum throughput of the ipvs load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center(Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 and 36 virtual CPUs.
 This is probably due to the inefficiency of the virtual machines as opposed to Bare Metal servers.
 The author leaves a detailed analysis for future work.
 
