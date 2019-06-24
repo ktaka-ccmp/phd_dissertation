@@ -715,12 +715,12 @@ However, it is possible to set up the “hold-time” short enough so that the r
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-        \caption[Throughput of ECMP redundant load balancer]{
-          Throughput of ECMP redundant load balancer.
-          The throughputs are measured for a single load balancer(lb x1), two(lb x2), three(lb x3) and four(lb x4) load balancers.
-        }
+    \caption[Throughput of ECMP redundant load balancer]{
+      Throughput of ECMP redundant load balancer.
+      The throughputs are measured for a single load balancer(lb x1), two(lb x2), three(lb x3) and four(lb x4) load balancers.
+    }
+    \label{fig:ecmp_lb_cubic}
   \end{minipage}
-  \label{fig:ecmp_lb_cubic}
 \end{figure}
 
 \begin{figure}[h]
@@ -733,8 +733,8 @@ However, it is possible to set up the “hold-time” short enough so that the r
       Throughput responsiveness.
       Throughput responsiveness when the number of load balancers is changed randomly in every 60 seconds is shown.
     }
+    \label{fig:ecmp_response}
   \end{minipage}
-  \label{fig:ecmp_response}
 \end{figure}
 
 
@@ -748,8 +748,8 @@ However, it is possible to set up the “hold-time” short enough so that the r
       ECMP update delay histogram.
       This shows the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, when the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
     }
+    \label{fig:ecmp_delay_histgram}
   \end{minipage}
-  \label{fig:ecmp_delay_histgram}
 \end{figure}
 
 The author also carried out throughput measurement to show that the proposed architecture increases the throughput as the number of the load balancers is increased.
