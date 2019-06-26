@@ -1,12 +1,12 @@
 
-In order to verify the feasibility of the proposed load balancer architecture, the author evaluated the performance of the load balancer with the following criteria;
+In order to verify the feasibility of the proposed load balancer architecture, the author evaluated the performance levels of the load balancer with the following criteria;
 (1) Performance analysis:
-The author evaluated the basic characteristics of the load balancer using physical servers in the on-premise data center, and compared performance level with iptables DNAT and nginx as a load balancer.
+The author evaluated the basic characteristics of the load balancer using physical servers in the on-premise data center, and compared performance levels with those of iptables DNAT and nginx as a load balancer.
 (2) Portability:
-The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
+The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable in the cloud environment.
 (3) Redundancy and Scalability:
 The author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
-The author also evaluated the performance level by changing the number of load balancers.
+The author also evaluated the aggregated performance level of the ECMP redundant load balancer.
 
 \section{Performance analysis of proposed load balancer}
 
@@ -398,9 +398,11 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
 The author carried out throughput measurement using the experimental setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
 Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the ipvs-tun, conventional ipvs and iptables DNAT.
 As can be seen in the figure, while the performance levels for ipvs and iptables DNAT exactly match, the performance level of ipvs-tun is much higher than those.
-For example, the throughput of ipvs-tun is 1.5 times higher than those of conventional ipvs and iptables DNAT.
+For example, the throughput of ipvs-tun is about 1.5 times higher than those of conventional ipvs and iptables DNAT.
+\footnote{The limit is due to the bandwidth of benchmark client's NIC.
+Multipling 270K [req/sec] with the response packet size 450[byte/req]\ref{} and 8 [bit/byte] results in 972M [bit/sec] . }
 
-\mytodo[inline]{Add tunneling setup needed on web container for L3DSR, if there is enough time.}
+\mytodo[inline]{Add tunneling setup needed on web container for L3DSR, if there is enough time. }
 
 %% The author summarises this section as follows;
 %% In experiments in 1Gbps network, the proposed load balancer, i.e., ipvs in container showed equivalent performance level as the iptables DNAT as a load balancer.
@@ -596,14 +598,21 @@ After that, in order to explore the scalability, the author also measured the th
     \multicolumn{2}{l}{[Container Software]}   \\
     & Keepalived: v1.3.2 (12/03,2016) \\
     & nginx : 1.15.4(web server) \\
+    & \\
+    \multicolumn{2}{l}{[BGP Software]}   \\
+    & gobgp version 1.33 (route reflector \& benchmark client) \\
+    & exabgp 3.4.17 (load balancer) \\
   \hline 
   \end{tabular}
   \par\bigskip
-  \caption[Hardware and software specifications for ECMP experiment]{
-    Hardware and software specifications for ECMP experiment.
-    The NIC of the benchmark client is 10 Gbps card to measure the aggregated throughput of 1Gbps load balancers.
-  }
-  \label{tab:ecmp-hw_sw_spec}
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Hardware and software specifications for ECMP experiment]{
+      Hardware and software specifications for ECMP experiment.
+      The NIC of the benchmark client is 10 Gbps card to measure the aggregated throughput of 1Gbps load balancers.
+    }
+    \label{tab:ecmp-hw_sw_spec}
+  \end{minipage}
 \end{table}
 }
 
@@ -774,24 +783,28 @@ The author concludes that ECMP routing update in the proposed architecture is qu
 
 \section{Summary}\label{Conclusions}
 
-In this chapter, the results of the performance evaluation for the proposed load balancer. 
+In this chapter, the performance levels of the proposed load balancer have been evaluated. 
 The author carried out throughput measurement to verify the feasibility of the load balancer.
 The author confirmed that the proposed load balancer is portable, and the ECMP routing is redundant and scalable.
 
 From the throughput measurement of the proposed load balancer using physical servers in the on-premise data center, the author confirmed the followings;
 The throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
-The throughput depends on the multicore packet processing settings and overlay network settings.
-The throughput increases as the number of CPU cores that are utilized for packet processing.
-The throughput of the host-gw mode without any encapsulation is higher than vxlan mode and udp mode, where the packet is encapsulated.
+The throughput maximum depends on the multicore packet processing settings and overlay network settings.
+The throughput increases as the number of CPU cores that are utilized for packet processing increases.
+The throughput of the host-gw mode without any encapsulation is higher than vxlan mode and udp mode with encapsulations.
 The throughput of the ipvs in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
 This is due to the bandwidth limitation of the experimental network.
 By utilizing ipvs-tun mode, i.e., L3DSR, the throughput of the ipvs container can be further improved, up to 1.5 times.
 
-The author also carried out the same throughput measurement in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
-While the performance levels of the proposed load balancers in cloud environments are inferior to those in on-premise data centers, the ipvs container can run and function properly, in both GCP and AWS.
+The author also carried out the same throughput measurement in GCP and AWS to investigate the portability of proposed load balancer.
+%to show the containerized ipvs load balancer is runnable even in the cloud environment.
+While the performance levels of the proposed load balancers in cloud environments are inferior to those in on-premise data centers, the ipvs container was able to run and functioned properly, in both GCP and AWS.
+The author suspects the lesser performance levels in cloud environments are due to the overhead of VMs.
 
 Finally, the author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
 The author also measured throughput by changing the number of load balancers.
-The linear scalability of the ECMP throughput has been confirmed up to 4x load balancers.
 The ECMP routing update in the proposed architecture is properly functioning and quick enough.
+The linear scalability of the ECMP throughput has been confirmed up to 4x of singel load balancer throughput.
 
+The proposed software load balancer is proved to be portable.
+The proposed architecture is proved to be redandunt and scalable up to 800K [req/sec].

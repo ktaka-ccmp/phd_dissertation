@@ -78,7 +78,7 @@ In such a case, only occasional timeouts would be observed, and hence it would b
 Suppose there are 1,000 nodes and one of web applications only uses 10 nodes, it seems inefficient and rather complicated to distribute the ingress traffic to all the 1,000 nodes.
 
 Regarding the first problem, if there is no load balancer that is supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
-The traffic will be routed to a node then distributed by the DNAT rules on the node to the designated {\em pods}.
+The traffic will be routed to a node and then distributed by the DNAT rules on the node to the designated {\em pods}.
 In the cases where the upstream router is administered by a data center company, users must always negotiate with them about adding a route to their new application cluster.
 This approach significantly lacks simplicity, and degrades the portability of container clusters.
 Furthermore, a static route usually lacks redundancy and scalability.
