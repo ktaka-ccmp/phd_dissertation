@@ -1,6 +1,6 @@
 
 It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
-It is important to investigate its validity also in 10Gbps network.
+It is also important to investigate its validitys in 10Gbps network.
 In this chapter the performance level of the proposed load balancer is evaluated.
 The author carries out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
 The author clarifies the reasons for performance limitations and discusses improvement.
@@ -14,6 +14,7 @@ Bare metal servers with Intel X550 network card was used.
 The X550 NIC has a maximum of 64 rx-queues, and 16 of them are activated by the driver at the boot time since there are 16 logical CPUs.
 The setting \enquote{(RSS, RPS)=(on, off)} is used because interrupts from each of 16 rx-queues can be assigned to separate logical cores.
 And hence, packet processing is distributed to all of the 16 logical cores, which results in the best performance in most of the cases.
+The host-gw mode is used as the backend mode of the flannel overlay network.
 
 {
 \setlength{\tabcolsep}{1em}
@@ -94,7 +95,7 @@ And hence, packet processing is distributed to all of the 16 logical cores, whic
 Figure~\ref{fig:benchmark-schem-10g} show experimental setups for the throughput measurements.
 Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the Kubernetes cluster.
 In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
-The author then launched ipvs and ipvs-tun pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
+The author then launched ipvs and ipvs-tun pod as load balancers on one of the nodes, after that, the author performed the throughput measurement changing the number of the nginx web server pods.
 On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
 The author also measured throughput of the iptables DNAT as a load balancer.
 The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
@@ -199,26 +200,27 @@ The author suspects that the ipvs program itself is less efficient than iptables
 
 The author summarizes this section as follows;
 The ipvs itself is less efficient than iptables DNAT.
-Using containr network, i.e. veth+bridge, further degrade the throughput of ipvs.
+Using the container network, i.e., veth+bridge further degrades the throughput of ipvs.
 
 \FloatBarrier
 
-\section{Required throughput for the proposed load balancer}
+\section{Discussion of required throughput}
 
-The author has compared the performance of proposed load balancers in 10Gbps.
-ssAlthough the proposed load balancer may not be the most efficient one, it is still usefull because of the lateral scalability.
+The author has compared the performance of proposed load balancers in 10Gbps in the previous section.
+Although the proposed load balancer may not be the most efficient one, it is still useful because of the lateral scalability.
 
 Table~\ref{tab:performance_summary} summarizes the maximum throughputs of the different load balancers obtained in the experiments so far.
 Depending on the experimental conditions different part of the setup limits the throughput of the load balancers.
 Since the performance bottlenecks are mainly due to network bandwidth in 1Gbps network, it is easy to estimate the possible bottleneck due to bandwidth in a faster network.
 Since benchmark client exists at the location where normally the upstream router exists, the performance bottleneck at the benchmark client corresponds to the maximum throughput that the load balancer should handle..
 
-For example, the bottleneck at the benchmark client is about 293K [req/sec] in the 1Gbps network, the achievable load balancers should handle at most 293K [req/sec] equivalent traffic.
+For example, the bottleneck at the benchmark client is about 293K [req/sec] in the 1Gbps network. 
+The load balancers only need to be able to handle at most 293K [req/sec] equivalent traffic.
 Even if the load balacer is capable of handling 500K [req/sec], the throughput of the system is ultimately determined by the bottleneck at the entrance, that is 293K [req/sec].
 The maximum throughput in 1Gbps, i.e., 293K [req/seq] is easily achieved by single ipvs-tun (293K [req/seq]) or two of ipvs load balancers (193K x 2 [req/seq]) with ECMP redundancy.
 
-In the case of 10Gbps network, the muximum throughput determined by the bottleneck at the entrance is 2.9M [req/sec].
-This is still easily achievable by using four ipvs-tun (731K x 4 [req/seq]) or nine of ipvs load balancers (335K x 9 [req/seq]) with ECMP redundancy.
+In the case of 10Gbps network, the maximum throughput determined by the bottleneck at the entrance is 2.9M [req/sec].
+This is still easily achievable by using four of ipvs-tun (731K x 4 [req/seq]) or nine of ipvs load balancers (335K x 9 [req/seq]) with ECMP redundancy.
 
 In the case of 100Gbps network, where the load balancers are required to accommodate up to throughput of 29M [req/sec], the inefficiency of the software load balancer in a container can become a real problem.
 Because in order to handle 29M [req/sec] of the traffic, 90 of ipvs load balancer will be needed.
@@ -292,7 +294,7 @@ Since current implementation of xlb does not support multi core packet processin
 All the intterrupt from the NIC are notified to a single core.
 
 Figure~\ref{fig:cpu_usage_10g_xlb} compares the throughput of xlb and iptables DNAT. 
-Although single core is used for the packet processing, the throughput of the xlb load balancer is close to half of the iptables DNAT's with 16 core(eight physical corex) packet processing.
+Although a single core is used for the packet processing, the throughput of the xlb load balancer is close to half of the iptables DNAT's throughput with 16 core(eight physical cores) packet processing.
 Figure\ref{fig:cpu_usage_10g_xlb} compares CPU usages between xlb and iptables DNAT.
 At a given throughput the xlb consumes much less CPU resource than iptables DNAT.
 These results indicate that load balancer using XDP technology is very promising.
@@ -334,36 +336,15 @@ These results indicate that load balancer using XDP technology is very promising
 
 \section{Summary}
 
-In this chapter, the author carried out throughput measurements of ipvs-nat, ipvs-tun, and iptables DNAT in 10Gbps environment.
-From the results the general characteristics of a load balancer are observesd.
-The throughput increases linearly to a certain level as the number of nginx container increases, and then eventually saturates.
-The performance levels for of the load balancers are improved by using 10Gbps network.
-However, the throughputs of ipvs-nat and ipvs-tun are smaller than that of iptables DNAT.
+In this chapter, the author carried out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
+From the results, the general characteristics of a load balancer are observesd.
+The throughputs of ipvst and ipvs-tun are smaller than that of iptables DNAT in 10Gbps network, both due to the overhead of the container network and inefficiency in the program itself.
+In order to improve the performance levels of portable load balancer, better network setup for containers and more efficient load balancer software should be developed.
 
-Then the author improved the performance levels by setting up ipvs-nat and ipvs-tun load balancers in the node net namespace to remove overhead of the container network.
-The throughput of the ipvs-tun became almost identical to that of iptables DNAT, and the throughput of the ipvs-nat also improved to the level close to that of the iptables DNAT.
+However, considering the fact that the ultimate throughput of the system does not exceed that of the upstream router, the entrance, 
+the load balancers only need to be able to handle at most 293K, 2.9M, and 29M [req/sec], in 1Gbps, 10Gbps, and 100Gbps, respectively.
+Since a single ipvs in container can handle 335K [req/sec], traffic equivalent to 2.9M [req/sec], which is the maximum throughput achievable in 10Gbps, can be easily handled by nine of ipvs containers.
 
-%% The authot also presented the novel software load balancer using eXpress Data Plane(XDP) technology, as an alternative to ipvs software load balancers.
-[Filled in later]
-\mytodo[inline]{Write summary about XDP}
-
-
-
-Load balancer in containers under performed and consumed more CPU resources than iptables DNAT on a node.
-Container network that utilize bridge+veth maybe inefficient.
-Better network set up for container is needed.
-
-Maximum throughputs of ipvs-tun on a node and iptables DNAT are equivalent in the experiment, which is because the benchmark client can not measure throughput more than 800K [req/sec].
-However the ipvs-tun consumed less CPU resouces than iptables DNAT.
-Performance level of ipvs on the node is lower than of iptables DNAT.
-The ipvs consumed more CPU resources than iptables DNAT.
-Better software load balancers are needed.
-
-The xlb load balancer has better per core throughput than iptables DNAT.
-The xlb load balancer much less CPU resources than iptables DNAT.
-The author plan to improve the perfomance levels of the xlb load balancer by enabling multicore packet processing. 
-
-
-Band width limitations of 10G are 1.9M req/sec and 2.7M req/sec for ipvs and ipvs-tun, respectively.
-Neither ipvs and iptables DNAT does not have that levels of performance. 
+The author also presented the priliminary result of xlb experiment, which will be needed in 100Gbps network environment.
+The obtained per core throughput result and CPU usage result have been very promising.
 

@@ -19,7 +19,7 @@ Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the K
 In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
 The author then launched ipvs pod and nginx pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
 On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
-The author also measured throughput of the iptables DNAT as a load balancer.
+The author also measured throughput of this internal load balancer.
 The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
 
 \begin{figure}[h]
@@ -159,25 +159,25 @@ The author compared the performance levels of three backends settings\cite{CoreO
 
 Figure~\ref{fig:ipvs_mcore_proccessing} shows the result of the throughput measurement for the ipvs load balancer with different multicore processing settings.
 Since hardware used in the experiment has a NIC with four rx-queues, and a CPU with eight cores,
-the setting \enquote{(RSS, RPS) = (on, off)} uses 4 cores and \enquote{(RSS, RPS) = (off, on)} uses 8 cores for packet processing.
+the setting \enquote{(RSS, RPS) = (on, off)} uses four cores and \enquote{(RSS, RPS) = (off, on)} uses eight cores for packet processing.
 For the setting \enquote{(RSS, RPS) = (off, off)}, only one core is used for the packet processing.
 
 There is a general trend in the throughput result, where the throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
-For example, if we look at the red line in the Figure~\ref{fig:ipvs_mcore_proccessing}, the throughput increases almost linearly with the increasing number of the nginx pods(web servers) from 1 to around 14, and then saturated.
+For example, if we look at the red line in the Figure~\ref{fig:ipvs_mcore_proccessing}, the throughput increases almost linearly as the number of the nginx pods(web servers) increases from 1 to around 14, and then saturates.
 The increase indicates that the load balancer functions properly, as the load balancer increased throughput by distributing HTTP requests to multiple of the web servers.
 %
 The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client machine and the load balancer node, or CPU performance levels of these machines.
 %
 The maximum performance levels are dependent on the number of cores used for packet processing.
-Throughput is highest for the setting with eight cores (rps is on), followed by four cores (rss is on), then single core (none).
+Throughput is highest for the setting with eight cores (rps = on), followed by four cores (rss = on), then single core (none).
 This indicates that the more cores are used, the better the throughput is.
 
 Figure~\ref{fig:iptables_mcore_proccessing} shows the result of the throughput measurement for iptables DNAT as a load balancer, with different multicore processing settings.
 As is the case for the ipvs result, there is a general trend where the throughput increases as the number of nginx {\em pod}s increases and then it eventually saturates.
-Also, throughput is highest for the setting with eight cores (rps is on), followed by four cores (rss is on), then single core (none).
+Also, throughput is highest for the setting with eight cores (rps = on), followed by four cores (rss = on), then single core (none).
 %
-The saturated performance levels of iptables DNAT and ipvs are the same for the condition with eight cores (rss is on). 
-The saturated performance levels of iptables DNAT are higher than those of ipvs, for the conditions with four cores (rss is on) and single core (none).
+The saturated performance levels of iptables DNAT and ipvs are the same for the condition with eight cores (rss = on). 
+The saturated performance levels of iptables DNAT are higher than those of ipvs, for the conditions with four cores (rss = on) and single core (none).
 
 \begin{figure}[h]
   \centering
@@ -188,7 +188,7 @@ The saturated performance levels of iptables DNAT are higher than those of ipvs,
     \caption[Effect of multicore packet processing on ipvs throughput]{
 Effect of multicore packet processing on ipvs throughput.
 Throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
-The throughput is highest for the setting with eight cores (rps is on), followed by four cores (rss is on), then single core (none).
+The throughput is highest for the setting with eight cores (rps = on), followed by four cores (rss = on), then single core (none).
     }
     \label{fig:ipvs_mcore_proccessing}
   \end{minipage}
@@ -229,8 +229,8 @@ The same characteristics can be seen for the iptables DNAT, although the perform
 
 As is shown here, overlay network settings greatly affect the performance level.
 The author considers the host-gw mode is the best, the vxlan tunnel the second best and the udp tunnel mode unusable.
-In environments where containers need to communicate with each other via a gateway that has no knowledge of overlay network, the host-gw mode cannot be used, which is often the case in cloud environments. 
-The author used host-gw mode for the rest of the experiments conducted in on-premise data centers and vxlan mode for the experiments conducted in cloud environments.
+In environments where containers need to communicate with each other via a gateway that has no knowledge of overlay network, the backend modes with tunneling are inevitable, which is often the case in cloud environments. 
+The author used vxlan mode for the experiments conducted in cloud environments and host-gw mode for the rest of the experiments conducted in on-premise data centers.
 
 \begin{figure}[h]
   \centering
@@ -287,7 +287,7 @@ The author used host-gw mode for the rest of the experiments conducted in on-pre
 
 Figure~\ref{fig:ipvs-iptables-nginx} presents the throughput results of the different load balancers.
 The performance levels of ipvs, iptables DNAT and nginx as the load balancers are compared.
-The throughput of the ipvs and iptables DNAT increases almost linearly with the increasing number of the nginx pods(web servers) from 1 to around 14, and then saturated.
+The throughput of the ipvs and iptables DNAT increases almost linearly as the number of nginx pods(web servers) increase from 1 to around 14, and then it saturates.
 The proposed ipvs load balancer exhibits almost equivalent performance levels as the iptables DNAT as a load balancer.
 
 The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client machine and the load balancer node, or CPU performance levels of these machines.
@@ -332,8 +332,7 @@ Fig.~\ref{fig:cpu_usage} compares the CPU usage for the proposed ipvs load balan
 Since the CPU usage was higher for the ipvs in a container, the proposed load balancer may be less efficient compared with the iptables DNAT.
 However, since single hardware can accommodate 1 Gbps traffic with CPU usage of about 60\%, the authors regard this as a tolerable overhead.
 
-\mytodo[inline]{Change the next sentence depending on the XDP section.}
-The authors plan to improve the efficiency of the proposed load balancer by developing a software load balancer using eXpress data path(XDP) technology\cite{hoiland2018express} in the future work and thereby improving the performance levels of the portable load balancer.
+The author tries to improve the efficiency of the proposed load balancer by developing a software load balancer using eXpress data path(XDP) technology\cite{hoiland2018express} later and thereby improving the performance levels of the portable load balancer.
 
 \begin{figure}[h]
   \centering
@@ -420,7 +419,7 @@ Therefore, the author measured throughput with several conditions of them.
 In the case of GCP, custom instance with 32Gbyte memory and with 8, 16, and 32 CPU are used.
 And in the case of AWS instance type of c4.2xlarge, c4.4xlarge, and c4.8xlarge are used.
 The vxlan mode of the flannel is used for the overlay network in both of the cloud environment.
-As for multicore packet processing, different settings depending on the number of prepared queues for VMs. 
+As for multicore packet processing, different settings depending on the number of prepared queues for VMs are used. 
 The setting \enquote{(RSS, RPS) = (on, off)} is used in GCP and the setting \enquote{(RSS, RPS) = (off, on)} is used in AWS.
 
 {
@@ -767,7 +766,7 @@ There are four solid lines in the figure, each corresponding to the throughput r
 The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods(lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). 
 The performance level increases linearly as the number of the load balancers increases up to four of the ipvs load balancers, but does not scale further.
 This is because the benchmark program uses up CPU power of the benchmark client, i.e., the CPU usage is 100\% when there are more than four load balancers.
-The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can access the load balancers through an ECMP router, will improve the performance level further.
+The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can simultaneouly perform the throughput measurements, will improve the performance level further.
 
 Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
 The red line in the figure shows the number of ipvs load balancer pods, which is changed randomly every 60 seconds.
@@ -784,27 +783,18 @@ The author concludes that ECMP routing update in the proposed architecture is qu
 \section{Summary}\label{Conclusions}
 
 In this chapter, the performance levels of the proposed load balancer have been evaluated. 
-The author carried out throughput measurement to verify the feasibility of the load balancer.
-The author confirmed that the proposed load balancer is portable, and the ECMP routing is redundant and scalable.
+The author carried out throughput measurement to verify the feasibility of the load balancer and verified the followings;
 
 From the throughput measurement of the proposed load balancer using physical servers in the on-premise data center, the author confirmed the followings;
 The throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
 The throughput maximum depends on the multicore packet processing settings and overlay network settings.
-The throughput increases as the number of CPU cores that are utilized for packet processing increases.
-The throughput of the host-gw mode without any encapsulation is higher than vxlan mode and udp mode with encapsulations.
+
 The throughput of the ipvs in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
-This is due to the bandwidth limitation of the experimental network.
-By utilizing ipvs-tun mode, i.e., L3DSR, the throughput of the ipvs container can be further improved, up to 1.5 times.
+The throughput of the ipvs container can be further improved up to 1.5 times by utilizing ipvs-tun mode, i.e., L3DSR.
 
-The author also carried out the same throughput measurement in GCP and AWS to investigate the portability of proposed load balancer.
-%to show the containerized ipvs load balancer is runnable even in the cloud environment.
-While the performance levels of the proposed load balancers in cloud environments are inferior to those in on-premise data centers, the ipvs container was able to run and functioned properly, in both GCP and AWS.
-The author suspects the lesser performance levels in cloud environments are due to the overhead of VMs.
+The author also verified that the ipvs container was able to run and functioned properly, in both GCP and AWS.
+While the performance levels of the proposed load balancers in cloud environments are inferior to those in on-premise data centers.
 
-Finally, the author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
-The author also measured throughput by changing the number of load balancers.
 The ECMP routing update in the proposed architecture is properly functioning and quick enough.
 The linear scalability of the ECMP throughput has been confirmed up to 4x of singel load balancer throughput.
 
-The proposed software load balancer is proved to be portable.
-The proposed architecture is proved to be redandunt and scalable up to 800K [req/sec].
