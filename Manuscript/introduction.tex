@@ -235,7 +235,7 @@ Orchestrator must also maintain the state described in configuration files, for 
 
 In a configuration file a user can describe how a container cluster should be configured, and also can describe relationships between different clusters.
 As a result, a user can launch a web application that consists of interdependent container clusters just by supplying the configuration file to the orchestrator.
-For example, a web cluster in Figure~\ref{fig:container_management_system} consists of three different functionalities, namely http server, key-value store, and database.
+For example, a web application cluster in Figure~\ref{fig:container_management_system} consists of three different functionalities, namely http server, key-value store, and database.
 Each of those consists of a container cluster.
 In the configuration file, the relationships between http server cluster, key-value store cluster, and database cluster are specified.
 The configuration file also contains how each cluster should be configured, including the number of the containers and resources assigned to them.
@@ -337,13 +337,13 @@ On the master, daemons that control the Kubernetes cluster are typically deploye
 These daemons include, apiserver, scheduler, controller-manager and etcd. 
 On the nodes, kubelet and proxy are deployed.
 The kubelet daemon will run {\it pods}, depending on the PodSpec (pod specification) information obtained from the apiserver on the master.
-The proxy daemon will set up iptables DNAT rules that function as the internal load balancer.
+The proxy daemon on every node will set up iptables DNAT rules that function as the internal load balancer.
 A {\em pod} is a group of containers that share the same network namespace and cgroup,
 and is the basic execution unit in a Kubernetes cluster.
 
 Thanks to the expressive syntax of the configuration file, Kubernetes allows users to easily launch complex web applications that consist of multiple interdependent container clusters as if they were launching a single application program.
 It also allows users to modify the state of their container clusters, just by modifying the configuration file.
-Kubernetes always keeps the status of containers to match its desired state, which is written in the configuration file.
+Kubernetes always keeps the states of containers to match its desired state, which is written in the configuration file.
 
 When a service is created, the master schedules where to run {\em pods}, and kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
@@ -355,20 +355,19 @@ The returning packets follows the exact same route as the incoming ones.
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\columnwidth]{Figs/K8sConventional}
-  \label{fig:k8s_intro}
   
   \centering
   
   \begin{minipage}{0.9\columnwidth}
-    \caption[Architecture of Kubernetes clusters]
-            {
-              Architecture of Kubernetes clusters.
-              A Kubernetes cluster typically consists of a master and nodes, which can be physical servers or VMs.
-              On the master, daemons that control the Kubernetes cluster are typically deployed. 
-              On the nodes,  daemons that control contair and the internal routing are typically deployed.
-              Kubernetes depends on external load balancer to route ingress traffic from the internet into the container cluster.
-              However, it seems impractical to support all of the existing load balancers.
-            }
+    \caption[Architecture of Kubernetes clusters]{
+      Architecture of Kubernetes clusters.
+      A Kubernetes cluster typically consists of a master and nodes, which can be physical servers or VMs.
+      On the master, daemons that control the Kubernetes cluster are typically deployed. 
+      On the nodes,  daemons that control contair and the internal routing are typically deployed.
+      Kubernetes depends on external load balancer to route ingress traffic from the internet into the container cluster.
+      However, it seems impractical to support all of the existing load balancers.
+    }
+    \label{fig:k8s_intro}
   \end{minipage}
   
 \end{figure}
@@ -383,7 +382,7 @@ Although software load balancers for cloud infrastructure have APIs, through whi
 
 In environments where there are supported load balancers, namely cloud environments including Google Cloud Platform (GCP), Amazon Web Applications (AWS), or Openstack, Kubernetes can automatically set up the route for the ingress traffic upon the launch of a web application.
 The cloud load balancers will distribute ingress traffic to every node(physical servers or VMs) that might host containers.
-Once the traffic reaches the nodes, Kubernetes nicely route them to containers using iptables Destination Network Address Translation(DNAT) based internal load balancer.
+Once the traffic reaches the nodes, Kubernetes nicely route them to appropriate containers using iptables Destination Network Address Translation(DNAT) based internal load balancer.
 
 However, in environments where there are no supported load balancers, Kubernetes fails to automatically set up the route for ingress traffic.
 This problem often happens in on-premise data centers,  since there are many proprietary load balancers that do not even have AIPs.
