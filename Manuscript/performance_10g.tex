@@ -1,16 +1,19 @@
 
-
-Up until this chapter most of the experiments are done in 1Gbps network environments.
-The proposed load balancers have shown decent performance levels in 1Gbps environment.
-However, it is essential to investigate the feasibility of the proposed load balancers in 10Gbps network environments.
-In this chapter, the author carries out throughput measurements of ipvs-nat, ipvs-tun, and iptables DNAT in 10Gbps environment.
-Then the author improves the performance levels of ipvs-nat and ipvs-tun by setting up these load balancers in the node net namespace.
-Also presented is the novel software load balancer using eXpress Data Plane(XDP) technology, as an alternative to ipvs software load balancers.
+It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
+It is important to investigate its validity also in 10Gbps network.
+In this chapter the performance level of the proposed load balancer is evaluated.
+The author carries out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
+The author clarifies the reasons for performance limitations and discusses improvement.
+The author also proposes a novel software load balancer using eXpress Data Plane(XDP) technology and presents preliminary experimental results.
 
 \section{Throughput measurement in 10G network}
 
-In order to evaluate performace levels of proposed load balancer, the author carried out throughput measurement in 10Gbps network environment. 
-Table~\ref{tab:hw_sw_spec_10g} shows the hardware and software specification used in the experiment.
+In order to evaluate the performance levels of the proposed load balancer in a 10Gbps network environment, the author carried out throughput measurements.
+Table~\ref{tab:hw_sw_spec_10g} summarizes the hardware and software specification used in the experiment.
+Bare metal servers with Intel X550 network card was used.
+The X550 NIC has a maximum of 64 rx-queues, and at the boot time, 16 of them are activated by the driver since there are 16 logical CPUs.
+The setting \enquote{(RSS, RPS)=(on, off)} is used because interrupts from each of 16 rx-queues can be assigned to separate logical cores.
+As a result, packet processing is distributed to all of the cores, which results in the best performance in most of the cases.
 
 {
 \setlength{\tabcolsep}{1em}
@@ -42,18 +45,69 @@ Table~\ref{tab:hw_sw_spec_10g} shows the hardware and software specification use
   \begin{minipage}{0.9\columnwidth}
     \caption[Hardware and software specifications for 10Gbps experiment]{
       Hardware and software specifications for 10Gbps experiment.
-      There are 16 rx queues activated for the NIC, to match the number of logical CPUs.
+      There are 16 rx-queues activated for the NIC, to match the number of logical CPUs.
     }
     \label{tab:hw_sw_spec_10g}
   \end{minipage}
 \end{table}
 }
 
-Figure~\ref{fig:ipvs_l3dsr_10g} shows the throughput of ipvs-tun, ipvs-nat and iptables DNAT in 10Gbps environment.
-We can see the general characteristics of a load balancer where the throughput increases linearly to a certain level as the number of nginx container increases, and then eventually saturates.
-These saturation levels are the performance limits of each of the load balancers, which is determined by packet forwarding efficiency or the bandwidth of the network.
-The performance limit of the iptables DNAT is close to 780k [req/sec], where the CPU usage of the benchmark client becomes 100\%.
-The performance levels of ipvs and ipvs-tun are inferior to that of iptables DNAT. 
+\begin{figure}[h]
+  \begin{subfigure}[t]{\columnwidth}
+    \centering
+    \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem-10g-nat}
+    \par\bigskip
+    \centering
+    \begin{minipage}{0.9\columnwidth}
+      \caption{}
+      \label{fig:benchmark-schem-10g-nat}
+    \end{minipage}
+  \end{subfigure}
+
+  \begin{subfigure}[t]{\columnwidth}
+    \centering
+    \includegraphics[width=0.8\columnwidth]{Figs/benchmark-schem-10g-dsr}
+    \par\bigskip
+    \centering
+    \begin{minipage}{0.9\columnwidth}
+      \caption{}
+      \label{fig:benchmark-schem-10g-dsr}
+    \end{minipage}
+  \end{subfigure}
+
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Benchmark setups in 10 Gbps experiment]{
+      Benchmark setups in 10 Gbps experiment.
+      (a) The setup used in throughput measurements of ipvs and iptables DNAT.
+      The request and response packets both go through the load balancer node.
+      There is a bottleneck at the NIC of the load balancer node.
+      (b) The setup used in throughput measurements of ipvs-tun.
+      The response packets for ipvs-tun, return directly to the benchmark client.
+      The bottleneck is at the NIC of the benchmark client.
+    }
+    \label{fig:benchmark-schem-10g}
+  \end{minipage}
+\end{figure}
+
+Figure~\ref{fig:benchmark-schem-10g} show experimental setups for the throughput measurements.
+Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the Kubernetes cluster.
+In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
+The author then launched ipvs and ipvs-tun pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
+On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
+The author also measured throughput for the iptables DNAT as a load balancer.
+The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
+In the case of the ipvs-tun, i.e., the tunneling mode of ipvs, the response packets follow the different route than the case of conventional ipvs and iptables DNAT.
+As a result, the better performance level is expected for ipvs-tun since the load balancer node only has to deal with request packets of the traffic.
+
+\FloatBarrier
+
+Figure~\ref{fig:ipvs_l3dsr_10g} shows the throughput results of ipvs, ipvs-tun and iptables DNAT in 10Gbps environment.
+The general characteristics of a load balancer, where the throughput increases linearly to a saturation level as the number of nginx container increases, can be seen.
+The maximum throughput of each of the load balancers is limited by either packet forwarding efficiency of the software itself or the bandwidth of the network.
+The maximum throughput level of the iptables DNAT is close to 780k [req/sec], where the CPU usage of the benchmark client becomes 100\%.
+The maximum throughput levels of ipvs and ipvs-tun are less than that of iptables DNAT. 
 
 \begin{figure}[h]
   \centering
@@ -63,19 +117,52 @@ The performance levels of ipvs and ipvs-tun are inferior to that of iptables DNA
   \begin{minipage}{0.9\columnwidth}
     \caption[Throughput of load balancers in 10 Gbps]{
       Throughput of load balancers in 10 Gbps.
-      The iptables DNAT rules on the node act as internal load balancer for Kubernetes.
+      The iptables DNAT rules exist in the node net namespace.
       The ipvs and ipvs-tun are in containers.
-      The throughput of the iptables DNAT rules is highest.
+      The throughput of the iptables DNAT rules is the highest.
     }
     \label{fig:ipvs_l3dsr_10g}
   \end{minipage}
 \end{figure}
 
-Figure~\ref{fig:ipvs_node_l3dsr_10g} shows the throughput of ipvs and ipvs-tun in the node namespace together with the throughput of the iptables DNAT.
-The throughput of the ipvs and ipvs-tun are improved from the case of the ipvs in container netnamespace.
-The throughput of the ipvs-tun is almost identical to that of iptables DNAT, which is limited by CPU power of the benchmark client. 
-%
-%Although the throughput of the ipvs-nat is smaller than that of the iptables DNAT, it is clearly improved from the result in Figure~\ref{fig:ipvs_l3dsr_10g}.
+Figure~\ref{fig:ipvs_l3dsr_10g} shows comparison of CPU usage between load balancers.
+CPU usages are sampled on the load balancer nodes at the time of the throughput measurement using a program called dstat\cite{wieers2019dstat}.
+It is seen that ipvs-tun uses less CPU resource than ipvs because the load balancer node does not have to deal with the response packets.
+The iptables DNAT uses even less CPU resource than ipvs and ipvs-tun.
+Possible reasons for this can be as follows;
+(1) It is possible that the ipvs and ipvs-tun program itself is less efficient than iptables DNAT.
+(2) The network setup for the container, i.e., bridge+veth may be causing the overhead.
+While iptables DNAT rules exist in node net namespace, proposed ipvs and ipvs-tun exist in container net namespace. 
+In order to clarify the reason for the performance difference, the author carried out throughput measurement for ipvs and ipvs-tun in node net namespaces.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/cpu_usage_10g}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[CPU usage of load balancers in containers]{
+      CPU usage of load balancers in containers.
+      The iptables DNAT rules exist in the node net namespace.
+      The ipvs and ipvs-tun are in containers.
+      The iptables DNAT consumes the smallest amount of the CPU resource.
+    }
+    \label{fig:cpu_usage_10g}
+  \end{minipage}
+\end{figure}
+
+\FloatBarrier
+
+\subsubsection{Performance comparison in node net namespace}
+
+The ipvs and ipvs-tun load balancers were setup on one of the nodes. 
+The load balancing rules are created in the node namespaces, and then throughput measurement were carried out.
+
+Figure~\ref{fig:ipvs_node_l3dsr_10g} shows the throughput of ipvs and ipvs-tun in the node net namespace together with the throughput of the iptables DNAT.
+The throughputs of the ipvs and ipvs-tun are improved from the previous results.
+The throughput of the ipvs-tun is almost identical to that of iptables DNAT.
+The CPU usages of the benchmark client at saturated throughput were almost 100\% for both ipvs-tun and iptables DNAT. 
+On the other hand, the throughput of ipvs is still less than those of ipvs-tun and iptables DNAT.
 
 \begin{figure}[h]
   \centering
@@ -91,21 +178,9 @@ The throughput of the ipvs-tun is almost identical to that of iptables DNAT, whi
   \end{minipage}
 \end{figure}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/cpu_usage_10g}
-  \par\bigskip
-  \centering
-  \begin{minipage}{0.9\columnwidth}
-    \caption[CPU usage of load balancers in containers]{
-      CPU usage of load balancers in containers.
-      The iptables DNAT rules on the node act as internal load balancer for Kubernetes.
-      The ipvs and ipvs-tun are in containers.
-      The iptables DNAT consumes the smallest amount of the CPU resource.
-    }
-    \label{fig:cpu_usage_10g}
-  \end{minipage}
-\end{figure}
+Figure~\ref{fig:cpu_usage_10g_node_ns} shows CPU usages of each of the load balancers.
+While the CPU usage of the ipvs-tun becomes less than that of iptables DNAT, the CPU usage of the ipvs is still larger than that of iptables DNAT.
+The author suspects that the ipvs program itself is less efficient than iptables DNAT.
 
 \begin{figure}[h]
   \centering
@@ -123,12 +198,96 @@ The throughput of the ipvs-tun is almost identical to that of iptables DNAT, whi
   \end{minipage}
 \end{figure}
 
+The author summarizes this section as follows;
+The performance levels of ipvs and ipvs-tun are inferior to that of iptables DNAT.
+By placing ipvs and ipvs-tun in node net namespaces, their maximum throughputs and efficiencies have greatly improved.
+However, the performance level and efficiency of the iptables load balancer are still better than those of ipvs.
+Therefore, lesser performance levels for ipvs are both due to that fact that the container network causes overhead and that ipvs is less efficient than iptables DNAT.
 
 \FloatBarrier
+
+\section{Discussions of performance limitation}
+
+The author has compared the performance of proposed load balancers in 10Gbps.
+The proposed load balancer may not be the most efficient one, and there are rooms for improvement in container setup and the load balancer program itself.
+However, it can be still usefull because of the lateral scalability.
+And it is also essencial to understand how much of the traffic the load balancers need to accomodate.
+In this section the author discusses that.
+
+Table~\ref{tab:performance_summary} summarizes the maximum throughputs of the different load balancers obtained in all of the experiments.
+Depending on the experimental conditions different part of the experimental setup becomes the performance bottleneck.
+Since the performance bottlenecks of the 1Gbps experiments are due to network bandwidth of either load balancer or benchmark client, we can easily estimate the possible bottleneck due to bandwidth in a faster network.
+Because the benchmark client exists at the location where normally the upstream router exists, the performance bottleneck at the benchmark client corresponds to the maximum throughput that load balancers are required to accommodate.
+
+Since the bottleneck at the benchmark client is about 292K [req/sec], the load balancers are required to accommodate at most the throughput of 292K [req/sec] in the 1Gbps network.
+This can be easily achieved by single ipvs-tun or two of ipvs load balancers with ECMP redundancy.
+
+In the case of 10Gbps network, the performance bottleneck at the benchmark client is estimated to be 2.9M [req/sec], and hence the load balancers are required to accommodate at most throughput of 2.9M [req/sec].
+This is still easily achievable by using four ipvs-tun or nine of ipvs load balancers with ECMP redundancy.
+
+In the case of 100Gbps network, where the load balancers are required to accommodate up to throughput of 29M [req/sec], the inefficiency of the software load balancer in a container can become a real problem.
+In the next section, the author tries to improve the efficiency of a load balancer, by implementing novel XDP load balancer.
+
+\begin{table}[h]
+
+  \begin{subtable}{1\textwidth}
+    \centering
+    \begin{tabular}{|l|l|c|l|}
+      \hline
+      \multicolumn{1}{|c|}{Type} & \multicolumn{1}{c|}{namespace} &
+      \begin{tabular}{c} Throughput \\ {[}req/sec{]} \end{tabular} & \multicolumn{1}{c|}{Bottleneck} \\ \hline
+      iptables DNAT & node      & 193.2K &
+      \begin{tabular}{l} Bandwidth filled with request \\ + response @ load balancer \end{tabular} \\ \hline
+      ipvs          & container & 196.7K &
+      \begin{tabular}{l} Bandwidth filled with request \\ + response @ load balancer \end{tabular} \\ \hline
+      ipvs-tun      & container & 292.7K &
+      \begin{tabular}{l} Bandwidth filled with response \\ @ benchmark client  \end{tabular} \\ \hline
+    \end{tabular}
+    \caption{1Gbps experiment}
+  \end{subtable}
+
+  \par\bigskip
+
+  \begin{subtable}{1\textwidth}
+    \centering
+    \begin{tabular}{|l|l|c|l|}
+      \hline
+      \multicolumn{1}{|c|}{Type} & \multicolumn{1}{c|}{namespace} &
+      \begin{tabular}{c} Throughput \\ {[}req/sec{]} \end{tabular} & \multicolumn{1}{c|}{Bottleneck} \\ \hline
+      iptables DNAT & node      & 777.6K & \begin{tabular}{l} CPU\(\sim\)100\% @ benchmark client\end{tabular} \\ \hline
+      ipvs          & container & 334.8K & \begin{tabular}{l} CPU\(\sim\)100\% @ load balancer node\end{tabular} \\ \hline
+        ipvs-tun      & container & 731.0K & \begin{tabular}{l} CPU\(\sim\)100\% @ load balancer node\end{tabular} \\ \hline
+          ipvs          & node      & 699.6K & \begin{tabular}{l} CPU\(\sim\)100\% @ load balancer node\end{tabular} \\ \hline
+      ipvs-tun      & node      & 779.9K & \begin{tabular}{l} CPU\(\sim\)100\% @ benchmark client\end{tabular} \\ \hline
+   \end{tabular}
+      \caption{10Gbps experiment}
+  \end{subtable}
+
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Summary of the maximum throughputs]{
+      Summary of the maximum throughputs.
+    }
+    \label{tab:performance_summary}
+  \end{minipage}
+\end{table}
+
 \section{XDP load balancer}
 
-[Filled in later]
-\mytodo[inline]{Write about XDP}
+The eXpress Data Path(XDP) is Linux kernel technology recently developed, where the tools and functionality to incept and process the packets in the earlist phase as possible are provided.
+By utilizing XDP, one can hook a byte-compiled code developed in subset of the C programing language, to a place before the socket buffer is assigned, thereby speeding up network manupulation, including block against DDOS atack, simple packet forwarding and load balancing.
+The one of the benefit of the XDP compared to DPDK is that in the case XDP, the packtes that do not match the rule for processing are then passd to normal Linux network stack.
+Therefore there is no need for preparing dedicated NIC for fast and efficient network processing.
+The author implemented the XDP load balacer and carried out throughput measurement.
+
+\subsubsection{Implementation}
+
+\subsubsection{Benchmark setup}
+
+\subsubsection{Throughput results }
+
+
 
 \begin{figure}[h]
   \centering
