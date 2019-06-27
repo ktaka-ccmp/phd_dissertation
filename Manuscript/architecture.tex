@@ -44,10 +44,10 @@ In this section the author discusses the architecture of a portable load balance
     \caption[Conventional architecture of Kubernetes clusters]
             {Conventional architecture of Kubernetes clusters in cloud infrastructure and on-premise data center.
 %\small
-(a) In supported infrastructures, e.g., major cloud providers, Kubernetes automatically send a request to set up a load balancer, when a container cluster is launched.
- The load balancer distributes ingress traffic toward an IP address for a service(the author calls this address, service IP) to all the existing nodes.
+(a) In supported infrastructures, e.g., major cloud providers, Kubernetes automatically set up the routes for ingress traffic with the help of the external load balancer.
+The load balanceer distributes ingress traffic to all of the existing nodes.
 (b) In unsupported infrastructures, e.g., on-premise data centers, web application providers have to manually set up a route to one of the nodes.
-Packets that reached any of the nodes, having the service IP as the destination IP address, will be distributed to appropriate pods by the iptables DNAT based internal load balancer.
+Packets that reached any of the nodes will be distributed to appropriate pods by the iptables DNAT based internal load balancer.
             }
   \end{minipage}
 
@@ -87,12 +87,12 @@ that is deployable in any environment even if there are no external load balance
 
 \subsection{Load balancer in container}\label{Load balancer in container}
 
-The author proposes a load balancer architecture, where a cluster of load balancer containers are deployed as a part of web application cluster.
+The author proposes a load balancer architecture, where a cluster of load balancer containers is deployed as a part of web application cluster.
 Figure~\ref{fig:K8sProposed} shows the proposed load balancer architecture for Kubernetes,
 which has the following characteristics;
 1) A cluster of load balancer containers is deployed as a part of web application cluster.
-2) Each load balancer itself is run as a {\em pod} by Kubernetes. 
-3) Load balancing rules are dynamically updated based on the information about running {\em pods}, which is populated by communicating with apiserver on the master..
+2) Each load balancer itself is run as a {\em pod} by Kubernetes.
+3) Load balancing rules are dynamically updated based on the information about running {\em pods}, which is periodically populated by communicating with apiserver on the master.
 4) There exist multiple load balancers for redundancy and scalability.
 5) The routing table in the upstream router is updated dynamically using standard network protocol, BGP.
 
@@ -123,7 +123,7 @@ Since a software load balancer in a container can run on any Linux system, it ca
 Users can utilize existing servers rather than buying dedicated hardware.
 
 Because a cluster of load balancer containers is controlled by Kubernetes, it becomes redundant and scalable.
-Kubernetes always tries to maintain the number of load balancer containers at the number specified by the user.
+Kubernetes always tries to maintain the number of load balancer containers as same as the number specified by the user.
 If a single container fails, Kubernetes schedule and launch another one on a different node, which provides the resilience to failures.
 When there is a huge spike in the traffic, user can quickly scale the size of the cluster depending on the demand.
 
@@ -185,7 +185,7 @@ By using the route reflector, we can have the following benefits.
 1) Each node can accommodate multiple load balancer containers. This was not possible when we tried to directly connect load balancers and the router through SNAT.
 2) The router does not need to allow peering connections from random IP addresses that may be used by load balancer containers. Now, the router only need to have the reflector information in the BGP peer definition.
 
-Since a standard Linux box is used for the route reflector, it can be configured as we like;
+Since a standard Linux system is used for the route reflector, it can be configured as we like;
 a) It can be configured to belong to the overlay network so that multiple BGP sessions from containers on a single node can be properly distinguished.
 b) One can select a BGP agent that supports dynamic neighbor (or dynamic peer), where he only needs to define the IP range as a peer group and does away with specifying every possible IP that load balancers may use.
 Although not shown in the Fig.~\ref{fig:ecmp}, it is possible to have another route reflector for redundancy purpose.
