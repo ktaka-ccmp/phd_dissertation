@@ -19,7 +19,7 @@ Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the K
 In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
 The author then launched ipvs pod and nginx pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
 On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
-The author also measured throughput for the iptables DNAT as a load balancer.
+The author also measured throughput of the iptables DNAT as a load balancer.
 The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
 
 \begin{figure}[h]

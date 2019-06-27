@@ -1,4 +1,10 @@
 
+One of the most important problems of existing container orchestrators is that none of them has full support for the redundant and scalable ingress routing feature.
+In order to sovle this problem the author proposes the a cluster of software load balancer in cntainers, which is deployed as a part of the web application clusters.
+Key requirements for such load balancers are; 
+1) to implement a mechanism where the routing table of the upstream router is updated automatically so that the router can forward ingress traffic to running load balances. 
+2) to implement software load balancer in a container that is runnable in any environment while having the feature to instantly update load balancing tables so that it can forward the packets to running web application containers.
+
 This chapter provides a discussion of load balancer architecture suitable for container clusters.
 First the author discusses problems of conventions architecture in Section~\ref{Problem of Conventional Architecture}.
 Then the author proposes a portable software load balancer in container in Section~\ref{Load balancer in container}
@@ -34,7 +40,7 @@ In this section the author discusses the architecture of a portable load balance
     \label{fig:K8sConventional_bm}
   \end{subfigure}
 
-  \centering
+   \centering
 
   \begin{minipage}{1.0\columnwidth}
     \caption[Conventional architecture of Kubernetes clusters]
