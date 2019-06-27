@@ -85,7 +85,7 @@ The proposed load balancer needs to dynamically reconfigure the ipvs balancing r
 Figure~\ref{fig:ipvs-ingress-schem} is a schematic diagram of ipvs container to show the dynamic reconfiguration of the ipvs rules.
 Two daemon programs, controller and keepalived, running in the container are illustrated.
 The keepalived manages Linux kernel's ipvs rules depending on the ipvs.conf configuration file.
-It can also periodically health check the liveness of a {\em real server}
+It can also periodically check the liveness of a {\em real server}
 \footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
 in the original literature\cite{Zhang2000}. We will also use this term in the similar way.}, 
 which is represented as a combination of the IP addresses and port numbers of the target {\em pods}. 

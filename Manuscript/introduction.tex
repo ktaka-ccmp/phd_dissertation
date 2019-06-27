@@ -30,7 +30,7 @@ Sometimes the web servers also store and update important data into the database
 \label{fig:web_cluster}
 \end{figure}
 
-A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested, using HTTP or HTTPS. 
+A client program on PCs or smartphone sends out requests to servers and the servers respond with data that is requested using HTTP or HTTPS. 
 Servers for web applications are usually computers located in a data center.
 In the data center multiple servers cooperate to fulfill the need of the clients.
 A group of these servers is often called a web application cluster or a web cluster.
@@ -46,8 +46,8 @@ Sometimes the web servers also store and update important data into the database
 As web applications become an essential part of daily life, an outage of the web application service is getting to be a bigger problem.
 If something happens to a web application cluster in a data center, people will not be able to access the necessary information.
 
-For example, if web pages run by local government stops, people will not be able to access the information regarding public service.
-If a shopping site run by a company stops, customers can no longer buy products and the revenue of the company will be negatively affected.
+For example, if web pages run by local government stops, people will not be able to access the information regarding public services.
+If a shopping site run by a company stops, customers can no longer buy products and the revenue of the company will be decreased.
 Outages of web applications by giant companies can have an even bigger impact.
 An outage of Gmail or Google search engine will probably stop most of the business activities around the world.
 Service down of Amazon.com affect buyers and many businesses that sell products on its platform.
@@ -97,10 +97,11 @@ Access from the client is routed to the closest data center using anycast.
 \label{fig:global_container_infrastructure}
 \end{figure}
 
+
 In order to realize an easy migration of web applications, an ideal infrastructure probably have the following features;
-1) have universal middleware to manage web clusters,
-2) store data in globally consistent data storage,
-3) route global traffic based on proximity to the client.
+1) possessing universal middleware to manage web clusters,
+2) capable of storing data in globally consistent data storage,
+3) capable of routing global traffic based on proximity to the client.
 %
 Figure\ref{fig:global_container_infrastructure} shows an exemplified global container infrastructure having these features.
 Container orchestrators launch and manage container clusters.
@@ -422,24 +423,51 @@ In other words, users will become being able to deploy a complex web application
 \section{Outline}
 
 The rest of the paper is organized as follows.
-Chapter \ref{chapter:related} and Chapter \ref{chapter:background} provides related works and the background information necessary to understand following chapters.
 
-Chapter~\ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
-First the author discusses problems of conventions architecture in Section~\ref{Problem of Conventional Architecture}.
-Then the author proposes a portable software load balancer in container in Section~\ref{Load balancer in container}
-After that the author discusses redundancy architecture using ECMP in Section~\ref{Redundancy with ECMP}. 
-Chapter~\ref{chapter:Architecture and Implementation} also presents implementation of the proof of the concept system for the proposed load balancer architecture in detail.
-First overall architecure is explained in Section~\ref{sec:poc}.
+Chapter \ref{chapter:Background} provides the background information necessary to understand following chapters.
+
+Chapter \ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
+One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
+In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
+Key features required for such load balancers are;
+1) to implement a mechanism where the routing table of the upstream router is updated automatically so that the router can forward ingress traffic to running load balances.
+2) to implement software load balancer in a container that is runnable in any environment while having the feature to instantly update load balancing tables so that it can forward the packets to running web application containers.
+This chapter provides a discussion of such load balancer architecture.
+First, the author discusses problems of conventions architecture in Section~\ref{Problem of Conventional Architecture}.
+Then the author proposes a portable software load balancer in a container in Section~\ref{Load balancer in container}, and discusses redundancy architecture using ECMP in Section~\ref{Redundancy with ECMP}.
+%
+The author also presents an implementation of the proof of the concept system for the proposed load balancer architecture in detail.
+The first overall architecture is explained in Section~\ref{sec:poc}.
 Then ipvs containerization is explained in detail in Section~\ref{sec:ipvs}.
-Finally implementation of BGP software container is explained in Section~\ref{sec:bgp}.
+Finally, the implementation of BGP software container is explained in Section~\ref{sec:bgp}.
 
-Chapter \ref{chapter:portablelb} discusses portability and performance levels of the proposed load balancer in 1 Gbps network environment.
-Chapter \ref{chapter:redundancy} discusses the redundancy and scalability of the proposed load balancers.
-Chapter \ref{chapter:performance} present the performance levels of the proposed load balancer in 10 Gbps network environment and discuss the method to improve the performance of a software load balancer.
-Chapter \ref{chapter:futurework} discusses the limitation and the future work of this study,
+
+Chapter \ref{chapter:Performance Evaluation} present the results of the perfomance evaluation.
+In order to verify the feasibility of the proposed load balancer architecture, the author evaluated the performance of the load balancer with the following criteria;
+(1) Performance analysis:
+The author evaluated the basic characteristics of the load balancer using physical servers in the on-premise data center, and compared performance with those of iptables DNAT and nginx as a load balancer.
+(2) Portability:
+The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable in the cloud environment.
+(3) Redundancy and Scalability:
+The author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
+The author also evaluated the aggregated performance level of the ECMP redundant load balancer.
+
+
+Chapter \ref{chapter:Further Improvement} 
+
+It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
+It is also important to investigate its validitys in 10Gbps network.
+In this chapter the performance level of the proposed load balancer is evaluated.
+The author carries out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
+The author clarifies the reasons for performance limitations and discusses improvement.
+The author also proposes a novel software load balancer using eXpress Data Plane(XDP) technology and presents preliminary experimental results.
+
+Chapter \ref{chapter:Related Work}
+
+
+Chapter \ref{chapter:related} and Chapter \ref{chapter:background} 
+
 which is followed by a conclusion of this work in Chapter \ref{Conclusions}.
-
-
 
 
 
