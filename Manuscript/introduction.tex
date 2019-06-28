@@ -429,17 +429,8 @@ Chapter \ref{chapter:Background} provides the background information necessary t
 Chapter \ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
 One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
 In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
-Key features required for such load balancers are;
-1) to implement a mechanism where the routing table of the upstream router is updated automatically so that the router can forward ingress traffic to running load balances.
-2) to implement software load balancer in a container that is runnable in any environment while having the feature to instantly update load balancing tables so that it can forward the packets to running web application containers.
 This chapter provides a discussion of such load balancer architecture.
-First, the author discusses problems of conventions architecture in Section~\ref{Problem of Conventional Architecture}.
-Then the author proposes a portable software load balancer in a container in Section~\ref{Load balancer in container}, and discusses redundancy architecture using ECMP in Section~\ref{Redundancy with ECMP}.
-%
 The author also presents an implementation of the proof of the concept system for the proposed load balancer architecture in detail.
-The first overall architecture is explained in Section~\ref{sec:poc}.
-Then ipvs containerization is explained in detail in Section~\ref{sec:ipvs}.
-Finally, the implementation of BGP software container is explained in Section~\ref{sec:bgp}.
 
 
 Chapter \ref{chapter:Performance Evaluation} present the results of the perfomance evaluation.
@@ -449,12 +440,11 @@ The author evaluated the basic characteristics of the load balancer using physic
 (2) Portability:
 The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable in the cloud environment.
 (3) Redundancy and Scalability:
-The author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
-The author also evaluated the aggregated performance level of the ECMP redundant load balancer.
+The author evaluates ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
+The author also evaluates the aggregated performance level of the ECMP redundant load balancer.
 
 
-Chapter \ref{chapter:Further Improvement} 
-
+\subsubsection{Chapter \ref{chapter:Further Improvement}}
 It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
 It is also important to investigate its validitys in 10Gbps network.
 In this chapter the performance level of the proposed load balancer is evaluated.
@@ -465,9 +455,7 @@ The author also proposes a novel software load balancer using eXpress Data Plane
 Chapter \ref{chapter:Related Work}
 
 
-Chapter \ref{chapter:related} and Chapter \ref{chapter:background} 
-
-which is followed by a conclusion of this work in Chapter \ref{Conclusions}.
+which is followed by a conclusion of this work in Chapter \ref{chapter:Conclusion and future work}.
 
 
 
