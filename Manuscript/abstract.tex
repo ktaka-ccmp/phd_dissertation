@@ -8,11 +8,12 @@ For example, those who provide these services need to be able to recover from a 
 by migrating their web applications to different locations swiftly and safely.
 For such purposes, providing a web application using a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
 
+A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers. And it is expected to provide uniform platform for container clusters, which also facilitates migration of web applications. However, none of the existing container orchestrators provide support for automatic set up of ingress traffic routing from the Internet. This is one of the most important problems for container orchestrators because without solving this problem migration of a web application will never be easy
 
-In this dissertation, the author proposed a portable load balancer with ECMP redundancy for the Kubernetes cluster systems, which is aimed at facilitating the migration of container clusters for web applications.
-The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure.
-It also utilizes ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
-
+In this dissertation, the author addresses this problem by providing a portable software load balancer that is capable of automatic setup of the ingress traffic routing.
+The author proposed a portable load balancer with ECMP redundancy for the Kubernetes cluster systems that are aimed at facilitating the migration of container clusters for web applications. 
+The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure. 
+It also uses ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
 
 The author implemented a containerized software load balancer that is run by Kubernetes as a part of container cluster, using Linux kernel's ipvs.
 In order to discuss the feasibility of the proposed load balancer, performance measurements are conducted in the 1 Gbps network environment.
