@@ -288,7 +288,6 @@ in partial fulfillment of the requirements for the degree of
     Atsuko Takefusa      & National Institute of Informatics / Sokendai \\
     Michihiro Koibuchi   & National Institute of Informatics / Sokendai \\
     Takashi Kurimoto     & National Institute of Informatics / Sokendai \\
-    Atsuko Takefusa      & National Institute of Informatics / Sokendai \\
     Shigetoshi Yokoyama  & National Institute of Informatics / Gunma University
   \end{tabular}
 \end{center}
