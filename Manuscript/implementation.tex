@@ -67,7 +67,8 @@ Table~\ref{table:bgp_agents} compares open source BGP agents in terms of require
 Each load balancer {\em pod} needs to advertise a static route for the service IP to itself. 
 For that purpose, exabgp is preferable because it only requires to add a line, e.g., \enquote{route Service\_IP next-hop Pod\_IP} in the configuration file, which is read at the startup.
 The gobgpd and the bird require a client program other than the daemon program itself to inject the route after the daemon itself is up and running.
-For example, in the case of gobgpd, after launching gobgpd, a user is required to issue a command line, e.g., \enquote{gobgp global rib add Service\_IP/32 origin igp nexthop Pod\_IP community 100:50 -a ipv4}.
+For example, in the case of gobgpd, after launching gobgpd, a user is required to issue a command line, e.g., \mytodo[inline]{change this with \enquote{gobgp global rib add -a ipv4 10.1.1.0/24 origin igp local-pref 10
+}} \enquote{gobgp global rib add Service\_IP/32 origin igp nexthop Pod\_IP community 100:50 -a ipv4}.
 (The gobgp is a client program to manage gobgpd.)
 This is a bit complex and error-prone, especially when one needs to make sure the route injection is done inside a container.
 
@@ -81,13 +82,32 @@ The configurations for the route reflector is summarised in Appendix~\ref{append
 
 \subsection{Ipvs container}\label{sec:ipvs}
 
+In order to demonstrate a software load balancer that is runnable in any environment, the ipvs is containerized.
+In addition to that, the proposed load balancer uses two other components, keepalived, and a controller.
+These components are placed in a single Docker container image.
+The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later,
+to distribute incoming Transmission Control Protocol(TCP) traffic to
+{\em real servers}\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic,
+in the original literature\cite{Zhang2000}. The author will also use this term in a similar way.}\cite{Zhang2000}.
+For example, ipvs distributes incoming Hypertext Transfer Protocol(HTTP) traffic destined for a single destination IP address,
+to multiple HTTP servers(e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
+Keepalived is a management program that performs health checking for {\em real servers}
+and manages ipvs balancing rules in the kernel accordingly.
+It is often used together with ipvs to facilitate ease of use.
+The controller is a daemon that periodically monitors the {\em pod} information on the master,
+and it performs various actions when such information changes.
+Kubernetes provides ingress controller framework as the Go Language(Golang) package to implement the controllers.
+The author implemented a controller program that feeds {\em pod} state changes to keepalived
+using this framework.
+
 The proposed load balancer needs to dynamically reconfigure the ipvs balancing rules whenever {\em pods} are created or deleted. 
 Figure~\ref{fig:ipvs-ingress-schem} is a schematic diagram of ipvs container to show the dynamic reconfiguration of the ipvs rules.
 Two daemon programs, controller and keepalived, running in the container are illustrated.
 The keepalived manages Linux kernel's ipvs rules depending on the ipvs.conf configuration file.
 It can also periodically check the liveness of a {\em real server}
-\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
-in the original literature\cite{Zhang2000}. We will also use this term in the similar way.}, 
+%
+%\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
+%in the original literature\cite{Zhang2000}. We will also use this term in the similar way.}, 
 which is represented as a combination of the IP addresses and port numbers of the target {\em pods}. 
 If the health check to a {\em real server} fails, keepalived will remove that {\em real server} from the ipvs rules immediately.
 The interval of the health check is typically 1 to several seconds and is arbitrarily determined by users.  
