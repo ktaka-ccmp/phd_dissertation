@@ -424,16 +424,21 @@ In other words, users will become being able to deploy a complex web application
 
 The rest of the paper is organized as follows.
 
-Chapter \ref{chapter:Background} provides the background information necessary to understand following chapters.
+\subsubsection{Chapter~\ref{chapter:Background}}
+This chapter provides background information that is important in this research.
+First, two of the most popular overlay networks used in Kubernetes are explained in detail.
+Then the author explains how to utilize multi-core CPUs for packet processing in Linux.
+Finally, the author explains ipvs load balancer and two of its operation modes.
 
-Chapter \ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
+\subsubsection{Chapter~\ref{chapter:Architecture and Implementation}}
+Chapter  provides discussion of load balancer architecture suitable for container clusters.
 One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
 In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
 This chapter provides a discussion of such load balancer architecture.
 The author also presents an implementation of the proof of the concept system for the proposed load balancer architecture in detail.
 
-
-Chapter \ref{chapter:Performance Evaluation} present the results of the perfomance evaluation.
+\subsubsection{Chapter~\ref{chapter:Performance Evaluation}}
+This chapter present the results of the perfomance evaluation.
 In order to verify the feasibility of the proposed load balancer architecture, the author evaluated the performance of the load balancer with the following criteria;
 (1) Performance analysis:
 The author evaluated the basic characteristics of the load balancer using physical servers in the on-premise data center, and compared performance with those of iptables DNAT and nginx as a load balancer.
@@ -443,8 +448,7 @@ The author also carried out the same performance measurement in GCP and AWS to s
 The author evaluates ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
 The author also evaluates the aggregated performance level of the ECMP redundant load balancer.
 
-
-\subsubsection{Chapter \ref{chapter:Further Improvement}}
+\subsubsection{Chapter~\ref{chapter:Further Improvement}}
 It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
 It is also important to investigate its validitys in 10Gbps network.
 In this chapter the performance level of the proposed load balancer is evaluated.
@@ -452,10 +456,11 @@ The author carries out throughput measurements of ipvs, ipvs-tun, and iptables D
 The author clarifies the reasons for performance limitations and discusses improvement.
 The author also proposes a novel software load balancer using eXpress Data Plane(XDP) technology and presents preliminary experimental results.
 
-Chapter \ref{chapter:Related Work}
+\subsubsection{Chapter~\ref{chapter:Related Work}}
+This chapter prsents related work of this study.
 
-
-which is followed by a conclusion of this work in Chapter \ref{chapter:Conclusion and future work}.
+\subsubsection{Chapter~\ref{chapter:Conclusion and future work}}
+This chapter prsents conclusion of this study.
 
 
 
