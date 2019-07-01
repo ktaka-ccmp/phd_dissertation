@@ -405,7 +405,7 @@ The route for ingress traffic is automatically set up in a redundant and scalabl
 As a proof of concept the author implements the proposed software load balancer that works well with Kubernetes using following technologies;
 1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (ipvs)\cite{Zhang2000} is containerized using Docker\cite{merkel2014docker}. 
 2) To make the load balancer redundant and scalable, the author makes it capable of updating the routing table of upstream router with Equal Cost Multi-Path(ECMP) routes\cite{al2008scalable} using Border Gateway Protocol(BGP), which is a standard routing protocol.
-3) The author also extends the research into implementing the novel load balancer using eXpress Data Plane(XDP) technology\cite{bertin2017xdp} to enhance the performance level to meet the need for 10Gbps network speed.
+3) The author also extends the research into implementing the novel load balancer using eXpress Data Path(XDP) technology\cite{bertin2017xdp} to enhance the performance level to meet the need for 10Gbps network speed.
 
 \subsection{Contribution}
 
