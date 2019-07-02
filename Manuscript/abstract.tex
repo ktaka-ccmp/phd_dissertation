@@ -2,11 +2,11 @@
 
 Today, most of the people in the world can not spend a day without smartphones or PCs.
 They use those devices to access services provided by web applications on the Internet.
-These services included e-mail, social media, search engines, shopping site etc., everything provided through the Internet.
+These services include e-mail, social media, search engines, shopping site, etc., everything provided through the Internet.
 As the services become indispensable part of the daily lives, operating web applications stably and swiftly becomes important day by day.
 For example, those who provide these services need to be able to recover from a disaster, or start their web shopping site in other countries,
 by migrating their web applications to different locations swiftly and safely.
-For such purposes, providing a web application using a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
+For such purposes, providing a web application consisting of a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
 
 
 A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
@@ -50,7 +50,7 @@ The current implementation does not support multicore packet processing, and hen
 However, the obtained throughput about 390K [req/sec] for the XDP load balancer is very promising.
 The author estimates that about five of the software load balancer using this technology with 16 core packet processing can provide enough throughput in 100  Gbps environments in the future. 
 
-The proposed portable load balancer has been portable while providing enough throughput in 10 Gbps environment.
+The proposed load balancer has been verified to be portable while providing enough throughput in 10 Gbps environment.
 The outcome of this study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
 Moreover, the result of this study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
 In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.

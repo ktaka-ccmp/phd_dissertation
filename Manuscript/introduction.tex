@@ -75,7 +75,7 @@ It is desirable to be able to migrate a web cluster from one place to another wi
 
 Therefore, being able to migrate a web application cluster is very important for a variety of purposes, including disaster recovery, cost performance optimizations, meeting legal compliance, and shortening the geographical distance to customers.
 These are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
-Therefore it is important for a web application provider to be able to easily deploy and migrate their web applications among different infrastructure around the world.
+It is important for a web application provider to be able to easily deploy and migrate their web applications among different infrastructure around the world.
 The purpose of this research is to propose infrastructures for web application providers, where they can easily deploy their services across the world, regardless of cloud providers or data centers they use.
 
 
@@ -99,7 +99,7 @@ Access from the client is routed to the closest data center using anycast.
 
 
 In order to realize an easy migration of web applications, an ideal infrastructure probably have the following features;
-1) possessing universal middleware to manage web clusters,
+1) possessing universal middleware to manage web application clusters,
 2) capable of storing data in globally consistent data storage,
 3) capable of routing global traffic based on proximity to the client.
 %
@@ -183,7 +183,7 @@ Every process in a container is assigned to a certain namespace, and if two proc
 Linux kernel implements filesystem namespace, PID namespace, network namespace, user namespace, IPC namespace, and hostname namespace. 
 For example, every filesystem namespace can have its own root filesystem, and every network namespace can have its own network devices and IP addresses.
 Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
-While a VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence imposes no extra overhead.
+While a VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence expected to impose much less extra overhead\cite{felter2015updated}.
 
 The Linux container can run on any Linux systems including physical servers and VMs.
 Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for migrations.
@@ -417,7 +417,7 @@ BGP and ECMP are the standard protocol supported by most of the commercial route
 Contributions of this paper can be summarized as follows:
 1) The author proposes a cluster of software load balancer containers that is deployed as a part of web applications.
 By removing the dependence on external load balancers provided by infrastructures, users can deploy their web applications in the same manner regardless of the infrastructure, which will facilitate the migration of web applications.
-2) The author builds a proof of concept using Open Source Software (OSS), which means that anyone can test drive the proposed load balancers and use them in production for free.
+2) The author builds a proof of concept system using Open Source Software (OSS), which means that anyone can test drive the proposed load balancers and use them in production for free.
 3) The author carries out a performance evaluation to prove the feasibility of the proposed load balancer.
 The author verifies portability, redundancy, and scalability of the proposed load balancer, and concludes it is usable up to 10Gbps network environment.
 4) The author clarifies the remaining problems for future improvement and explores other technology to be used in faster networks.
@@ -427,6 +427,8 @@ Moreover, the result of our study will potentially benefit users who want to use
 In other words, users will become being able to deploy a complex web application on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
 
 \section{Outline}
+
+\mytodo[inline]{Refine outline}
 
 The rest of the paper is organized as follows;
 

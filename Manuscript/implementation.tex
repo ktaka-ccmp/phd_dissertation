@@ -36,16 +36,16 @@ All the nodes and route reflector are configured using Debian 9.5 with self comp
 The author also used conventional Linux system as an upstream router for testing purpose, using the same OS as the nodes and route reflector.
 The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
 The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
-Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced features by using a conventionalLinux system as the router.
+Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced features by using a conventional Linux system as the router.
 
 \begin{table}[H]
   \centering
   \begin{tabular}{|l|c|c|c|}
     \hline
     & \multicolumn{1}{c|}{gobgpd} & \multicolumn{1}{c|}{exabgp} & \multicolumn{1}{c|}{bird} \\ \hline
-    \begin{tabular}{l} Static route advertisementr \end{tabular} & complex & simple & complex  \\ \hline
+    \begin{tabular}{l} Static route advertisement \end{tabular} & complex & simple & complex  \\ \hline
     \begin{tabular}{l} add-path support$^{*}$ \end{tabular} & Yes & No & Yes  \\ \hline
-    \begin{tabular}{l} FIB manupilation \end{tabular} & Yes(through zebra) & No & Yes(Native) \\ \hline
+    \begin{tabular}{l} FIB manipulation \end{tabular} & Yes(through zebra) & No & Yes(Native) \\ \hline
     \begin{tabular}{l} Use case \end{tabular} & Router/Route reflector & Load balancer & Not used$^{**}$  \\ \hline
   \end{tabular}
 

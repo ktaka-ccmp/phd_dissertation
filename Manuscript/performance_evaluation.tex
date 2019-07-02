@@ -109,7 +109,7 @@ The output example shows information including per-thread statistics, error coun
     & CPU: Xeon E5-2450 2.10GHz (with 8 core, Hyper Threading) \\
     & Memory: 32GB \\
     & NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps \\
-    & (Node x 6, Load Balacner x 1, Client x 1) \\
+    & (Node x 6, Load Balancer x 1, Client x 1) \\
 %    \hline 
     & \\
 %    \hline 
@@ -155,7 +155,7 @@ The author compared the performance levels of three backends settings\cite{CoreO
 
 \FloatBarrier
 
-\subsubsection{Effect of multicore proccessing}
+\subsubsection{Effect of multicore processing}
 
 Figure~\ref{fig:ipvs_mcore_proccessing} shows the result of the throughput measurement for the ipvs load balancer with different multicore processing settings.
 Since hardware used in the experiment has a NIC with four rx-queues, and a CPU with eight cores,
@@ -299,7 +299,7 @@ At the load balancer node, the bandwidth for each direction of Full duplex Ether
 }, 
 which is revealed by packet level analysis using tcpdump\cite{takahashi2018portable}.
 %
-On average the data size of each request and the corresponding response was about 636 [byte/req] in total, including TCP/IP headers, Ethernet header, and interframe gaps.
+On average the data size of each request and the corresponding response was about 636 [byte/req] in total, including TCP/IP headers, Ethernet header, and inter-frame gaps.
 Multiplying that with 190K [req/sec] and 8 [bit/byte] will result in 966.72 Mbps.
 Therefore the throughput of about 190K [req/sec] is a reasonable number as the maximum performance level in 1Gbps network environment.
 
@@ -766,7 +766,7 @@ There are four solid lines in the figure, each corresponding to the throughput r
 The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods(lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). 
 The performance level increases linearly as the number of the load balancers increases up to four of the ipvs load balancers, but does not scale further.
 This is because the benchmark program uses up CPU power of the benchmark client, i.e., the CPU usage is 100\% when there are more than four load balancers.
-The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can simultaneouly perform the throughput measurements, will improve the performance level further.
+The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can simultaneously perform the throughput measurements, will improve the performance level further.
 
 Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
 The red line in the figure shows the number of ipvs load balancer pods, which is changed randomly every 60 seconds.
@@ -796,5 +796,5 @@ The author also verified that the ipvs container was able to run and functioned 
 While the performance levels of the proposed load balancers in cloud environments are inferior to those in on-premise data centers.
 
 The ECMP routing update in the proposed architecture is properly functioning and quick enough.
-The linear scalability of the ECMP throughput has been confirmed up to 4x of singel load balancer throughput.
+The linear scalability of the ECMP throughput has been confirmed up to 4x of single load balancer throughput.
 

@@ -45,7 +45,7 @@ In this section the author discusses the architecture of a portable load balance
             {Conventional architecture of Kubernetes clusters in cloud infrastructure and on-premise data center.
 %\small
 (a) In supported infrastructures, e.g., major cloud providers, Kubernetes automatically set up the routes for ingress traffic with the help of the external load balancer.
-The load balanceer distributes ingress traffic to all of the existing nodes.
+The load balancer distributes ingress traffic to all of the existing nodes.
 (b) In unsupported infrastructures, e.g., on-premise data centers, web application providers have to manually set up a route to one of the nodes.
 Packets that reached any of the nodes will be distributed to appropriate pods by the iptables DNAT based internal load balancer.
             }

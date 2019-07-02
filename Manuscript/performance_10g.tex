@@ -1,6 +1,6 @@
 
 It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
-It is also important to investigate its validitys in 10Gbps network.
+It is also important to investigate its validity in 10Gbps network.
 In this chapter the performance level of the proposed load balancer is evaluated.
 The author carries out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
 The author clarifies the reasons for performance limitations and discusses improvement.
@@ -216,7 +216,7 @@ Since benchmark client exists at the location where normally the upstream router
 
 For example, the bottleneck at the benchmark client is about 293K [req/sec] in the 1Gbps network. 
 The load balancers only need to be able to handle at most 293K [req/sec] equivalent traffic.
-Even if the load balacer is capable of handling 500K [req/sec], the throughput of the system is ultimately determined by the bottleneck at the entrance, that is 293K [req/sec].
+Even if the load balancer is capable of handling 500K [req/sec], the throughput of the system is ultimately determined by the bottleneck at the entrance, that is 293K [req/sec].
 The maximum throughput in 1Gbps, i.e., 293K [req/seq] is easily achieved by single ipvs-tun (293K [req/seq]) or two of ipvs load balancers (193K x 2 [req/seq]) with ECMP redundancy.
 
 In the case of 10Gbps network, the maximum throughput determined by the bottleneck at the entrance is 2.9M [req/sec].
@@ -275,11 +275,11 @@ In the next section, the author tries to improve the efficiency of a load balanc
 
 \section{XDP load balancer}
 
-The eXpress Data Path(XDP) is Linux kernel technology recently developed, where the tools and functionality to incept and process the packets in the earlist phase as possible are provided.
-By utilizing XDP, one can hook a byte-compiled code developed in subset of the C programing language, to a place before the socket buffer is assigned, thereby speeding up network manupulation, including block against DDOS atack, simple packet forwarding and load balancing.
-The one of the benefit of the XDP compared to DPDK is that in the case XDP, the packtes that do not match the rule for processing are then passd to normal Linux network stack.
+The eXpress Data Path(XDP) is Linux kernel technology recently developed, where the tools and functionality to intercept and process the packets in the earliest phase as possible are provided.
+By utilizing XDP, one can hook a byte-compiled code developed in subset of the C programing language, to a place before the socket buffer is assigned, thereby speeding up network manipulation, including block against DDOS attack, simple packet forwarding and load balancing.
+The one of the benefit of the XDP compared to DPDK is that in the case XDP, the packets that do not match the rule for processing are then passed to normal Linux network stack.
 Therefore there is no need for preparing dedicated NIC for fast and efficient network processing.
-The author implemented the XDP load balacer and carried out throughput measurement.
+The author implemented the XDP load balancer and carried out throughput measurement.
 
 %% \subsubsection{Implementation}
 
@@ -287,14 +287,14 @@ The author implemented the XDP load balacer and carried out throughput measureme
 
 \subsubsection{Throughput results }
 
-The author carried out the throughput measurement for the XDP load balacer, xlb.
-The hardware and software configuretions are same as the ones in Table~\ref{tab:hw_sw_spec_10g}.
-The exprimental setup is also same as the one in Figure~\ref{fig:benchmark-schem-10g}(b).
+The author carried out the throughput measurement for the XDP load balancer, xlb.
+The hardware and software configurations are same as the ones in Table~\ref{tab:hw_sw_spec_10g}.
+The experimental setup is also same as the one in Figure~\ref{fig:benchmark-schem-10g}(b).
 Since current implementation of xlb does not support multi core packet processing, the setting \enquote{(RSS,RPS)=(off,off)} is used in the throughput measurement.
-All the intterrupt from the NIC are notified to a single core.
+All the interrupt from the NIC are notified to a single core.
 
 Figure~\ref{fig:cpu_usage_10g_xlb} compares the throughput of xlb and iptables DNAT. 
-Although a single core is used for the packet processing, the throughput of the xlb load balancer is close to half of the iptables DNAT's throughput with 16 core(eight physical cores) packet processing.
+Although a single core is used for the packet processing, the throughput of the xlb load balancer is close to half of the iptables DNAT's throughput with 16 core (eight physical cores) packet processing.
 Figure\ref{fig:cpu_usage_10g_xlb} compares CPU usages between xlb and iptables DNAT.
 At a given throughput the xlb consumes much less CPU resource than iptables DNAT.
 These results indicate that load balancer using XDP technology is very promising.
@@ -311,7 +311,7 @@ These results indicate that load balancer using XDP technology is very promising
       The setting \enquote{(RSS,RPS)=(off,off)}, i.e., single core packet processing is used for the xlb measurement.
       The results of iptables DNAT for \enquote{(RSS,RPS)=(on,off)} and \enquote{(RSS,RPS)=(off,off)} are also shown for comparison.
       The throughput of the xlb is much higher than that of iptables DNAT with single core packet processing.
-      Although using only a single core for, the throughput of the xlb load balancer is close to half of the iptables DNAT's with 16 core(eight physical corex) pakcet processing.
+      Although using only a single core for, the throughput of the xlb load balancer is close to half of the iptables DNAT's with 16 core (eight physical core) packet processing.
     }
     \label{fig:xlb_iptables_dnat_10g}
   \end{minipage}
@@ -337,14 +337,14 @@ These results indicate that load balancer using XDP technology is very promising
 \section{Summary}
 
 In this chapter, the author carried out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
-From the results, the general characteristics of a load balancer are observesd.
-The throughputs of ipvst and ipvs-tun are smaller than that of iptables DNAT in 10Gbps network, both due to the overhead of the container network and inefficiency in the program itself.
+From the results, the general characteristics of a load balancer are observed.
+The throughputs of ipvs and ipvs-tun are smaller than that of iptables DNAT in 10Gbps network, both due to the overhead of the container network and inefficiency in the program itself.
 In order to improve the performance levels of portable load balancer, better network setup for containers and more efficient load balancer software should be developed.
 
 However, considering the fact that the ultimate throughput of the system does not exceed that of the upstream router, the entrance, 
 the load balancers only need to be able to handle at most 293K, 2.9M, and 29M [req/sec], in 1Gbps, 10Gbps, and 100Gbps, respectively.
 Since a single ipvs in container can handle 335K [req/sec], traffic equivalent to 2.9M [req/sec], which is the maximum throughput achievable in 10Gbps, can be easily handled by nine of ipvs containers.
 
-The author also presented the priliminary result of xlb experiment, which will be needed in 100Gbps network environment.
+The author also presented the preliminary result of xlb experiment, which will be needed in 100Gbps network environment.
 The obtained per core throughput result and CPU usage result have been very promising.
 

@@ -66,8 +66,8 @@ Since packets are not encapsulated in the host-gw mode, the MTU size remains 150
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Flannel setp with host-gw]{
-      Flannel setp with host-gw.
+    \caption[Flannel setup with host-gw]{
+      Flannel setup with host-gw.
     }
     \label{Figs/flannel-host-gw}
   \end{minipage}
@@ -90,8 +90,8 @@ An additional 50 bytes of header is used in the vxlan mode, thereby resulting in
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Flannel setp with vxlan]{
-      Flannel setp with vxlan.
+    \caption[Flannel setup with vxlan]{
+      Flannel setup with vxlan.
     }
     \label{Figs/flannel-vxlan}
   \end{minipage}
@@ -113,8 +113,8 @@ In the case of the udp mode, only 28 bytes of header are used for encapsulation,
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Flannel setp with vxlan]{
-      Flannel setp with vxlan.
+    \caption[Flannel setup with vxlan]{
+      Flannel setup with vxlan.
     }
     \label{Figs/flannel-vxlan}
   \end{minipage}
@@ -131,7 +131,7 @@ The author explains two of them that are identified in the course of this study.
 
 Although the host-gw mode is expected to be most efficient since no packet encapsulation is used, it has a significant drawback that prohibit it to work correctly in cloud platforms. 
 The host-gw mode simply sends out a packet without encapsulation.
-Tf there is a cloud gateway between nodes, the gateway cannot identify the proper destination, thus drop the packet.
+If there is a cloud gateway between nodes, the gateway cannot identify the proper destination, thus drop the packet.
 
 \begin{table}
   \centering
@@ -338,7 +338,7 @@ For example, ipvs distributes incoming Hypertext Transfer Protocol(HTTP) traffic
 to multiple HTTP servers(e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
 The ipvs has three mode of operation, NAT, Tunneling and DR.
 In this study the author used NAT mode and Tunneling mode.
-Here the auhtor explain them briefly.
+Here the author explain them briefly.
 
 \subsection{NAT mode}
 
@@ -383,7 +383,8 @@ The author refers to this mode as ipvs-tun hereafter.
 \section{Summary}
 
 
-This chaper provides background information that are important in this research.
-First two of the most popular overlay networks used in Kubernetes are explaind in detail.
-Then the author explain how to utilize multicore CPUs for packet proccessing in Linux.
+This chapter provides background information that are important in this research.
+First two of the most popular overlay networks used in Kubernetes are explained in detail.
+Then the author explain how to utilize multicore CPUs for packet processing in Linux.
 Finally the author explain ipvs load balancer and two of its operation modes.
+
