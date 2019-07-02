@@ -399,7 +399,8 @@ Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the ipvs-tun, conv
 As can be seen in the figure, while the performance levels for ipvs and iptables DNAT exactly match, the performance level of ipvs-tun is much higher than those.
 For example, the throughput of ipvs-tun is about 1.5 times higher than those of conventional ipvs and iptables DNAT.
 \footnote{The limit is due to the bandwidth of benchmark client's NIC.
-Multipling 270K [req/sec] with the response packet size 450[byte/req](Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] . }
+Multipling 290K [req/sec] with the response packet size 450[byte/req](Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] . }
+\mytodo[inline]{do that packet analysis again}
 
 %\mytodo[inline]{Add tunneling setup needed on web container for L3DSR, if there is enough time. }
 
@@ -793,4 +794,4 @@ The author carried out throughput measurement to verify the feasibility of the l
 (5) The ipvs container is able to run and function properly, both in GCP and AWS.
 (6) The ECMP routing update in the proposed architecture is properly functioning and quick enough.
 (7) The linear scalability of the ECMP throughput has been confirmed up to 4x of single load balancer throughput.
-From these results the author concludes the proposed load balancer is portable while providing 1.5 times better throughput than iptable DNAT.
+From these results, the author concludes that the proposed load balancer is portable, redundant and scalable while providing 1.5 times better throughput than iptables DNAT in 1Gbps network environment.
