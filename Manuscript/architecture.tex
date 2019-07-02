@@ -65,12 +65,12 @@ The returning packets follows the exact same route as the incoming ones.
 This architecture has the followings problems: 
 1) There must exist cloud load balancers whose APIs are supported by the Kubernetes daemons.
 There are numerous load balancers which is not supported by the Kubernetes.
-These include the bare metal load balancers for on-premise data centers.
+These include the hardware load balancers for on-premise data centers.
 2) Distributing the traffic twice, first on the external load balancers and second on each node, complicates the administration of packet routing. 
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, and hence it would be very difficult to find out which node is malfunctioning.   
 3) The ingress traffic is distributed to all the existing nodes in the Kubernetes cluster. 
-Suppose there are 1,000 nodes and one of web applications only uses 10 nodes, it seems inefficient and rather complicated to distribute the ingress traffic to all the 1,000 nodes.
+Suppose there are 1,000 nodes and one of the web applications only uses 10 nodes, distributing the ingress traffic to all the 1,000 nodes seems inefficient and complicated.
 
 Regarding the first problem, if there is no load balancer that is supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
 The traffic will be routed to a node and then distributed by the DNAT rules on the node to the designated {\em pods}.
@@ -80,8 +80,7 @@ Furthermore, a static route usually lacks redundancy and scalability.
 
 In short, while Kubernetes is effective in major cloud providers, it fails to provide portability for container clusters in environments where there is no supported load balancer. 
 And the routes incoming traffic follow are very complex and inefficient.
-In order to address these problems, the author proposes a containerized software load balancer 
-that is deployable in any environment even if there are no external load balancers.
+In order to address these problems, the author proposes a containerized software load balancer that is deployable as a part of web application cluster and hence enables users to set up ingress route automatically in any environment even if there is no external load balancer.
 
 \FloatBarrier
 
@@ -152,6 +151,7 @@ Therefore users do not need to manually add the route every time new load balanc
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the ingress traffic to the ipvs container.
 The author proposes redundant architecture using ECMP with BGP for proposed load balancer containers.
+The BGP and ECMP are both standard protocols supported by most of the commercial router products.
 
 Fig.~\ref{fig:ecmp} shows a schematic diagram to explain redundancy architecture with ECMP for the proposed load balancer.
 %
@@ -189,6 +189,7 @@ Since a standard Linux system is used for the route reflector, it can be configu
 a) It can be configured to belong to the overlay network so that multiple BGP sessions from containers on a single node can be properly distinguished.
 b) One can select a BGP agent that supports dynamic neighbor (or dynamic peer), where he only needs to define the IP range as a peer group and does away with specifying every possible IP that load balancers may use.
 Although not shown in the Fig.~\ref{fig:ecmp}, it is possible to have another route reflector for redundancy purpose.
+It is also possible to make the master node of Kubernetes also act as the route reflector.
 
 \FloatBarrier
 
