@@ -312,7 +312,8 @@ The container orchestrator also communicates with the upstream router through BG
 The purpose of this research is to investigate a generic way to route the traffic into container clusters in a redundant and scalable manner and thereby to facilitate web application migrations.
 In order to bring this into reality, the author proposes a cluster of software load balancer containers that can be run in any infrastructure.
 The proposed load balancer will be deployed as a part of the web application cluster itself by container orchestrator.
-By using this load balancer architecture, users become being able to automatically set up a route for ingress traffic when they start their web applications without relying on the load balancers provided by the infrastructure.
+By using this load balancer, architecture, users become being able to automatically set up a route for ingress traffic when they start their web applications without relying on the load balancers provided by the infrastructure.
+The key idea of the proposal is to remove the dependency on the load balancers provided by infrastructures, thereby standardize the way for ingress traffic routing.
 
 Figure~\ref{fig:cluster_of_container_loadbalancer} shows schematic diagram of an example architecture for such load balancers.
 A web application that consists of nginx, redis, and mysqld, each being a cluster of containers, is running in the server farm.

@@ -8,7 +8,6 @@ For example, those who provide these services need to be able to recover from a 
 by migrating their web applications to different locations swiftly and safely.
 For such purposes, providing a web application consisting of a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
 
-
 A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
 And it is expected to provide a uniform platform for container clusters, which also facilitates the migration of web applications consisting of container clusters.
 However, none of the existing container orchestrators fully supports an automatic setup of ingress traffic routing from the Internet.
@@ -18,6 +17,7 @@ The lack of this automation is one of the most critical problems for container o
 In this dissertation, the author addresses this problem by providing a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic routing.
 The author proposes a cluster of software load balancers in container for Kubernetes, that can be launched as a part of web applications.
 It also supports an automatic setup of Equal Cost Multi Path(ECMP) routes to make multiple load balancers active, and thereby to provide redundancy and scalability.
+By using the proposed load balancer, the way to route traffic into container clusters is standardized, removing dependencies on load balancer architectures provided by infrastructures.
 
 The author has implemented a containerized software load balancer using Linux kernel's ipvs to prove the feasibility of the proposed load balancer architecture, and carried out performance measurements in the 1 Gbps network environment.
 It has been shown that the proposed load balancers are runnable in an on-premise data center, Google Cloud Platform (GCP) and Amazon Web Service (AWS).
@@ -27,7 +27,7 @@ The throughputs of a load balancer are dependent on the settings for multi-core 
 It has been shown that the setting with as many CPU cores as possible for packet processing results in better performance.
 It has been also shown that the backend mode for the overlay network without any packet encapsulation should be used for the best performance.
 %
-The throughput of the ipvs in container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times larger than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an  internal load balancer.
+The throughput of the ipvs in a container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times higher than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an internal load balancer.
 Therefore, the proposed load balancer has been proved to be portable with better throughput than existing internal load balancer provided by the Kubernetes in 1 Gbps network environment.
 
 The author has also implemented an automatic setup of the ECMP route for ingress traffic.
