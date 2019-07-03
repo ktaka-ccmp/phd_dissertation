@@ -28,9 +28,9 @@ It has been shown that the setting with as many CPU cores as possible for packet
 It has been also shown that the backend mode for the overlay network without any packet encapsulation should be used for the best performance.
 %
 The throughput of the ipvs in container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times larger than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an  internal load balancer.
-Therefore, the proposed load balancer has been proved to be portable with better throughput than existing internal load balancer of the Kubernetes in 1 Gbps network environment.
+Therefore, the proposed load balancer has been proved to be portable with better throughput than existing internal load balancer provided by the Kubernetes in 1 Gbps network environment.
 
-The author also has implemented an automatic setup of the ECMP route for ingress traffic.
+The author has also implemented an automatic setup of the ECMP route for ingress traffic.
 There, multiple load balancer containers are deployed, and each of them advertises itself as an active next hop of the IP for web application through Border Gateway Protocol(BGP).
 The ECMP route makes the load balancers redundant and scalable since all the load balancer containers act as active.
 The BGP helps automatic setup of the ECMP route.  
