@@ -24,11 +24,11 @@ In this section the author discusses the implementation of the experimental syst
 
 Figure~\ref{fig:poc} shows the schematic diagram of proof of concept container cluster system with the proposed software load balancers.
 %
-Each load balancer pod consists of an exabgp container and an ipvs container.
+Each load balancer pod consists of an exabgp\cite{exa-networks_2018} container and an ipvs container.
 The ipvs container is responsible for distributing the traffic toward the service IP to web server(nginx) pods.
 The IP address for nginx pods and load balancer pods are dynamically assigned upon launch of themselves from 172.16.0.0/16 address range.
 The ipvs container monitors the availability of web server pods by consulting apiserver on the master node and manages the load balancing rule appropriately.
-The exabgp container is responsible for advertising the route toward the service IP to the route reflector.
+The exabgp container is responsible for advertising the route toward the service IP to the route reflector using BGP.
 The route reflector aggregates the routing information advertised by load balancer pods and advertise them to the upstream router.
 The upstream router updates its routing table according to the advertisement.
 
@@ -36,16 +36,16 @@ All the nodes and route reflector are configured using Debian 9.5 with self comp
 The author also used conventional Linux system as an upstream router for testing purpose, using the same OS as the nodes and route reflector.
 The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
 The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
-Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced features by using a conventionalLinux system as the router.
+Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced features by using a conventional Linux system as the router.
 
 \begin{table}[H]
   \centering
   \begin{tabular}{|l|c|c|c|}
     \hline
     & \multicolumn{1}{c|}{gobgpd} & \multicolumn{1}{c|}{exabgp} & \multicolumn{1}{c|}{bird} \\ \hline
-    \begin{tabular}{l} Static route advertisementr \end{tabular} & complex & simple & complex  \\ \hline
+    \begin{tabular}{l} Static route advertisement \end{tabular} & complex & simple & complex  \\ \hline
     \begin{tabular}{l} add-path support$^{*}$ \end{tabular} & Yes & No & Yes  \\ \hline
-    \begin{tabular}{l} FIB manupilation \end{tabular} & Yes(through zebra) & No & Yes(Native) \\ \hline
+    \begin{tabular}{l} FIB manipulation \end{tabular} & Yes(through zebra) & No & Yes(Native) \\ \hline
     \begin{tabular}{l} Use case \end{tabular} & Router/Route reflector & Load balancer & Not used$^{**}$  \\ \hline
   \end{tabular}
 
@@ -65,15 +65,15 @@ Although in the actual production environment, proprietary hardware router with 
 
 Table~\ref{table:bgp_agents} compares open source BGP agents in terms of required features for the proposed architecture.
 Each load balancer {\em pod} needs to advertise a static route for the service IP to itself. 
-For that purpose, exabgp is preferable because it only requires to add a line, e.g., \enquote{route Service\_IP next-hop Pod\_IP} in the configuration file, which is read at the startup.
-The gobgpd and the bird require a client program other than the daemon program itself to inject the route after the daemon itself is up and running.
+For that purpose, exabgp is preferable because it only requires to add a line, e.g., \enquote{route Service\_IP next-hop Pod\_IP} in the configuration file.
+The gobgpd and the bird require other client programs to inject the static route after the daemon itself is up and running.
 For example, in the case of gobgpd, after launching gobgpd, a user is required to issue a command line, e.g., \enquote{gobgp global rib add Service\_IP/32 origin igp nexthop Pod\_IP community 100:50 -a ipv4}.
 (The gobgp is a client program to manage gobgpd.)
 This is a bit complex and error-prone, especially when one needs to make sure the route injection is done inside a container.
 
 As for the route reflector, add-path\cite{rfc7911} feature is needed for multi-path advertisement, which is supported by gobgpd.
-For the upstream router Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018} feature is needed, which is supported by gobgpd.
-As a result, exabgp is used for the load balancer pods, and gobgpd is used for the route reflector and the upstream router.
+For the upstream router Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018} feature is needed, which is supported by gobgpd through zebra\cite{osrg_gobgp_zebra}.
+As a result, exabgp is used for the load balancer pods, gobgpd is used for the route reflector, and gobgpd and zebra are used for the upstream router.
 
 The other features needed for the route reflector are a dynamic-neighbor feature to describe peer group as a range of IP address, and overlay network feature on the Linux system.
 The configurations for the upstream router is summarised in Appendix~\ref{appendix:router_config}.
@@ -81,7 +81,7 @@ The configurations for the route reflector is summarised in Appendix~\ref{append
 
 \subsection{Ipvs container}\label{sec:ipvs}
 
-In order to demonstrate a software load balancer that is runnable in any environment, the ipvs is containerized.
+In order to demonstrate a software load balancer that is runnable in any environment, the author created Docker container using ipvs.
 In addition to that, the proposed load balancer uses two other components, keepalived, and a controller.
 These components are placed in a single Docker container image.
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later,
@@ -276,16 +276,16 @@ In order to implement the ECMP redundancy, the author also containerized exabgp 
 Figure~\ref{fig:exabgp_schem} shows a schematic diagram of the network path realized by the exabgp container.
 As mentioned earlier, the author used exabgp as the BGP advertiser. 
 The ingress traffic from the Internet is forwarded by ECMP routing table on the router to the node that hosts a load balancer pod.
-And then it is routed to the load balancer pod according to the set of routing rules in Figure~\ref{fig:exabgp_schem}.
+And then it is routed to the load balancer pod according to the set of routing rules in Table~\ref{table:exabgp_setting}(2),(3).
 After that the ipvs forwards them to nginx pods.
 The IP address of any pod is dynamically assigned from 172.16.0.0/16 when the pod is started. 
 
 Table~\ref{table:exabgp_setting} summarises some key settings required in the exabgp container to route the traffic to the ipvs container.
-In BGP announcements the node IP address, 10.0.0.106 is used as the next-hop for the service IPs, 10.1.1.0/24.
-Then on the node, in order to route the packets toward the service IPs to the ipvs container, 
+(1) In BGP announcements the node IP address, 10.0.0.106 is used as the next-hop for the service IPs, 10.1.1.0/24.
+(2) Then on the node, in order to route the packets toward the service IPs to the ipvs container, 
 a routing rule for 10.1.1.0/24 to the dev docker0 is created in the node net namespace. 
-A routing rule to accept the packets toward the service IPs as local is also required in the container net namespace. 
-A configuration for exabgp is shown in Appendix~\ref{appendix:exabgp_config}.
+(3) A routing rule to accept the packets toward the service IPs as local is also required in the container net namespace. 
+The configuration for exabgp is shown in Appendix~\ref{appendix:exabgp_config}.
 
 \FloatBarrier
 
@@ -306,9 +306,12 @@ Furthermore, since Kubernetes manages load balancer containers, it can quickly s
 %
 The author also discussed redundant architecture using ECMP with BGP for proposed load balancer containers.
 By using the ECMP, the upstream router can route the ingress traffic to a cluster of load balancer containers in a redundant and scalable manner.
-By using BGP, which is the standard protocol, ECMP routing rules in the upstream router are automatically populated, upon the launch of load balancer containers.
+By using BGP, ECMP routing rules in the upstream router are automatically populated, upon the launch of load balancer containers.
+The BGP and ECMP are both standard protocols supported by most of the commercial router products.
 
-As a result users, i.e., web application providers can quickly and automatically set up routes to their web application, upon its launch.
+Thanks to the proposed load balancer, users become being able to set up routes to their web applications automatically, upon its launch, regardless of the infrastructures they use.  
 This will greatly improve the portability of a web application and thereby enables migrations.
+
+
 
 

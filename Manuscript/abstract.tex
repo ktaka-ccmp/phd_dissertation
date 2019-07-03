@@ -2,50 +2,55 @@
 
 Today, most of the people in the world can not spend a day without smartphones or PCs.
 They use those devices to access services provided by web applications on the Internet.
-These services included e-mail, social media, search engines, shopping site etc., everything provided through the Internet.
+These services include e-mail, social media, search engines, shopping site, etc., everything provided through the Internet.
 As the services become indispensable part of the daily lives, operating web applications stably and swiftly becomes important day by day.
-For example, those who provide these services need to be able to recover from a disaster, or start web store in other countries,
+For example, those who provide these services need to be able to recover from a disaster, or start their web shopping site in other countries,
 by migrating their web applications to different locations swiftly and safely.
-For such purposes, providing a web application using a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
+For such purposes, providing a web application consisting of a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
 
-A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers. And it is expected to provide uniform platform for container clusters, which also facilitates migration of web applications. However, none of the existing container orchestrators provide support for automatic set up of ingress traffic routing from the Internet. This is one of the most important problems for container orchestrators because without solving this problem migration of a web application will never be easy
+A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
+And it is expected to provide a uniform platform for container clusters, which also facilitates the migration of web applications consisting of container clusters.
+However, none of the existing container orchestrators fully supports an automatic setup of ingress traffic routing from the Internet.
+Users needed to set up a route for ingress traffic manually depending on the type of the infrastructure, every time they start a new web application.
+The lack of this automation is one of the most critical problems for container orchestrators because without solving this problem, the migration of a web application will never be easy.
 
-In this dissertation, the author addresses this problem by providing a portable software load balancer that is capable of automatic setup of the ingress traffic routing.
-The author proposed a portable load balancer with ECMP redundancy for the Kubernetes cluster systems that are aimed at facilitating the migration of container clusters for web applications. 
-The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure. 
-It also uses ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
+In this dissertation, the author addresses this problem by providing a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic routing.
+The author proposes a cluster of software load balancers in container for Kubernetes, that can be launched as a part of web applications.
+It also supports an automatic setup of Equal Cost Multi Path(ECMP) routes to make multiple load balancers active, and thereby to provide redundancy and scalability.
+By using the proposed load balancer, the way to route traffic into container clusters is standardized, removing dependencies on load balancer architectures provided by infrastructures.
 
-The author implemented a containerized software load balancer that is run by Kubernetes as a part of container cluster, using Linux kernel's ipvs.
-In order to discuss the feasibility of the proposed load balancer, performance measurements are conducted in the 1 Gbps network environment.
-It was shown that the proposed load balancers are runnable in an on-premise data center, GCP and AWS.
+The author has implemented a containerized software load balancer using Linux kernel's ipvs to prove the feasibility of the proposed load balancer architecture, and carried out performance measurements in the 1 Gbps network environment.
+It has been shown that the proposed load balancers are runnable in an on-premise data center, Google Cloud Platform (GCP) and Amazon Web Service (AWS).
 Therefore the proposed load balancers can be said to be portable.
-The throughput levels of a load balancer are dependent on settings for multi-core packet processing.
-It was shown that better to use as many CPU cores as possible for packet processing.
-The throughput levels are also very dependent on the overlay network backend mode.
-The host-gw mode where no tunneling is used resulted in the best performance level, and the vxlan mode resulted in the second best.
-In the experiment in the 1 Gbps network environment, the ipvs-nat load balancer in the container had the same performance level as the internal load balancer using iptables DNAT provided by Kubernetes.
-Furthermore, the performance level of ipvs-tun(one of the operation modes of ipvs) load balancer in a container with the L3DSR setup was about 1.5 times larger than that of iptables DNAT.
-Therefore in 1 Gbps network environment, the proposed load balancer is portable while it has the 1.5 times better performance level than internal load balancer provided by Kubernetes.
-
-Also implemented is the ECMP setups where multiple of the load balancer containers are deployed, each advertising the route to the IP for the web application through BGP.
-The ECMP technique makes the load balancers redundant and scalable since all the load balancer containers act as active.
-The whole system is resilient to a single failure of load balancer container.
-Also by utilizing multiple load balancers simultaneously, the throughput of the total system is increased significantly.
-These characteristics are evaluated by checking the routing table of the upstream router and by throughput measurement.
-
 %
-The author verified that ECMP routing table was properly created in the experimental system.
-The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
-The maximum performance levels of the cluster of load balancers scaled linearly as the number of the load balancer pods was increased up to four of them.
-The maximum throughput level obtained through the experiment was 780k [req/sec], which is limited due to the maximum CPU performance of the benchmark client rather than the performance of the load balancer cluster.
+The throughputs of a load balancer are dependent on the settings for multi-core packet processing and the setting for the overlay network.
+It has been shown that the setting with as many CPU cores as possible for packet processing results in better performance.
+It has been also shown that the backend mode for the overlay network without any packet encapsulation should be used for the best performance.
+%
+The throughput of the ipvs in a container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times higher than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an internal load balancer.
+Therefore, the proposed load balancer has been proved to be portable with better throughput than existing internal load balancer provided by the Kubernetes in 1 Gbps network environment.
 
-The author also extended the throughput measurement into the 10 Gbps network environment.
-It was revealed that ipvs and ipvs-tun load balancers in containers had lower performance levels compared with the iptables DNAT.
-The reason for this has been verified to be due to the overhead of the container network, i.e., veth+bridge and inefficiency of the ipvs itself.
-The author also implemented a novel software load balancer using XDP technology to enhance the performance of software load balancer and presented preliminary performance result.
+The author has also implemented an automatic setup of the ECMP route for ingress traffic.
+There, multiple load balancer containers are deployed, and each of them advertises itself as an active next hop of the IP for web application through Border Gateway Protocol(BGP).
+The ECMP route makes the load balancers redundant and scalable since all the load balancer containers act as active.
+The BGP helps automatic setup of the ECMP route.  
+The BGP and ECMP are both standard protocols supported by most of the commercial router products.
+%
+The author verified that an ECMP route has been automatically created upon launch of a new load balancer container on the upstream router.
+The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
+The maximum performance levels of the cluster of load balancers have scaled linearly up to four times as the number of the load balancer containers has been increased to four of them.
+The maximum aggregated throughput obtained through the experiment is 780k [req/sec], which is limited by the CPU performance of the benchmark client, and therefore can be improved using better hardware in the future experiment.
+Therefore the author has proved that proposed load balancer has the capability of the automatic setup of ingress traffic in a redundant and scalable manner.
+
+The author also extended the throughput measurement into the 10 Gbps network environment, in order to verify that proposed software load balancer is capable of providing needed throughput for 10 Gbps environment.
+Although a single ipvs load balancer in the container can only provide 1/4 of required throughput, the parallelism of ECMP setups using more than four of them can provide enough throughput required in 10 Gbps environment.
+
+The author has implemented a novel software load balancer using eXpress Data Path(XDP) technology for faster network and presented preliminary performance result.
 The current implementation does not support multicore packet processing, and hence throughput is limited by the capability of single core processing performance.
-However, the obtained throughput about 390K [req/sec] for the XDP load balancer(xlb) is nearly the half of the iptables DNAT with eight physical core packet processing, which the author considers very promising.
- 
+However, the obtained throughput about 390K [req/sec] for the XDP load balancer is very promising.
+The author estimates that about five of the software load balancer using this technology with 16 core packet processing can provide enough throughput in 100  Gbps environments in the future. 
+
+The proposed load balancer has been verified to be portable while providing enough throughput in 10 Gbps environment.
 The outcome of this study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
 Moreover, the result of this study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
 In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
