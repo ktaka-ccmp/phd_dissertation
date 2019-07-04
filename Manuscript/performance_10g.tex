@@ -283,7 +283,50 @@ One of the benefits of the XDP compared to DPDK is that in the case of XDP, the 
 Therefore there is no need for preparing dedicated NIC for fast and efficient network processing.
 The author implemented the XDP load balancer and carried out throughput measurement.
 
-%% \subsubsection{Implementation}
+\subsubsection{Implementation}
+
+Figure~\ref{fig:xlb-schem} show schematic diagram of the XDP load balancer, xlb, which is implemented by the author.
+The xlb consists of programs and configurations shown in Table~\ref{table:xlb-progs}.
+The xlb\_kernel.ll is the byte-compiled eBPF program that actually process the packets based on the load balance rules in the xlb table.
+Load balancing rules are populated by a userspace daemon xlbd from the configration file xlbd.conf and nexthop and MAC address information obtained from the Linux kernel.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{Figs/xlb-schem}
+
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Xlb architecture]{
+      Xlb architecture.
+      The author implemented an XDP load balancer named xlb.
+    }
+    \label{fig:xlb-schem}
+  \end{minipage}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    Name & Function \\ \hline
+    xlb\_kern.ll & byte compiled eBPF program  \\ \hline
+    xlb & utility to inject eBPF program into kernl  \\ \hline
+    xlbd & daemon to control load balance table  \\ \hline
+    xlbd.conf & load balancing configuration  \\ \hline
+    xlb table & load balance table  \\ \hline
+    xlb cache & load balance cache  \\ \hline
+  \end{tabular}
+
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Xlb components]{
+      Xlb components.
+    }
+    \label{table:xlb-progs}
+  \end{minipage}
+\end{table}
 
 %% \subsubsection{Benchmark setup}
 

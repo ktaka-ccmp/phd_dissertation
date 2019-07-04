@@ -129,20 +129,50 @@ func (ipvs IPVSController) DefaultIngressClass() string {
 \section{Exabgp configuration on the load balancer container.}
 \label{appendix:exabgp_config}
 
-{\bf\normalsize exabgp.conf:}
+
+\section{Gobgpd and zebra configurations on the router.}
+
+{\bf\normalsize gobgp.conf:}
 \begin{verbatim}
-neighbor 10.0.0.109 {
- description "peer1";
- router-id 172.16.20.2;
- local-address 172.16.20.2;
- local-as 65021;
- peer-as 65021;
- hold-time 1800;
-   static {
-     route 10.1.1.0/24 next-hop 10.0.0.106;
-   }
-}
+global:
+  config:
+    as: 65021
+    router-id: 10.0.0.110
+    local-address-list:
+    - 0.0.0.0
+
+  use-multiple-paths:
+    config:
+      enabled: true
+
+neighbors:
+    - config:
+        neighbor-address: 10.0.0.109
+        peer-as: 65021
+      add-paths:
+        config:
+          receive: true
+
+zebra:
+  config:
+    enabled: true
+    url: unix:/run/quagga/zserv.api
+    version: 3
+    redistribute-route-type-list: 
+      - static
+
 \end{verbatim}
+\label{appendix:router_config}
+
+The "use-multiple-paths" should be enabled for the gobgpd to redistribute BGP multipath routes to Zebra.
+
+\par\bigskip
+\noindent {\bf\normalsize zebra.conf:}
+\begin{verbatim}
+hostname Router
+log file /var/log/zebra.log
+\end{verbatim}
+
 
 \section{Gobgpd configuration on the route reflector.}
 \label{appendix:route_reflector_config}
@@ -187,48 +217,33 @@ neighbors:
 
 \end{verbatim}
 
-\section{Gobgpd and zebra configurations on the router.}
+The "dynamic-neighbors" section and the "peer-groups" section set up dynamic neighbor settings to avoid listing of every possible IP. 
+The "add-paths" setting in the "neighbors" section enables multi path advertisement for a single network prefix.
 
-{\bf\normalsize gobgp.conf:}
+\section{Exabgp configuration on the load balancer container.}
+\label{appendix:exabgp_config}
+
+{\bf\normalsize exabgp.conf:}
 \begin{verbatim}
-global:
-  config:
-    as: 65021
-    router-id: 10.0.0.110
-    local-address-list:
-    - 0.0.0.0
-
-  use-multiple-paths:
-    config:
-      enabled: true
-
-neighbors:
-    - config:
-        neighbor-address: 10.0.0.109
-        peer-as: 65021
-      add-paths:
-        config:
-          receive: true
-
-zebra:
-  config:
-    enabled: true
-    url: unix:/run/quagga/zserv.api
-    version: 3
-    redistribute-route-type-list: 
-      - static
-
-\end{verbatim}
-\label{appendix:router_config}
-%
-{\bf\normalsize zebra.conf:}
-\begin{verbatim}
-hostname Router
-log file /var/log/zebra.log
+neighbor 10.0.0.109 {
+ description "peer1";
+ router-id 172.16.20.2;
+ local-address 172.16.20.2;
+ local-as 65021;
+ peer-as 65021;
+ hold-time 1800;
+   static {
+     route 10.1.1.0/24 next-hop 10.0.0.106;
+   }
+}
 \end{verbatim}
 
-%\caption{Example of zebra config on the router.}
-%\label{fig:zebra_config_router}
+The IP address of the load balancer pod(i.e. container), "172.16.20.2", is used for "router-id" and "local-address".
+This address is dynamically assigned when the pod is started.
+The IP address of the node, "10.0.0.106", is used for "next-hop".
+The node address is found out when the pod starts.
+
+
 
 \chapter{Analysis of the performance limit}
 \label{appendix:performance_limit}
@@ -329,24 +344,39 @@ Since experimnetal results agrees well with theory, the author concludes that wh
 \end{table}
 
 
-\chapter{VRRP}
-\section{VRRP}\label{sec:vrrp}
-
-\begin{figure}[tb]
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.8\columnwidth]{Figs/vrrp.png}
+\includegraphics[width=0.8\columnwidth]{Figs/performance_limitation}
 \caption{
-  An alternative redundant load balancer architecture using VRRP.
+  Perfomance limitation due to 1Gbps bandwidth.
 }
-\centering\parbox[c]{0.9\columnwidth}{
-  The traffic from the internet is forwarded by the upstream router to a active lb node and then distributed by the lb pods to web pods using Linux kernel's ipvs.
-  The active lb pod is selected using VRRP protocol.
-}
+\label{fig:performance_limit}
+\end{figure}
+
+\FloatBarrier
+
+\chapter{VRRP}\label{appendix:vrrp}
+
+The authors have considered another redundant architecture using the VRRP protocol.
+However, it turned out to be less preferable than the proposed ECMP redundancy with following reasons;
+(a)Redundancy is in an active-backup manner.
+(b)The VRRP protocols relied on multicast, which is often not supported in the overlay network environments.
+Here we explain our considerations.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=\columnwidth]{Figs/vrrp.png}
+\end{center}
+\caption{ An alternative redundant load balancer architecture using VRRP.}
+  The traffic from the internet is forwarded by the upstream router to a active lb node(the solid green line) and then distributed by the lb pods to web pods using Linux kernel's ipvs(the solid red line).
+  The active lb pod is selected using VRRP protocol(the blue dotted line).
+  For the green lines global IP address is used. The red lines use IP addresses of overlay network. The blue line uses the IP address of node network.
+
 \label{fig:vrrp}
 \end{figure}
 
-Fig.~\ref{fig:vrrp} shows an alternative redundancy setup using the VRRP protocol that was first considered by the authors, but did not turn out to be preferable.
-In the case of VRRP, the load balancer container needs to run in the node net namespace for the following two reasons.
+Fig.~\ref{fig:vrrp} shows the redundancy setup using the VRRP protocol.
+In the case of VRRP, the load balancer container needs to run in the node net namespace for the following two reasons;
 1) When fail over occurs, the new master sends gratuitous Address Resolution Packets(ARP) packets to update the ARP cache of the upstream router and Forwarding Data Base(FDB) of layer 2 swicthes during the transition.
 Such gratuitous ARP packets should consist of the virtual IP address shared by the load balancers and the MAC address of the node where the new master load balancer is running.
 Programs that send out gratuitous ARP with node MAC address should be in the node net namespace.
@@ -366,4 +396,6 @@ Therefore the unicast mode is not feasible in container cluster environment.
 The other drawback compared with the ECMP case is that the redundancy of VRRP is provided in Active-Backup manner.
 This means that a single software load balancer limits the overall performance of the entire container cluster.
 Therefore we believe the ECMP redundancy is better than VRRP in our use cases.
+
+
 

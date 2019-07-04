@@ -150,7 +150,7 @@ Therefore users do not need to manually add the route every time new load balanc
 \end{figure}
 
 While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the ingress traffic to the ipvs container.
-The author proposes redundant architecture using ECMP with BGP for proposed load balancer containers.
+The author proposes redundant architecture using ECMP with BGP for proposed load balancer containers.\footnote{The author also investigated redundancy architecture using VRRP in Appendix~\ref{appendix:vrrp}. However, VRRP had limitation in overlay networks used for container clusters.}
 The BGP and ECMP are both standard protocols supported by most of the commercial router products.
 
 Fig.~\ref{fig:ecmp} shows a schematic diagram to explain redundancy architecture with ECMP for the proposed load balancer.
