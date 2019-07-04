@@ -38,7 +38,7 @@ The version of Linux kernel needed to be 4.12 or later to support hash based ECM
 The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
 Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced features by using a conventional Linux system as the router.
 
-\begin{table}[H]
+\begin{table}[h]
   \centering
   \begin{tabular}{|l|c|c|c|}
     \hline
@@ -141,7 +141,7 @@ However, since the load balancer rule update is within a second, these errors ca
 
 The actual controller\cite{ktaka_ccmp_2017_826894} is implemented using the Kubernetes ingress controller\cite{K8sIngress2017} framework. 
 By importing existing Golang package, \enquote{k8s.io/ingress/core/pkg/ingress}, the author could simplify the implementation, e.g. 
-120 lines of code.  
+120 lines of code(Appendix~\ref{appendix:ingress_controller}).
 %
 Keepalived and the controller are placed in the docker image of ipvs container.
 The ipvs is the kernel function and namespace separation for container has already been supported in the recent Linux kernel. 

@@ -297,7 +297,7 @@ In this specific experiment, the performance level was limited by the 1 Gbps ban
 All of the nodes use a single interface for communication. 
 At the load balancer node, the bandwidth for each direction of Full duplex Ethernet is consumed by the sum of request and response packets.
 }, 
-which is revealed by packet level analysis using tcpdump\cite{takahashi2018portable}.
+which is revealed by packet level analysis using tcpdump (Appendix~\ref{appendix:performance_limit}).
 %
 On average the data size of each request and the corresponding response was about 636 [byte/req] in total, including TCP/IP headers, Ethernet header, and inter-frame gaps.
 Multiplying that with 190K [req/sec] and 8 [bit/byte] will result in 966.72 Mbps.
