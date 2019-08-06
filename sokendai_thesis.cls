@@ -22,7 +22,6 @@
 \ProvidesClass{sokendai_thesis}[2015/11/22 v1.4]
 \LoadClass[12pt,a4paper,twoside]{book}
 
-
 % =====================================================
 %  Packages
 % =====================================================
@@ -173,7 +172,6 @@
 % Go along with these packages
 \usepackage[nottoc]{tocbibind}
 \usepackage[title,titletoc]{appendix}
-
 
 % =====================================================
 %  Clickable PDF
@@ -329,8 +327,6 @@ in partial fulfillment of the requirements for the degree of
 %            - \mytodo[inline]{This is a inline todo note}
 %            - \mytodo{This is a todo note at margin}
 %
-
-
 
 
 
