@@ -1,5 +1,5 @@
-\documentclass[todo]{sokendai_draft}
-%\documentclass{sokendai_thesis}
+%\documentclass[todo]{sokendai_draft}
+\documentclass[todo]{sokendai_thesis}
 
 \newcommand{\Order}{\mathit{O}} % for computational complexity
 
@@ -16,7 +16,12 @@
 \usepackage{xcolor}
 \definecolor{mygray}{rgb}{0.95,0.99,0.99}
 
+%\usepackage[final]{changes}
+\usepackage[draft]{changes}
+\colorlet{Changes@Color}{red}
+
 \begin{document}
+\listofchanges[style=list]
 
 \frontmatter
 \maketitle

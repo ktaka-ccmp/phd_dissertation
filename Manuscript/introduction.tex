@@ -4,12 +4,12 @@
 
 \subsection{Web application cluster}
 
-Today, a great number of people in the world can not spend a day without using smartphones or personal computers(PCs) to retrieve information from the Internet for work or for daily life.
+Today, a great number of people in the world can not spend a day without using smartphones or personal computers (PCs) to retrieve information from the Internet for work or for daily life.
 For example, people use these devices to look up web pages, emails, social media and sometimes to play games.
-These services are often called web applications or web services, where information is delivered using Hyper Text Transfer Protocols(HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
+These services are often called web applications or web services, where information is delivered using Hyper Text Transfer Protocols (HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
 Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, etc.
 
-For example, Google provides a variety of web services including, Gmail, Search engines, Google Suits, etc.
+For example, Google provides a variety of web services including, Gmail, Search engines, Google Suit\replaced{e}{s}, etc.
 Facebook provides social media service, Amazon provides shopping sites.
 Governments provides information regarding the service they provide to their citizens.
 Schools often provide a syllabus to their students, which is important for campus life.
@@ -36,14 +36,22 @@ In the data center multiple servers cooperate to fulfill the need of the clients
 A group of these servers is often called a web application cluster or a web cluster.
 Figure~\ref{fig:web_cluster} shows schematic diagram of an example of a web application cluster.
 
-In this example, there are two load balancers, four web servers and two database(DB) servers that work together to respond to the requests from clients.
+In this example, there are two load balancers, four web servers and two database (DB) servers that work together to respond to the requests from clients.
 The load balancers distribute the requests from clients to multiple web servers.
 Then the web servers form responses using data retrieved from the database servers and send it back to the clients.
 Sometimes the web servers also store and update important data into the database servers.
 
-\subsection{Migration of web application cluster}
+\subsection{\replaced{Portability}{ Migration } of web application cluster}
 
-As web applications become an essential part of daily life, an outage of the web application service is getting to be a bigger problem.
+\added{
+As web applications become an essential part of daily life, their portabilities become very important.
+If a web application cluster is portable, its provider can become being able to do a variety of things, for example, migrating the service when there is a disaster, expanding their business to different geographical locations, 
+and preventing their services to be locked-in in a specific infrastructure.
+}
+
+\subsubsection{\added{Disaster Recovery:}}
+
+\deleted{As web applications become an essential part of daily life,} \added{Nowadays,} an outage of the web application service is getting to be a bigger problem.
 If something happens to a web application cluster in a data center, people will not be able to access the necessary information.
 
 For example, if web pages run by local government stops, people will not be able to access the information regarding public services.
@@ -56,9 +64,12 @@ In order to prevent such outages, preparing another web application cluster in a
 For that purpose, it is desirable if a web application cluster can be easily migrated to a different data center.
 Migration of a web application cluster becomes more realistic with the use of Linux container technology, which is explained later.
 
-Migration capability of a web application cluster also has other benefits.
+\subsubsection{\added{Expansion of Bussiness:}}
+
+\replaced{Portability}{Migration capability} of a web application cluster also has other benefits.
 If an e-commerce service is successful in Japan, the company that runs the service might want to start the same service in other country, for example, in Europe.
 In this situation, the company probably wants to start the same web application cluster somewhere in Europe, because, for European customers, responses from a web site in Europe is quicker than those from a web site in Japan.
+\added{If the web cluster is portable, starting the service in a different country will be very easy.}
 
 \begin{figure}[h]
 \begin{center}
@@ -73,8 +84,8 @@ It is desirable to be able to migrate a web cluster from one place to another wi
 \label{fig:earth}
 \end{figure}
 
-Therefore, being able to migrate a web application cluster is very important for a variety of purposes, including disaster recovery, cost performance optimizations, meeting legal compliance, and shortening the geographical distance to customers.
-These are the main concerns for web application providers in e-commerce, gaming, Financial technology(Fintech) and Internet of Things(IoT) field.
+Therefore, \replaced{improving portability of}{ being able to migrate } a web application cluster is very important for a variety of purposes, including disaster recovery, cost performance optimizations, meeting legal compliance, and shortening the geographical distance to customers.
+These are the main concerns for web application providers in e-commerce, gaming, Financial technology (Fintech) and Internet of Things (IoT) field.
 It is important for a web application provider to be able to easily deploy and migrate their web applications among different infrastructure around the world.
 The purpose of this research is to propose infrastructures for web application providers, where they can easily deploy their services across the world, regardless of cloud providers or data centers they use.
 
@@ -105,8 +116,8 @@ In order to realize an easy migration of web applications, an ideal infrastructu
 %
 Figure\ref{fig:global_container_infrastructure} shows an exemplified global container infrastructure having these features.
 Container orchestrators launch and manage web applications consisting of container clusters.
-Important data are stored in globally consistent data storage, which is similar to the Google spanner\cite{Corbett:2013:SGG:2518037.2491245,Cooper:2013:SGG:2485732.2485756} or CockroachDB\cite{pavlo2016s}.
-The traffic is routed to the closest data center using anycast\cite{rfc1546}.
+Important data are stored in globally consistent data storage, which is similar to the Google spanner \cite{Corbett:2013:SGG:2518037.2491245,Cooper:2013:SGG:2485732.2485756} or CockroachDB \cite{pavlo2016s}.
+The traffic is routed to the closest data center using anycast \cite{rfc1546}.
 
 Each of these features is important and research efforts are on-going in many institutions.
 In this study, the author focuses on the research regarding container orchestrator as a universal middleware.
@@ -122,7 +133,7 @@ Also, they will be able to move their web applications quickly depending on a va
 Historically, most of the web application providers purchased servers and installed them in server housing facilities called data centers.
 In this type of infrastructure, web application providers typically need to sign a contract with data center company for server housing rack spaces, buy servers and install them in their rented racks by themselves.
 They also install OS and software stacks needed to run their web applications in the servers.
-Since web application providers place servers in their facilities(either owned or rented), and they are responsible for managing the servers, this type of infrastructure is often called on-premise infrastructure in contrast to Cloud Computing infrastructure.
+Since web application providers place servers in their facilities (either owned or rented), and they are responsible for managing the servers, this type of infrastructure is often called on-premise infrastructure in contrast to Cloud Computing infrastructure.
 
 Preparing data centers, installing the servers and configuring software stacks for web application services often require a considerable amount of time, money and effort.
 If web application providers want to expand their services to different countries or if they want to prepare for natural disasters by preparing an additional web application cluster in a different data center, they probably need about the same amount of time, money and effort required to build their original infrastructures.
@@ -131,7 +142,7 @@ Therefore migration of web application in this type of infrastructures has alway
 \subsection{Cloud computing}
 
 The emergence of Cloud Computing made many things easier for web application providers than before.
-Cloud computing utilizes a virtual machine(VM) technology, e.g. KVM, Xen, or VMware.
+Cloud computing utilizes a virtual machine (VM) technology, e.g. KVM, Xen, or VMware.
 \mytodo[inline]{Citations for KVM, Xen, and VMware}
 Cloud computing service providers offer VMs to web application providers with pay-per-use billings.
 
@@ -174,7 +185,7 @@ Container technology can be also utilized on top of virtual machines.
 
 \subsection{Container technology}
 
-More recently, Linux containers\cite{menage2007adding} have come to draw a significant amount of attention.
+More recently, Linux containers \cite{menage2007adding} have come to draw a significant amount of attention.
 Figure~\ref{fig:physical_vm_container} (c) shows an example architecture of container technology. 
 Linux containers are merely the processes with separate execution environments that are created using the Linux kernel's namespace feature.
 The namespace feature can isolate visibility of resources on a single Linux server.
@@ -183,12 +194,12 @@ Every process in a container is assigned to a certain namespace, and if two proc
 Linux kernel implements filesystem namespace, PID namespace, network namespace, user namespace, IPC namespace, and hostname namespace. 
 For example, every filesystem namespace can have its own root filesystem, and every network namespace can have its own network devices and IP addresses.
 Therefore, it is possible to configure processes as if they were running in different Linux systems by assigning them to different namespaces, although they share kernel and hardware.
-While a VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence expected to impose much less extra overhead\cite{felter2015updated}.
+While a VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence expected to impose much less extra overhead \cite{felter2015updated}.
 
 The Linux container can run on any Linux systems including physical servers and VMs.
 Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for migrations.
 
-Several management tools are available for Linux containers, including LXC\cite{noronha2018performance}, systemd-nspawn\cite{jedge2013} and Docker\cite{merkel2014docker}.
+Several management tools are available for Linux containers, including LXC \cite{noronha2018performance}, systemd-nspawn \cite{jedge2013} and Docker \cite{merkel2014docker}.
 These tools assign an appropriate namespace to a process upon the launch of itself and make it look like running in its own virtual Linux system.
 For example, container tools restore a file system from an archive file every time a container is launched. 
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
@@ -204,7 +215,7 @@ Container tools alleviate these problems by packing necessary libraries into arc
 
 Thanks to these benefits container technologies are very attractive for web applications and their migrations.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
-And to simplify the deployment of a complex web application that consists of interdependent container clusters, several container orchestrators(container cluster management systems)\footnote{The author uses the word 'container orchestrator' and 'container cluster management system' for the same meaning and uses them interchangeably} have been in development.
+And to simplify the deployment of a complex web application that consists of interdependent container clusters, several container orchestrators (container cluster management systems)\footnote{The author uses the word 'container orchestrator' and 'container cluster management system' for the same meaning and uses them interchangeably} have been in development.
 
 \subsection{Container Orchestrator}
 
@@ -216,7 +227,7 @@ And to simplify the deployment of a complex web application that consists of int
 A web application cluster and container orchestrator.
 }
 \centering\parbox[c]{0.9\columnwidth}{
-A web application cluster consists of nginx(http), redis(key-value store) and mysqld(database) is depicted in this figure. 
+A web application cluster consists of nginx (http), redis (key-value store) and mysqld (database) is depicted in this figure. 
 Each of the component consists of a container cluster.
 Container orchestrator receive configuration file(1), schedule containers(2), set up ingress routing using load balancer(3) and set up internal routing(4).
 }
@@ -252,7 +263,7 @@ Several container orchestrators are available, including Kubernetes, Docker swar
 Each of the container orchestrators varies in target applications, and thus has the strength and weaknesses.
 
 \paragraph{Kubernetes}
-Kubernetes\cite{burns2016borg} is an open source container orchestrator, originally developed at Google based on their experience of production container orchestrator, Borg\cite{Verma2015}. 
+Kubernetes \cite{burns2016borg} is an open source container orchestrator, originally developed at Google based on their experience of production container orchestrator, Borg \cite{Verma2015}. 
 Since Google runs many of large scale web applications, Kubernetes are considered to be best suited to run web applications.
 
 \paragraph{Docker swarm}
@@ -261,7 +272,7 @@ Users can execute regular Docker commands, which are then executed by a swarm ma
 The swarm manager is responsible for controlling the deployment and the life cycle of containers.
 
 \paragraph{Mesos/Marathon}
-Mesos\cite{hindman2011mesos} is a common resource sharing layer for different type of applications like Hadoop, MPI jobs, and Spark in a Data Center. 
+Mesos \cite{hindman2011mesos} is a common resource sharing layer for different type of applications like Hadoop, MPI jobs, and Spark in a Data Center. 
 By using Mesos user does not need to have dedicated physical server cluster for each applications.
 Marathon is a framework which uses Mesos in order to orchestrate Docker containers.
 Because of the broader scope of applications, an out of box Mesos might not be particularly suited for web applications.
@@ -319,7 +330,7 @@ Figure~\ref{fig:cluster_of_container_loadbalancer} shows schematic diagram of an
 A web application that consists of nginx, redis, and mysqld, each being a cluster of containers, is running in the server farm.
 There is also a cluster of software load balancer containers, which is also a part of the web application cluster, running in the same server farm. 
 All of the containers are deployed and managed by the container orchestrator.
-The orchestrator also communicates with the upstream router using Border Gateway Protocol(BGP), so that the ingress traffic from the Internet is forwarded to the load balancer containers in a redundant and scalable manner using Equal Cost Multi Path(ECMP)\cite{rfc7911} routing table.
+The orchestrator also communicates with the upstream router using Border Gateway Protocol (BGP), so that the ingress traffic from the Internet is forwarded to the load balancer containers in a redundant and scalable manner using Equal Cost Multi Path (ECMP) \cite{rfc7911} routing table.
 
 Container orchestrators are good at managing a cluster of containers, and they can scale containers, i.e. change the number of containers depending on the amount of traffic.
 Therefore it seems to be very reasonable to deploy load balancers as a cluster of containers.
@@ -352,7 +363,7 @@ Kubernetes always keeps the states of containers to match its desired state, whi
 
 When a service is created, the master schedules where to run {\em pods}, and kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
-The proxy daemon on the nodes also setup iptables DNAT\cite{MartinA.Brown2017} rules. 
+The proxy daemon on the nodes also setup iptables DNAT \cite{MartinA.Brown2017} rules. 
 The Ingress traffic will then be evenly distributed by the cloud load balancer to all of the existing nodes, 
 after which it will be distributed again by the DNAT rules on the nodes to the designated {\em pods}. 
 The returning packets follows the exact same route as the incoming ones.
@@ -379,7 +390,7 @@ The returning packets follows the exact same route as the incoming ones.
 
 In general, load balancers are often used to distribute high volume traffic from the Internet to thousands of web servers.
 They are implemented as dedicated hardware or as software on commodity hardware.
-Major cloud providers have developed software load balancers\cite{eisenbud2016maglev,patel2013ananta} dedicated for their infrastructures.
+Major cloud providers have developed software load balancers \cite{eisenbud2016maglev,patel2013ananta} dedicated for their infrastructures.
 For on-premise data centers, there are a variety of proprietary hardware load balancers.
 
 Kubernetes utilizes load balancers to route ingress traffic into the Kubernetes cluster in a redundant and scalable manner. 
@@ -387,7 +398,7 @@ Software load balancers for cloud infrastructure have APIs, through which Kubern
 However, most of the proprietary hardware load balancers for on-premise data center do not have such APIs.
 
 In environments where there are supported load balancers, namely cloud environments including Google Cloud Platform (GCP), Amazon Web Applications (AWS), or Openstack, Kubernetes can automatically set up the route for the ingress traffic upon the launch of a web application.
-The cloud load balancers will distribute ingress traffic to every node(physical servers or VMs) that might host containers.
+The cloud load balancers will distribute ingress traffic to every node (physical servers or VMs) that might host containers.
 Once the traffic reaches the nodes, Kubernetes nicely route them to appropriate containers using iptables DNAT based internal load balancer.
 %
 However, in environments where there are no supported load balancers, Kubernetes fails to automatically set up the route for ingress traffic.
@@ -407,10 +418,10 @@ In this manner, the route for ingress traffic is automatically set up in a redun
 Since this scheme does not rely on external load balancers, users no longer need to manually adjust their services to the base infrastructures.
 
 As a proof of concept the author implements the proposed software load balancer that works well with Kubernetes using following technologies;
-1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (ipvs)\cite{Zhang2000} is containerized using Docker\cite{merkel2014docker}. 
-2) To make the load balancer redundant and scalable, the author makes it capable of updating the routing table of the upstream router with Equal Cost Multi-Path(ECMP) routes\cite{al2008scalable} using Border Gateway Protocol(BGP).
+1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (ipvs) \cite{Zhang2000} is containerized using Docker \cite{merkel2014docker}. 
+2) To make the load balancer redundant and scalable, the author makes it capable of updating the routing table of the upstream router with Equal Cost Multi-Path (ECMP) routes \cite{al2008scalable} using Border Gateway Protocol (BGP).
 BGP and ECMP are the standard protocol supported by most of the commercial router hardware.
-3) The author also extends the research into implementing the novel load balancer using eXpress Data Path(XDP) technology\cite{bertin2017xdp} to enhance the performance level to meet the need for 10Gbps network speed.
+3) The author also extends the research into implementing the novel load balancer using eXpress Data Path (XDP) technology \cite{bertin2017xdp} to enhance the performance level to meet the need for 10Gbps network speed.
 
 \subsection{Contribution}
 
@@ -464,7 +475,7 @@ It is also important to investigate its validity in 10Gbps network.
 In Chapter~\ref{chapter:Further Improvement} the performance level of the proposed load balancer is evaluated.
 The author carries out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
 The author clarifies the reasons for performance limitations and discusses improvement.
-The author also proposes a novel software load balancer using eXpress Data Plane(XDP) technology and presents preliminary experimental results.
+The author also proposes a novel software load balancer using eXpress Data Plane (XDP) technology and presents preliminary experimental results.
 
 %\subsubsection{Chapter~\ref{chapter:Related Work}}
 Chapter~\ref{chapter:Related Work} presents related work of this study.
