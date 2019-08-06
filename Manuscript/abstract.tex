@@ -1,23 +1,34 @@
 \chapter*{Abstract}
 
-Today, most of the people in the world can not spend a day without smartphones or PCs.
-They use those devices to access services provided by web applications on the Internet.
+Today, most of the people in the world can not spend a day without \added{using} smartphones or PCs.
+They use \replaced{these}{ those} devices to access services provided by web applications on the Internet.
 These services include e-mail, social media, search engines, shopping site, etc., everything provided through the Internet.
-As the services become indispensable part of the daily lives, operating web applications stably and swiftly becomes important day by day.
-For example, those who provide these services need to be able to recover from a disaster, or start their web shopping site in other countries,
-by migrating their web applications to different locations swiftly and safely.
+As the\added{se} services become indispensable part of the daily lives, \replaced{portability of the application becomes very important.}{ operating web applications stably and swiftly becomes important day by day.}
+
+\replaced{
+For example, those who provide these services need to be able to recover from a disaster by migrating their web applications to different locations.
+They also need to be able to expand their businesses to different countries, once they are proven to be successful in a country.
+It is also preferable for them to be able to migrate their services without a hassle at their convenience in order to avoid lock-ins.
+}
+{ For example, those who provide these services need to be able to recover from a disaster, or start their web shopping site in other countries,
+by migrating their web applications to different locations swiftly and safely.}
+
 For such purposes, providing a web application consisting of a cluster of Linux containers is a promising candidate, since Linux containers can be run on any Linux system regardless of the infrastructures.
 
 A container orchestrator (also called container cluster management system) is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
-And it is expected to provide a uniform platform for container clusters, which also facilitates the migration of web applications consisting of container clusters.
+And it is expected to provide a uniform platform for container clusters\replaced{ by functioning as a middleware, which also facilitates the migration.}{ , which also facilitates the migration of web applications consisting of container clusters.}
+\replaced{
+However, existing container orchestrators do not function as a uniform middleware, because none of them can automatically set up the route for ingress traffic from the Internet regardless of the base infrastructures.
+}{
 However, none of the existing container orchestrators fully supports an automatic setup of ingress traffic routing from the Internet.
-Users needed to set up a route for ingress traffic manually depending on the type of the infrastructure, every time they start a new web application.
+}
+Users needed to set up a route for ingress traffic manually\added{ every time they start a new web application,} depending on the type of the infrastructure\deleted{, every time they start a new web application}.
 The lack of this automation is one of the most critical problems for container orchestrators because without solving this problem, the migration of a web application will never be easy.
 
-In this dissertation, the author addresses this problem by providing a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic routing.
-The author proposes a cluster of software load balancers in container for Kubernetes, that can be launched as a part of web applications.
-It also supports an automatic setup of Equal Cost Multi Path(ECMP) routes to make multiple load balancers active, and thereby to provide redundancy and scalability.
-By using the proposed load balancer, the way to route traffic into container clusters is standardized, removing dependencies on load balancer architectures provided by infrastructures.
+In this dissertation, the author addresses this problem by \replaced{proposing}{ providing} a portable software load balancer that is runnable on any infrastructure \added{in a same manner} and capable of\replaced{ setting up the route for the ingress traffic automatically.}{ an automatic setup of the ingress traffic routing.}
+\replaced{To prove the concept, the author provides}{ The author proposes} a cluster of software load balancers in container\deleted{ for Kubernetes,} that can be launched as a part of web applications\added{, for Kubernetes}.
+It also supports an automatic setup of Equal Cost Multi Path(ECMP) routes to make multiple load balancers active, \replaced{in order}{ and thereby} to provide redundancy and scalability\added{ at the same time}.
+By using the proposed load balancer, \deleted{ the way to route the traffic into container clusters is standardized, removing dependencies}\added{web application clusters no longer depend} on load balancer architectures provided by infrastructures.
 
 The author has implemented a containerized software load balancer using Linux kernel's ipvs to prove the feasibility of the proposed load balancer architecture, and carried out performance measurements in the 1 Gbps network environment.
 It has been shown that the proposed load balancers are runnable in an on-premise data center, Google Cloud Platform (GCP) and Amazon Web Service (AWS).
