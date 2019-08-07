@@ -272,7 +272,7 @@ By using Mesos user does not need to have dedicated physical server cluster for 
 Marathon is a framework which uses Mesos in order to orchestrate Docker containers.
 Because of the broader scope of applications, an out of box Mesos might not be particularly suited for web applications.
 
-\begin{table}[H]
+\begin{table}[h]
   \centering
   \begin{tabular}{|l|c|c|c|}
     \hline
@@ -297,7 +297,7 @@ Only Kubernetes has the functionality to manage cloud load balancer so that ingr
 To the best knowledge of the author, none of the existing container orchestrators has full support for the redundant and scalable ingress routing feature.
 The author believes this is an open and important topic for research and development, and therefore intends to pursue it.
 
-\subsection{\replaced{Kubernetes and its problem}{Problems of Kubernetes}}
+\subsection{\replaced{Kubernetes architecture and problem}{Problems of Kubernetes}}
 
 As is mentioned in the previous section, none of the existing container orchestrators provide full support for automatic set up of ingress traffic routing.
 In the case of Kubernetes, the problem is its partial support for external load balancers.
@@ -365,6 +365,15 @@ Other container orchestrators, e.g. Docker swarm or Mesos/Marathon, do not even 
 Therefore this is a generic problem that current container cluster orchestrators possess.
 
 \section{Portable software load balancer}
+
+\subsection{\added{The purpose}}
+
+\added{
+The ultimate goal of this research is to improve the portability of web applications by providing global container infrastructure.
+Doing so will give users freedoms to migrate when there is a disaster, expand their business, and prevent vendor lock-ins, etc. 
+In order to do this, container orchestrators need to function as a standard middleware that provides the same interfaces to web applications, regardless of the base infrastructure, e.g., cloud providers or on-premise data centers.
+However, existing orchestrators fail to function as a standard middleware, since the way to route the ingress traffic is either by setting up a static route or by relying on cloud load balancers.
+}
 
 \subsection{Load balancer for container clusters}
 
