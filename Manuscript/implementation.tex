@@ -1,6 +1,6 @@
 \section{Implementation}
 
-In this section the author discusses the implementation of the experimental system to prove the concept of our proposed load balancers with ECMP redundancy in detail.
+In this section the author discusses the implementation of the experimental system to prove the concept of \replaced{the}{our} proposed load balancers with ECMP redundancy in detail.
 
 \subsection{Experimental system architecture}\label{sec:poc}
 
@@ -24,8 +24,8 @@ In this section the author discusses the implementation of the experimental syst
 
 Figure~\ref{fig:poc} shows the schematic diagram of proof of concept container cluster system with the proposed software load balancers.
 %
-Each load balancer pod consists of an exabgp\cite{exa-networks_2018} container and an ipvs container.
-The ipvs container is responsible for distributing the traffic toward the service IP to web server(nginx) pods.
+Each load balancer pod consists of an exabgp \cite{exa-networks_2018} container and an ipvs container.
+The ipvs container is responsible for distributing the traffic toward the service IP to web server (nginx) pods.
 The IP address for nginx pods and load balancer pods are dynamically assigned upon launch of themselves from 172.16.0.0/16 address range.
 The ipvs container monitors the availability of web server pods by consulting apiserver on the master node and manages the load balancing rule appropriately.
 The exabgp container is responsible for advertising the route toward the service IP to the route reflector using BGP.
@@ -35,7 +35,7 @@ The upstream router updates its routing table according to the advertisement.
 All the nodes and route reflector are configured using Debian 9.5 with self compiled linux-4.16.12 kernel.  
 The author also used conventional Linux system as an upstream router for testing purpose, using the same OS as the nodes and route reflector.
 The version of Linux kernel needed to be 4.12 or later to support hash based ECMP routing table.
-The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH\cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
+The author also needed to enable kernel config option CONFIG\_IP\_ROUTE\_MULTIPATH \cite{ipsysctl} when compiling, and set the kernel parameter fib\_multipath\_hash\_policy=1 at run time.
 Although in the actual production environment, proprietary hardware router with the highest throughput is usually deployed, one can still test some of the advanced features by using a conventional Linux system as the router.
 
 \begin{table}[h]
@@ -45,7 +45,7 @@ Although in the actual production environment, proprietary hardware router with 
     & \multicolumn{1}{c|}{gobgpd} & \multicolumn{1}{c|}{exabgp} & \multicolumn{1}{c|}{bird} \\ \hline
     \begin{tabular}{l} Static route advertisement \end{tabular} & complex & simple & complex  \\ \hline
     \begin{tabular}{l} add-path support$^{*}$ \end{tabular} & Yes & No & Yes  \\ \hline
-    \begin{tabular}{l} FIB manipulation \end{tabular} & Yes(through zebra) & No & Yes(Native) \\ \hline
+    \begin{tabular}{l} FIB manipulation \end{tabular} & Yes (through zebra) & No & Yes (Native) \\ \hline
     \begin{tabular}{l} Use case \end{tabular} & Router/Route reflector & Load balancer & Not used$^{**}$  \\ \hline
   \end{tabular}
 
@@ -68,11 +68,11 @@ Each load balancer {\em pod} needs to advertise a static route for the service I
 For that purpose, exabgp is preferable because it only requires to add a line, e.g., \enquote{route Service\_IP next-hop Pod\_IP} in the configuration file.
 The gobgpd and the bird require other client programs to inject the static route after the daemon itself is up and running.
 For example, in the case of gobgpd, after launching gobgpd, a user is required to issue a command line, e.g., \enquote{gobgp global rib add Service\_IP/32 origin igp nexthop Pod\_IP community 100:50 -a ipv4}.
-(The gobgp is a client program to manage gobgpd.)
+ (The gobgp is a client program to manage gobgpd.)
 This is a bit complex and error-prone, especially when one needs to make sure the route injection is done inside a container.
 
-As for the route reflector, add-path\cite{rfc7911} feature is needed for multi-path advertisement, which is supported by gobgpd.
-For the upstream router Forwarding Information Base(FIB) manipulation\cite{exa-networks_2018} feature is needed, which is supported by gobgpd through zebra\cite{osrg_gobgp_zebra}.
+As for the route reflector, add-path \cite{rfc7911} feature is needed for multi-path advertisement, which is supported by gobgpd.
+For the upstream router Forwarding Information Base (FIB) manipulation \cite{exa-networks_2018} feature is needed, which is supported by gobgpd through zebra \cite{osrg_gobgp_zebra}.
 As a result, exabgp is used for the load balancer pods, gobgpd is used for the route reflector, and gobgpd and zebra are used for the upstream router.
 
 The other features needed for the route reflector are a dynamic-neighbor feature to describe peer group as a range of IP address, and overlay network feature on the Linux system.
@@ -85,17 +85,17 @@ In order to demonstrate a software load balancer that is runnable in any environ
 In addition to that, the proposed load balancer uses two other components, keepalived, and a controller.
 These components are placed in a single Docker container image.
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later,
-to distribute incoming Transmission Control Protocol(TCP) traffic to
+to distribute incoming Transmission Control Protocol (TCP) traffic to
 {\em real servers}\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic,
-in the original literature\cite{Zhang2000}. The author will also use this term in a similar way.}\cite{Zhang2000}.
-For example, ipvs distributes incoming Hypertext Transfer Protocol(HTTP) traffic destined for a single destination IP address,
-to multiple HTTP servers(e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
+in the original literature \cite{Zhang2000}. The author will also use this term in a similar way.} \cite{Zhang2000}.
+For example, ipvs distributes incoming Hypertext Transfer Protocol (HTTP) traffic destined for a single destination IP address,
+to multiple HTTP servers (e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
 Keepalived is a management program that performs health checking for {\em real servers}
 and manages ipvs balancing rules in the kernel accordingly.
 It is often used together with ipvs to facilitate ease of use.
 The controller is a daemon that periodically monitors the {\em pod} information on the master,
 and it performs various actions when such information changes.
-Kubernetes provides ingress controller framework as the Go Language(Golang) package to implement the controllers.
+Kubernetes provides ingress controller framework as the Go Language (Golang) package to implement the controllers.
 The author implemented a controller program that feeds {\em pod} state changes to keepalived
 using this framework.
 
@@ -106,7 +106,7 @@ The keepalived manages Linux kernel's ipvs rules depending on the ipvs.conf conf
 It can also periodically check the liveness of a {\em real server}
 %
 %\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
-%in the original literature\cite{Zhang2000}. We will also use this term in the similar way.}, 
+%in the original literature \cite{Zhang2000}. We will also use this term in the similar way.}, 
 which is represented as a combination of the IP addresses and port numbers of the target {\em pods}. 
 If the health check to a {\em real server} fails, keepalived will remove that {\em real server} from the ipvs rules immediately.
 The interval of the health check is typically 1 to several seconds and is arbitrarily determined by users.  
@@ -139,9 +139,9 @@ In these cases, the client sees connection errors.
 In order to avoid the connection errors to be seen by a human, HTTP client programs are required to re-initiate the connection.
 However, since the load balancer rule update is within a second, these errors can be regarded as the tolerable rare exceptions even without such re-initiations.
 
-The actual controller\cite{ktaka_ccmp_2017_826894} is implemented using the Kubernetes ingress controller\cite{K8sIngress2017} framework. 
+The actual controller \cite{ktaka_ccmp_2017_826894} is implemented using the Kubernetes ingress controller \cite{K8sIngress2017} framework. 
 By importing existing Golang package, \enquote{k8s.io/ingress/core/pkg/ingress}, the author could simplify the implementation, e.g. 
-120 lines of code(Appendix~\ref{appendix:ingress_controller}).
+120 lines of code (Appendix~\ref{appendix:ingress_controller}).
 %
 Keepalived and the controller are placed in the docker image of ipvs container.
 The ipvs is the kernel function and namespace separation for container has already been supported in the recent Linux kernel. 
@@ -210,7 +210,7 @@ FWM  1 lc
     \caption[Example of IPVS balancing rules]{
       Example of IPVS balancing rules.
       This shows the load balancing rule in a load balancer container.
-      The packet that has FWM(fwmark)=1 will be forwarded to two real servers using the least connection(lc) balancing algorithm.
+      The packet that has FWM (fwmark)=1 will be forwarded to two real servers using the least connection (lc) balancing algorithm.
       The fwmark is a parameter that is only available inside a socket buffer in Linux kernel.
       The fwmark can be put and manipulated by the iptables program, once a socket buffer for a received packet is assigned by the kernel.
       }
@@ -220,10 +220,10 @@ FWM  1 lc
 
 Figure~\ref{fig:ipvs.conf} and Figure~\ref{fig:IPVS rule} show an example of an ipvs.conf file 
 generated by the controller and the corresponding IPVS load balancing rules, respectively.
-Here, we can see that the packet with {\tt fwmark=1}\cite{BertHubert2002} is distributed 
+Here, we can see that the packet with {\tt fwmark=1} \cite{BertHubert2002} is distributed 
 to {\tt 172.16.21.2:80} and {\tt 172.16.80.2:80} 
-using the masquerade mode(Masq) and 
-the least connection(lc)\cite{Zhang2000} balancing algorithm.
+using the masquerade mode (Masq) and 
+the least connection (lc) \cite{Zhang2000} balancing algorithm.
 
 \subsection{BGP software container}\label{sec:bgp}
 
@@ -236,8 +236,8 @@ the least connection(lc)\cite{Zhang2000} balancing algorithm.
   \begin{minipage}{0.9\columnwidth}
     \caption[Network path by the exabgp container]{
       Network path by the exabgp container.
-      The packets from Internet to service IPs, 10.1.1.0/24 are routed to the load balancer pod(green arrows) by the set of routing rules shown in Table~\ref{table:exabgp_setting}.
-      And then the ipvs container forwards them to nginx pods(red arrows).
+      The packets from Internet to service IPs, 10.1.1.0/24 are routed to the load balancer pod (green arrows) by the set of routing rules shown in Table~\ref{table:exabgp_setting}.
+      And then the ipvs container forwards them to nginx pods (red arrows).
       The IP address of any pod is dynamically assigned from 172.16.0.0/16 when the pod is started. 
     }
     \label{fig:exabgp_schem}

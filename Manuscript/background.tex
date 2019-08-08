@@ -10,8 +10,8 @@ Finally, the author briefly explains about novel XDP technology.
 
 \subsection{Container network}
 
-There are several types of container network including, veth\cite{bhattiprolu2008virtual}, MACVLAN\cite{rathore2010performance}, IPVLAN\cite{ipvlan}, host network.
-There are good reviews of these network in \cite{Marmol2015,claassen2016linux,struye2017assessing}.
+There are several types of container network including, veth \cite{bhattiprolu2008virtual}, MACVLAN \cite{rathore2010performance}, IPVLAN \cite{ipvlan}, host network.
+There are good reviews of these network in  \cite{Marmol2015,claassen2016linux,struye2017assessing}.
 The author uses the container network that uses veth because of the popularity and easiness of the setups.
 Here the setup used in the experiments is explained.
 
@@ -48,13 +48,13 @@ The kernel normally does not know this, but with the help of overlay network, th
 \subsubsection{Flannel}
 
 The author used flannel to build the Kubernetes cluster used in the experiment.
-Flannel has three types of backend, {\it i.e.}, operating modes, named host-gw, vxlan, and udp\cite{CoreOSFlannelBackend}.
+Flannel has three types of backend, {\it i.e.}, operating modes,\deleted{ named} host-gw, vxlan, and udp \cite{CoreOSFlannelBackend}.
 
 \subsubsection{host-gw mode}
 
-In the host-gw mode, the flanneld installed on a node simply configures the routing table 
+In the host-gw mode, the flanneld installed on a node simply configures the routing table \added{in the kernel} 
 based on the IP address assignment information of the overlay network, which is stored in the etcd on the master node of Kubernetes.
-When {\em pod1} on the node1 sends out an IP packet to {\em pod2} on the different node, node2 
+When {\em pod1} on the node1 sends out an IP packet to {\em pod2} on the different node, node2\added{,} 
 the node1 consults its routing table and learn that the IP packet to {\em pod2} should be sent out to the node2.
 Then, the node1 forms Ethernet frames containing the destination MAC address of the node2 
 without changing the IP header, and send them out.
@@ -131,7 +131,7 @@ The author explains two of them that are identified in the course of this study.
 
 Although the host-gw mode is expected to be most efficient since no packet encapsulation is used, it has a significant drawback that prohibit it to work correctly in cloud platforms. 
 The host-gw mode simply sends out a packet without encapsulation.
-If there is a cloud gateway between nodes, the gateway cannot identify the proper destination, thus drop the packet.
+If there is a cloud gateway between nodes, the gateway cannot identify the proper destination, \deleted{thus drop }\added{therefore it drops} the packet.
 
 \begin{table}
   \centering
@@ -164,7 +164,7 @@ they prohibit the use of the flannel host-gw mode in those cloud providers.
 \includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
 \caption{The network architecture of an exemplified container cluster system. }
 
-  A load balancer(lb) pod(the white box with "lb") and web pods are running on nodes(the blue boxes).
+  A load balancer (lb) pod (the white box with "lb") and web pods are running on nodes (the blue boxes).
   The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
   and the distributed to web pods using the overlay network.
 
@@ -194,9 +194,9 @@ One of the top of the line server processors from Intel now includes up to 28 co
 In order to enjoy the benefits of multi-core CPUs in communication performance,
 it is necessary to distribute the handling of interrupts from the NIC and the IP protocol processing to the available physical cores.
 
-Receive Side Scaling (RSS)\cite{TomHerbert} is a technology 
+Receive Side Scaling (RSS) \cite{TomHerbert} is a technology 
 to distribute handling of the interrupt from NIC queues to multiple CPU cores.
-Subsequently, Receive Packet Steering (RPS)\cite{TomHerbert} distributes the IP protocol processing 
+Subsequently, Receive Packet Steering (RPS) \cite{TomHerbert} distributes the IP protocol processing 
 to multiple CPU cores by issuing inter core software interrupts.
 
 Since load balancer performance levels could be affected by these technologies,
@@ -305,12 +305,12 @@ The author have used the settings in Figure~\ref{fig:rps=on} to enable the RPS.
 
   \begin{subfigure}[t]{\columnwidth}
     \centering
-    \begin{minipage}{0.8\columnwidth}
+    \begin{minipage}{0.9\columnwidth}
 \begin{verbatim}
-   echo fefe > /sys/class/net/eth0/queues/rx-0/RPS_cpus
-   echo fefe > /sys/class/net/eth0/queues/rx-1/RPS_cpus
-   echo fefe > /sys/class/net/eth0/queues/rx-2/RPS_cpus
-   echo fefe > /sys/class/net/eth0/queues/rx-3/RPS_cpus
+echo fefe > /sys/class/net/eth0/queues/rx-0/RPS_cpus
+echo fefe > /sys/class/net/eth0/queues/rx-1/RPS_cpus
+echo fefe > /sys/class/net/eth0/queues/rx-2/RPS_cpus
+echo fefe > /sys/class/net/eth0/queues/rx-3/RPS_cpus
 \end{verbatim}
     \end{minipage}
     \caption{\underline{\textbf{RPS=on}}}
@@ -321,12 +321,12 @@ The author have used the settings in Figure~\ref{fig:rps=on} to enable the RPS.
 
   \begin{subfigure}[t]{\columnwidth}
     \centering
-    \begin{minipage}{0.8\columnwidth}
+    \begin{minipage}{0.9\columnwidth}
 \begin{verbatim}
-   echo 0 > /sys/class/net/eth0/queues/rx-0/RPS_cpus
-   echo 0 > /sys/class/net/eth0/queues/rx-1/RPS_cpus
-   echo 0 > /sys/class/net/eth0/queues/rx-2/RPS_cpus
-   echo 0 > /sys/class/net/eth0/queues/rx-3/RPS_cpus
+echo 0 > /sys/class/net/eth0/queues/rx-0/RPS_cpus
+echo 0 > /sys/class/net/eth0/queues/rx-1/RPS_cpus
+echo 0 > /sys/class/net/eth0/queues/rx-2/RPS_cpus
+echo 0 > /sys/class/net/eth0/queues/rx-3/RPS_cpus
 \end{verbatim}
     \end{minipage}
     \caption{\underline{\textbf{RPS=off}}}
@@ -383,17 +383,16 @@ While merely enabling RSS results in four core packet processing, enabling RPS r
 \section{Linux kernel's ipvs load balancer}
 
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later, 
-to distribute incoming Transmission Control Protocol(TCP) traffic to 
+to distribute incoming Transmission Control Protocol (TCP) traffic to 
 {\em real servers}\footnote{The term, {\em real servers} refers to worker servers that will respond to incoming traffic, 
-in the original literature\cite{Zhang2000}. We will also use this term in the similar way.}\cite{Zhang2000}. 
-For example, ipvs distributes incoming Hypertext Transfer Protocol(HTTP) traffic destined for a single destination IP address, 
-to multiple HTTP servers(e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
+in the original literature \cite{Zhang2000}. We will also use this term in the similar way.} \cite{Zhang2000}. 
+For example, ipvs distributes incoming Hypertext Transfer Protocol (HTTP) traffic destined for a single destination IP address, 
+to multiple HTTP servers (e.g. Apache HTTP or nginx) running on multiple nodes in order to improve the performance of web services.
 The ipvs has three mode of operation, Network Address Translation (NAT), Tunneling and (Direct Return) DR.
 In this study the author used NAT mode and Tunneling mode.
 Here the author explains them briefly.
 
 \subsection{NAT mode}
-
 
 Figure~\ref{fig:ipvs-nat-schem} shows schematic diagram of NAT mode of ipvs.
 The NAT mode works as follows: When a user accesses a virtual service provided by the server cluster, a request packet destined for virtual IP address (the IP address to accept requests for virtual service) arrives at the load balancer.
@@ -404,7 +403,6 @@ When an incoming packet belongs to an established connection, the connection can
 When response packets come back, the load balancer rewrites the source address and port of the packets to those of the virtual service. When a connection terminates or timeouts, the connection record will be removed in the hash table.
 %
 The author refers to this NAT mode simply as ipvs hereafter, in this dissertation.
-
 
 \begin{figure}[h]
   \centering
@@ -420,19 +418,6 @@ The author refers to this NAT mode simply as ipvs hereafter, in this dissertatio
   \end{minipage}
 \end{figure}
 
-
-\subsection{Tunneling mode}
-
-Figure~\ref{fig:ipvs-tun-schem} shows schematic diagram of tunneling mode of ipvs.
-IP tunneling (IP encapsulation) is a technique to encapsulate IP datagram within IP datagram, which allows datagrams destined for one IP address to be wrapped and redirected to another IP address. This technique can be used to build a virtual server that the load balancer tunnels the request packets to the different servers, and the
-servers process the requests and return the results to the clients directly, thus the service can still appear as a virtual service on a single IP address.
-
-In the tunneling mode of the ipvs, the load balancer encapsulates the packet within an IP datagram and forwards it to a dynamically elected server. 
-When the server receives the encapsulated packet, it decapsulates the packet and finds the inside packet is destined for VIP that is on its tunnel device, so it processes the request, and returns the result
-to the client directly.
-%
-The author refers to the tunneling mode of the ipvs as ipvs-tun hereafter, in this dissertation.
-
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\columnwidth]{Figs/ipvs-tun-schem}
@@ -447,12 +432,23 @@ The author refers to the tunneling mode of the ipvs as ipvs-tun hereafter, in th
   \end{minipage}
 \end{figure}
 
-\FloatBarrier
+\subsection{Tunneling mode}
 
+Figure~\ref{fig:ipvs-tun-schem} shows schematic diagram of tunneling mode of ipvs.
+IP tunneling (IP encapsulation) is a technique to encapsulate IP datagram within IP datagram, which allows datagrams destined for one IP address to be wrapped and redirected to another IP address. This technique can be used to build a virtual server that the load balancer tunnels the request packets to the different servers, and the
+servers process the requests and return the results to the clients directly, thus the service can still appear as a virtual service on a single IP address.
+
+In the tunneling mode of the ipvs, the load balancer encapsulates the packet within an IP datagram and forwards it to a dynamically elected server. 
+When the server receives the encapsulated packet, it decapsulates the packet and finds the inside packet is destined for VIP that is on its tunnel device, so it processes the request, and returns the result
+to the client directly.
+%
+The author refers to the tunneling mode of the ipvs as ipvs-tun hereafter, in this dissertation.
+
+\FloatBarrier
 
 \section{eXpress Data Path}
 
-In Chapter~\ref{chapter:Further Improvement} this author implements a software load balancer using eXpress Data Path (XDP)\cite{hoiland2018express} technology.
+In Chapter~\ref{chapter:Further Improvement} this author implements a software load balancer using eXpress Data Path (XDP) \cite{hoiland2018express} technology.
 Here the XDP is briefly explaned.
 
 XDP is a framework to enable injection of a byte-compiled eBPF programs into the NIC driver, so that the program can manipulate a received packet earliest point in the Linux networking stack.
