@@ -12,7 +12,7 @@ In order to evaluate the performance levels of the proposed load balancer in a 1
 Table~\ref{tab:hw_sw_spec_10g} summarizes the hardware and software specification used in the experiment.
 Bare metal servers with Intel X550 network card was used.
 The X550 NIC has a maximum of 64 rx-queues, and 16 of them are activated by the driver at the boot time since there are 16 logical CPUs.
-The setting \enquote{(RSS, RPS)=(on, off)} is used because interrupts from each of 16 rx-queues can be assigned to separate logical cores.
+The setting \enquote{ (RSS, RPS)=(on, off)} is used because interrupts from each of 16 rx-queues can be assigned to separate logical cores.
 As a result, packet processing is distributed to all of the 16 logical cores, which results in the best performance in most of the cases.
 The host-gw mode is used as the backend mode of the flannel overlay network.
 
@@ -38,7 +38,7 @@ The host-gw mode is used as the backend mode of the flannel overlay network.
     & \\
     \multicolumn{2}{l}{[Container Software]}   \\
     & Keepalived: v1.3.2 (12/03,2016) \\
-    & nginx : 1.15.4(web server) \\
+    & nginx : 1.15.4 (web server) \\
   \hline 
   \end{tabular}
   \par\bigskip
@@ -127,7 +127,7 @@ The maximum throughput levels of ipvs and ipvs-tun are less than that of iptable
 \end{figure}
 
 Figure~\ref{fig:ipvs_l3dsr_10g} shows comparison of CPU usage between load balancers.
-CPU usages are sampled on the load balancer nodes at the time of the throughput measurement using a program called dstat\cite{wieers2019dstat}.
+CPU usages are sampled on the load balancer nodes at the time of the throughput measurement using a program called dstat \cite{wieers2019dstat}.
 It is seen that ipvs-tun uses less CPU resource than ipvs because the load balancer node does not have to deal with the response packets.
 The iptables DNAT uses even less CPU resource than ipvs and ipvs-tun.
 Possible reasons for the lesser performance levels for ipvs are as follows;
@@ -276,7 +276,7 @@ In the next section, the author tries to improve the efficiency of a load balanc
 
 \section{XDP load balancer}
 
-The eXpress Data Path (XDP)\cite{hoiland2018express} is Linux kernel technology recently developed, where the tools and functionality to intercept and process the packets in the earliest phase as possible are provided.
+The eXpress Data Path (XDP) \cite{hoiland2018express} is Linux kernel technology recently developed, where the tools and functionality to intercept and process the packets in the earliest phase as possible are provided.
 By using XDP, one can write packet manipulation code using a subset of the C programing language, byte-compile it, and hook it into the place before the socket buffer is assigned, thereby speeding up network manipulation.
 Typical applications include packet drop against DDOS attack, simple packet forwarding, and load balancing.
 One of the benefits of the XDP compared to DPDK is that in the case of XDP, the packets that do not match the rule for processing are then passed to normal Linux kernel's network stack.

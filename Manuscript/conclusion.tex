@@ -3,10 +3,10 @@
 Container orchestrators are expected to provide a uniform platform for container clusters and facilitate the migration of web applications consisting of container clusters.
 However, none of the existing container orchestrators fully supports an automatic setup of ingress traffic routing from the Internet, failing to serve as a uniform platform.
 
-In this dissertation, the author addresses this problem by proposing a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic route.
+In this dissertation, the author addresses this problem by proposing a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic rout\replaced{ing}{e}.
 The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure.
 It also utilizes ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
-The proposed load balancer standardize the way to route traffic into container clusters, by removing dependencies on load balancer architectures provided by infrastructures.
+The proposed load balancer standardize the way to route traffic into container clusters, by removing dependencies on load balancer\deleted{ architecture}s provided by infrastructures.
 
 To prove the feasibility of the proposed load balancer architecture, the author has implemented a containerized software load balancer using Linux kernel's ipvs for Kubernetes and carried out performance measurements in the 1 Gbps network environment.
 %
@@ -42,8 +42,10 @@ Considering the fact that the throughput of the whole system never exceeds that 
 This can be easily achieved using four of the ipvs-tun (L3DSR) load balancer container since a single ipvs-tun in a container can handle 731K [req/sec].
 Therefore the author also concludes the proposed load balancer has enough performance for 10 Gbps network environment.
 
-For a faster network, it is important to improve the throughput of portable load balancers by using better container network and implementing more efficient software load balancer itself.
-The author leaves these for future work, however, a preliminary result of one of these has also been presented.
+\added{Sooner or later, the day will come when the network in a data center will become all 100 Gbps.
+    }
+\added{Therefore, in the future,}\deleted{For a faster network,} it \replaced{becomes crucial}{is important} to improve the throughput of portable load balancers by using better container network and implementing more efficient software load balancer itself.
+The author leaves these for future work, however, a preliminary result of \added{the latter}\deleted{one of these} has also been presented.
 The author has implemented a software load balancer using XDP technology and carried out throughput measurement.
 The current implementation does not support multicore packet processing, and hence throughput is limited by the capability of single core processing performance.
 However, the obtained throughput about 390K [req/sec] for the XDP load balancer is very promising.
