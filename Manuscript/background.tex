@@ -18,7 +18,7 @@ Here the setup used in the experiments is explained.
 Figure~\ref{fig:bridge+veth} shows a schematic diagram of the container network used in this study.
 The veth kernel module creates a pair of network interfaces that act like a pipe.
 One of the peer interfaces is kept in the host network namespace and the other is added to the container namespace.
-The interface on the host network namespace is added to a network bridge.
+The interface \replaced[id=2nd]{in}{on} the host network namespace is \replaced[id=2nd]{connected}{added} to a network bridge.
 In the case of Docker, most of the veth setup is done by the Docker daemon.
 
 The communication between two containers on the same physical node is through the docker0.

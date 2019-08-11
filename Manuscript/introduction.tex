@@ -4,7 +4,7 @@
 
 \subsection{Web application\deleted{ cluster}}
 
-Today, a great number of people in the world can not spend a day without using smartphones or personal computers (PCs) to retrieve information from the Internet for work or for daily life.
+Today, a great number of \added[id=2nd]{the} people in the world can not spend a day without using smartphones or personal computers (PCs) to retrieve information from the Internet for work or for daily life.
 For example, people use these devices to look up web pages, emails, social media and sometimes to play games.
 These services are often called web applications or web services, where information is delivered using Hyper Text Transfer Protocols (HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
 Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, etc.
@@ -44,27 +44,27 @@ Sometimes the web servers also store and update important data into the database
 \subsection{\replaced{Portability}{ Migration } of web application\deleted{ cluster}}
 
 \added{
-As web applications become an essential part of daily life, improving their portabilities become very important.
+As web applications become an essential part of daily life, improving their portabilities \replaced[id=2nd]{is getting to be}{become} very important.
 If a web application is portable, it will become much easier for web application providers to migrate the service when there is a disaster, or expand their business to different geographical locations, etc. 
 }
 
-\deleted{As web applications become an essential part of daily life,} \added{These days,} an outage of the web application service is getting to be a bigger problem.
+\deleted{As web applications become an essential part of daily life,} \replaced[id=2nd]{Nowadays,}{These days,} an outage of the web application service \replaced[id=2nd]{has already become a critical}{is getting to be a bigger} problem \cite{}.
 If something happens to a web application cluster in a data center, people will not be able to access the necessary information.
 %
 For example, if web pages run by local government stops, people will not be able to access the information regarding public services.
-If a shopping site run by a company stops, customers can no longer buy products and the revenue of that company will be decreased.
+If a shopping site run by a company stops, customers can no longer buy products and the revenue of \replaced[id=2nd]{the}{that} company will be \added[id=2nd]{greatly} decreased.
 Outages of web applications by giant companies can have an even bigger impact.
 An outage of Gmail or Google search engine will probably stop most of the business activities around the world.
 Service down of Amazon.com affect buyers and many businesses that sell products on its platform.
 
 In order to prevent such outages, preparing another web application cluster in a different location in the case for disasters is very important.
 For that purpose, it is desirable if a web application cluster can be easily migrated to a different data center.
-Migration of a web application cluster becomes more realistic by making it portable with the use of Linux container technology, which is explained later.
+Migration of a web application cluster becomes more realistic by making \replaced[id=2nd]{the web application itself}{it} portable with the use of Linux container technology, which is explained later.
 
 \replaced{Improving the portability}{Migration capability} of a web application cluster also has \replaced{another benefit}{ other benefits}.
 If an e-commerce service is successful in Japan, the company that runs the service might want to start the same service in other countries, for example, in Europe.
 In this situation, the company probably wants to start the same web application cluster somewhere in Europe, because, for European customers, responses from a web site in Europe is quicker than those from a web site in Japan.
-\added{If the web cluster is portable, starting the service in a different country will be very easy.}
+\added{If the web} \added[id=2nd]{application} \added{cluster is portable, starting the service in a different country will be very easy.}
 
 \begin{figure}[h]
 \begin{center}
@@ -79,7 +79,7 @@ It is desirable to be able to migrate a web cluster from one place to another wi
 \label{fig:earth}
 \end{figure}
 
-\replaced{Improving portability of}{ Therefore, being able to migrate } a web application cluster is \added{also} very important for \replaced{other}{ a variety of} purposes, including \deleted{disaster recovery, }cost performance optimizations, meeting legal compliance, and \replaced{avoiding vendor lock-in problems}{ shortening the geographical distance to customers}.
+\replaced[id=2nd]{Improving the portability of}{Improving portability of}\deleted{ Therefore, being able to migrate } a web application cluster is \added{also} very important for \replaced{other}{ a variety of} purposes, including \deleted{disaster recovery, }cost performance optimizations, meeting legal compliance, and \replaced{avoiding vendor lock-in problems}{ shortening the geographical distance to customers}.
 These are the main concerns for web application providers in e-commerce, gaming, financial technology (Fintech) and Internet of Things (IoT) field.
 \deleted{It is important for a web application provider to be able to easily deploy and migrate their web applications among different infrastructure around the world.}
 The purpose of this research is to \added{improve the portability of web applications by proposing a common architecture, where web application providers}\deleted{ propose infrastructures for web application providers, where they } can easily deploy their services across the world, regardless of cloud providers or data centers they use.
@@ -202,13 +202,13 @@ Container tools also set up separate network interfaces with separate IP address
 The fact that each container has its own file system that is restored from a single archive file brings a significant benefit, i.e. a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
 Therefore a process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
 This was not easy when there was no container technology.
-Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could have broken the expected behavior.
+Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could \replaced[id=2nd]{break}{have broken} the expected behavior.
 
-In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers.
-In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects.
+In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers\added[id=2nd]{, and host OSs}.
+In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects\added[id=2nd]{to those programs that use the library}.
 Container tools alleviate these problems by packing necessary libraries into archives. 
 
-Thanks to these benefits container technologies are very attractive for web applications and their migrations.
+Thanks to these benefits\added[id=2nd]{,} container technologies are very attractive for \added[id=2nd]{improving the portability of the} web applications and \added[id=2nd]{hence, facilitating} their migrations.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
 And to simplify the deployment of a complex web application that consists of interdependent container clusters, several container orchestrators (container cluster management systems)\footnote{The author uses the word 'container orchestrator' and 'container cluster management system' for the same meaning and uses them interchangeably} have been in development.
 
@@ -238,7 +238,7 @@ Figure~\ref{fig:container_management_system} shows the important features for th
 The configuration file must be able to describe container cluster internals and relationships between interdependent container clusters.
 2) {\bf Scheduling:} Depending on the configuration file, the orchestrator must be able to pick servers and launch containers on them.
 Orchestrator must also maintain the state described in configuration files, for example, the orchestrator may need to maintain the number of running containers.
-3) {\bf Ingress routing:} The orchestrator must be able to set up routes for incoming traffic from the internet to multiple containers in a redundant and scalable manner.
+3) {\bf Ingress routing:} The orchestrator must be able to set up routes for incoming traffic from the \replaced[id=2nd]{Internet}{internet} to multiple containers in a redundant and scalable manner.
 4) {\bf Internal routing:} If the web application consists of multiple interdependent container clusters, the orchestrator must be able to set up routes between them in a redundant and scalable manner.
 
 In a configuration file a user can describe how a container cluster should be configured, and also can describe relationships between different clusters.
@@ -247,19 +247,19 @@ For example, a web application cluster in Figure~\ref{fig:container_management_s
 Each of those consists of a container cluster.
 In the configuration file, the relationships between http server cluster, key-value store cluster, and database cluster are specified.
 The configuration file also contains how each cluster should be configured, including the number of the containers and resources assigned to them.
-Users only need to feed the configuration file to the orchestrator to launch the web application.
+Users only need to feed the configuration file to the orchestrator to launch \replaced[id=2nd]{this}{the} web application.
 
 Thanks to these features, an orchestrator can be viewed as if it is an Operating System for a server farm in a data center, which not only schedules and launches containers on the server farm but also routes the traffic to the appropriate containers.
 By using orchestrators, a user can start a complex web application that consists of multiple interdependent container clusters, on multiple servers in a data center, as easily as starting a single process on a single computer.
 As a result, a user can also easily migrate their web applications at his or her convenience.
-And migrated web applications are guaranteed to behave exactly the same manner, not only because the same program binary and libraries are used in container, but also because container orchestrators hide difference among the base infrastructures.
+And migrated web applications are guaranteed to behave exactly the same manner, not only because the same program binary and libraries are used in container, but also because container orchestrators hide \replaced[id=2nd]{differences}{difference} among the base infrastructures.
 
 Several container orchestrators are available, including Kubernetes, Docker swarm and Mesos/Marathon.
 Each of the container orchestrators varies in target applications, and thus has the strength and weaknesses.
 
 \paragraph{Kubernetes}
-Kubernetes \cite{burns2016borg} is an open source container orchestrator, originally developed at Google based on their experience of production container orchestrator, Borg \cite{Verma2015}. 
-Since Google runs many of large scale web applications, Kubernetes are considered to be best suited to run web applications.
+Kubernetes \cite{burns2016borg} is an open source container orchestrator, originally developed at Google based on their \replaced[id=2nd]{experiences}{experience} of production container orchestrator, Borg \cite{Verma2015}. 
+Since Google runs \replaced[id=2nd]{a lot}{many} of large scale web applications, Kubernetes are considered to be best suited to run web applications.
 
 \paragraph{Docker swarm}
 Docker Swarm is a container orchestrator built in Docker daemon itself.
@@ -302,7 +302,7 @@ Although all of these orchestrators mostly satisfy the requirements, they \added
 \deleted{, nevertheless,} this functionality is applicable only for a few cloud environments.
 
 To the best knowledge of the author, none of the existing container orchestrators has full support for the redundant and scalable ingress routing feature.
-The author believes this is an open and important topic for research and development, and therefore intends to pursue it.
+The author believes \replaced[id=2nd]{solving this problem}{this} is an open and important topic for research and development, and therefore intends to pursue it.
 
 \subsection{\replaced{Kubernetes architecture and problem}{Problems of Kubernetes}}
 
@@ -321,13 +321,13 @@ A {\em pod} is a group of containers that share the same network namespace and c
 and is the basic execution unit in a Kubernetes cluster.
 
 Thanks to the expressive syntax of the configuration file, Kubernetes allows users to easily launch complex web applications that consist of multiple interdependent container clusters as if they were launching a single application program.
-It also allows users to modify the state of their container clusters, just by modifying the configuration file.
-Kubernetes always keeps the states of containers to match its desired state, which is written in the configuration file.
+It also allows users to modify the state of their container clusters, just by \replaced[id=2nd]{feeding the modified}{modifying the} configuration file.
+Kubernetes always \replaced[id=2nd]{tries to make}{keeps} the states of containers \added[id=2nd]{to} match its desired state\replaced[id=2nd]{ that}{, which} is written in the configuration file.
 
-When a service is created, the master schedules where to run {\em pods}, and kubelets on the nodes launch them accordingly.
+When a service is created, the master schedules where to run {\em pods}, and \added[id=2nd]{the} kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
 The proxy daemon on the nodes also setup iptables DNAT \cite{MartinA.Brown2017} rules. 
-The Ingress traffic will then be evenly distributed by the cloud load balancer to all of the existing nodes, 
+The \replaced[id=2nd]{ingress}{Ingress} traffic will then be evenly distributed by the cloud load balancer to all of the existing nodes, 
 after which it will be distributed again by the DNAT rules on the nodes to the designated {\em pods}. 
 The returning packets follows the exact same route as the incoming ones.
 
@@ -367,7 +367,7 @@ Once the traffic reaches the nodes, Kubernetes nicely route them to appropriate 
 However, in environments where there are no supported load balancers, Kubernetes fails to automatically set up the route for ingress traffic.
 In such cases Kubernetes expects users to manually set up a route for the ingress traffic, which generally lacks redundancy and scalabilities.
 
-In this way, Kubernetes fails to provide uniformity\deleted{ that is essential for easy deployment and migration of complex}\added{ to improve portability of} web applications.
+In this way, Kubernetes fails to provide uniformity\deleted{ that is essential for easy deployment and migration of complex}\added{ to improve the portability of} web applications.
 Other container orchestrators, e.g. Docker swarm or Mesos/Marathon, do not even have partial support for load balancers and expect users to manually set up the route for ingress traffic.
 Therefore this is a generic problem that current container cluster orchestrators possess.
 
