@@ -1,9 +1,10 @@
 \section{Conclusions}\label{Conclusions}
 
-Container orchestrators are expected to provide a uniform platform for container clusters and facilitate the migration of web applications consisting of container clusters.
-However, none of the existing container orchestrators fully supports an automatic setup of ingress traffic routing from the Internet, failing to serve as a uniform platform.
+\added[id=2nd]{In order to improve the portability of web applications consisting of container clusters, the container orchestrators need to be able to serve as a uniform platform by functioning as a middleware.}
+\deleted[id=2nd]{Container orchestrators are expected to provide a uniform platform for container clusters and facilitate the migration of web applications consisting of container clusters.}
+However, \added[id=2nd]{they fail to do so, because }none of the existing container orchestrators fully supports an automatic setup of ingress traffic routing from the Internet\deleted[id=2nd]{, failing to serve as a uniform platform}.
 
-In this dissertation, the author addresses this problem by proposing a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic rout\replaced{ing}{e}.
+\added[id=2nd]{To solve problem,}\deleted[id=2nd]{In this dissertation,} the author\deleted[id=2nd]{ addresses this problem by proposing}\added[id=2nd]{proposed} a portable software load balancer that is runnable on any infrastructure and capable of an automatic setup of the ingress traffic rout\replaced{ing}{e}.
 The proposed load balancer architecture utilizes software load balancers with container technology to make the load balancers runnable in any base infrastructure.
 It also utilizes ECMP technology to make multiple load balancers active, and thereby to provide redundancy and scalability.
 The proposed load balancer standardize the way to route traffic into container clusters, by removing dependencies on load balancer\deleted{ architecture}s provided by infrastructures.
