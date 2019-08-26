@@ -205,7 +205,7 @@ This was not easy when there was no container technology.
 Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could \replaced[id=2nd]{break}{have broken} the expected behavior.
 
 In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers\added[id=2nd]{, and host OSs}.
-In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects\added[id=2nd]{to those programs that use the library}.
+In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects\added[id=2nd]{ to those programs that use the library}.
 Container tools alleviate these problems by packing necessary libraries into archives. 
 
 Thanks to these benefits\added[id=2nd]{,} container technologies are very attractive for \added[id=2nd]{improving the portability of the} web applications and \added[id=2nd]{hence, facilitating} their migrations.
@@ -280,7 +280,7 @@ Because of the broader scope of applications, an out of box Mesos might not be p
     Config file & YAML & YAML & JSON  \\ \hline
     Scheduling & Yes &  Yes &  Yes  \\ \hline
     Ingress routing & \begin{tabular}{c} Manual$^{*}$ \\ Cloud load balancer$^{**}$\end{tabular} & Manual$^{*}$ & Manual$^{*}$ \\ \hline
-    Internal routing & iptables DNAT & ipvs &  haproxy  \\ \hline
+    Internal routing & iptables DNAT & \replaced[id=2nd]{IPVS}{ipvs} &  haproxy  \\ \hline
   \end{tabular}
   \centering\parbox[c]{0.9\columnwidth}{
     \footnotesize{$^{*}$Users are expected to set up a static route to one of the internal load balancers manually. \par
@@ -385,7 +385,10 @@ Therefore this is a generic problem that current container cluster orchestrators
 \added{
   The purpose of this research is to propose a generic architecture that can set up a route for ingress traffic automatically without relying on the cloud load balancers.
   For that purpose, the author proposes a cluster of software load balancer containers, instead of relying on load balancers provided by infrastructures.
-  Proposed load balancer is runnable in both cloud infrastructure and on-premise data center and can be utilized to set up the route for ingress traffic automatically.
+}
+\added[id=2nd]{  Proposed load balancer can run both in the cloud infrastructure and in the on-premise data center and can be utilized to set up the route for ingress traffic automatically.}
+\deleted[id=2nd]{  Proposed load balancer is runnable in both cloud infrastructure and on-premise data center and can be utilized to set up the route for ingress traffic automatically.}
+\added{
   The proposed load balancer should have the following features;
 }
 %
@@ -424,7 +427,7 @@ Figure~\ref{fig:cluster_of_container_loadbalancer} shows schematic diagram of an
 A web application that consists of nginx, redis, and mysqld, each being a cluster of containers, is running in the server farm.
 There is also a cluster of software load balancer containers, which is also a part of the web application cluster, running in the same server farm. 
 All of the containers are deployed and managed by the container orchestrator.
-The orchestrator also communicates with the upstream router using Border Gateway Protocol (BGP) \cite{rfc7911}, so that the ingress traffic from the Internet is forwarded to the \added{existing} load balancer containers in a redundant and scalable manner using Equal Cost Multi Path (ECMP) \cite{al2008scalable} routing table.
+The orchestrator also communicates with the upstream router using Border Gateway Protocol (BGP) \cite{rfc7911}, so that the ingress traffic from the Internet is forwarded to the \added{existing} load balancer containers in a redundant and scalable manner \added[id=2nd]{by} using Equal Cost Multi Path (ECMP) \cite{al2008scalable} routing table.
 
 \added{
   Container orchestrators are good at managing a cluster of containers.
@@ -461,22 +464,22 @@ Since this scheme does not rely on external load balancers, users no longer need
 \added{
   The author implements the proposed software load balancer that works well with Kubernetes, as a test case, since Kubernetes seems most appropriate for web application clusters at the moment.
   The implemented load balancer uses the following technologies;
-  1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (ipvs) \cite{Zhang2000} is containerized using Docker \cite{merkel2014docker}.
+  1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (\replaced[id=2nd]{IPVS}{ipvs}) \cite{Zhang2000} is containerized using Docker \cite{merkel2014docker}.
   2) Container orchestrator manages the load balancer containers, and the ingress traffic follows the  ECMP routing tables on the upstream router. These will make the load balancer redundant and scalable.
   3) To set up the ECMP route automatically, the author makes the load balancer containers advertise route through BGP protocol.
   4) To make the load balancer capable of updating the load balancing table appropriately, the author makes the load balancer acquire information about web server containers from the orchestrator.
 }
 
 \added{
-While the method to acquire information about running containers is specific to Kubernetes, other technologies used are not.
-Therefore, the author expects the proposed load balancer can also be implemented for other container orchestrators, i.e., Docker Swarm and Mesos/Marathon, just by writing the code to acquire information about running containers.
+While the method to acquire information about running containers is specific to Kubernetes, the other technologies used are not.
+Therefore, the author expects} \added[id=2nd]{that the load balancer with the same architecture}\deleted[id=2nd]{ the proposed load balancer} \added{can also be implemented for} \added[id=2nd]{the} \added{other container orchestrators, i.e., Docker Swarm and Mesos/Marathon, just by writing the code to acquire information about running containers.
 }
 
 \added{
 The author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
 1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
 2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
-3) Performance: whether the load balancer has enough throughput for 10 Gbps network.
+3) Performance: whether the load balancer has} \added[id=2nd]{sufficient}\deleted[id=2nd]{enough} \added{throughput for 10 Gbps network.
 }
 
 \added{
@@ -485,10 +488,10 @@ The author implements the novel load balancer using eXpress Data Path (XDP) tech
 }
 
 \deleted{As a proof of concept the author implements the proposed software load balancer that works well with Kubernetes using following technologies;
-1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (ipvs) \cite{Zhang2000} is containerized using Docker \cite{merkel2014docker}. 
+1) To make the load balancer runnable in any environment, Linux kernel's Internet Protocol Virtual Server (\replaced[id=2nd]{IPVS}{ipvs}) \cite{Zhang2000} is containerized using Docker \cite{merkel2014docker}. 
 2) To make the load balancer redundant and scalable, the author makes it capable of updating the routing table of the upstream router with Equal Cost Multi-Path (ECMP) routes \cite{al2008scalable} using Border Gateway Protocol (BGP).
 BGP and ECMP are the standard protocol supported by most of the commercial router hardware.
-3) The author also extends the research into implementing the novel load balancer using eXpress Data Path (XDP) technology \cite{bertin2017xdp} to enhance the performance level to meet the need for 10Gbps network speed.
+3) The author also extends the research into implementing the novel load balancer using eXpress Data Path (XDP) technology \cite{bertin2017xdp} to enhance the performance level to meet the need for 10 Gbps network speed.
 }
 
 \subsection{Contribution}
@@ -498,8 +501,8 @@ Contributions of this paper can be summarized as follows:
 By removing the \replaced{dependencies}{dependence} on external load balancers provided by infrastructures, users can deploy their web applications in the same manner regardless of the infrastructure, which will \deleted{facilitate the migration }\added{improve the portability} of web applications.
 2) The author \replaced{implements}{ builds} a proof of concept system using Open Source Software (OSS), which means that anyone can test drive the proposed load balancers and use them in production for free.
 3) \deleted{The author carries out a performance evaluation to prove the feasibility of the proposed load balancer.
-  The author verifies portability, redundancy, and scalability of the proposed load balancer, and concludes it is usable up to 10Gbps network environment.}
-\added{The author carries out a performance evaluation and quantitably prove the feasibility of the proposed load balancer up to 10Gbps network environment.}
+  The author verifies portability, redundancy, and scalability of the proposed load balancer, and concludes it is usable up to 10 Gbps network environment.}
+\added{The author carries out a performance evaluation and quantitably prove the feasibility of the proposed load balancer up to 10 Gbps network environment.}
 4) The author \deleted{clarifies }\added{points out} the remaining problems for future improvement and explores other technology to be used in faster networks.
 
 The outcome of this study will\deleted{ benefit users who want to deploy their web applications on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
@@ -516,7 +519,7 @@ The rest of the paper is organized as follows;
 Chapter~\ref{chapter:Background} provides background information that is important in this research.
 First, the overlay network used in this study is explained in detail.
 Then the author explains how to utilize multi-core CPUs for packet processing in Linux,
-which is followed by the explanations of the ipvs load balancer and two of its operation modes.
+which is followed by the explanations of the \replaced[id=2nd]{IPVS}{ipvs} load balancer and two of its operation modes.
 Finally, the author briefly explains about novel XDP technology.
 
 %\subsubsection{Chapter~\ref{chapter:Architecture and Implementation}}
@@ -527,21 +530,29 @@ This chapter provides a discussion of such load balancer architecture.
 The author also presents an implementation of the proof of the concept system for the proposed load balancer architecture in detail.
 
 %\subsubsection{Chapter~\ref{chapter:Performance Evaluation}}
-Chapter~\ref{chapter:Performance Evaluation} presents the results of the performance evaluation.
+Chapter~\ref{chapter:Performance Evaluation} presents the results of the \deleted[id=2nd]{performance }evaluation.
+\added[id=2nd]{
+The author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
+1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
+2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
+3) Performance: whether the load balancer has sufficient throughput for 1 Gbps network.
+}
+\deleted[id=2nd]{
 In order to verify the feasibility of the proposed load balancer architecture, the author evaluated the performance of the load balancer with the following criteria;
 (1) Performance analysis:
 The author evaluated the basic characteristics of the load balancer using physical servers in the on-premise data center, and compared performance with those of iptables DNAT and nginx as a load balancer.
 (2) Portability:
-The author also carried out the same performance measurement in GCP and AWS to show the containerized ipvs load balancer is runnable in the cloud environment.
+The author also carried out the same performance measurement in GCP and AWS to show the containerized \replaced[id=2nd]{IPVS}{ipvs} load balancer is runnable in the cloud environment.
 (3) Redundancy and Scalability:
 The author evaluates ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
 The author also evaluates the aggregated performance level of the ECMP redundant load balancer.
+}
 
 %\subsubsection{Chapter~\ref{chapter:Further Improvement}}
 It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
-It is also important to investigate its validity in 10Gbps network.
+It is also important to investigate its validity in 10 Gbps network.
 In Chapter~\ref{chapter:Further Improvement} the performance level of the proposed load balancer is evaluated.
-The author carries out throughput measurements of ipvs, ipvs-tun, and iptables DNAT in 10Gbps environment.
+The author carries out throughput measurements of \replaced[id=2nd]{IPVS}{ipvs}, \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}, and iptables DNAT in 10 Gbps environment.
 The author clarifies the reasons for performance limitations and discusses improvement.
 The author also proposes a novel software load balancer using eXpress Data Plane (XDP) technology and presents preliminary experimental results.
 

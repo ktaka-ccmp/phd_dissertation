@@ -7,3 +7,8 @@ main.*
 !main.tex
 !main.pdf
 *~
+.DS_Store
+._.DS_Store
+._draft.pdf
+._main.pdf
+

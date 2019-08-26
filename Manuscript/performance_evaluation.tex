@@ -1,4 +1,13 @@
 
+\added[id=2nd]{
+At first, the author evaluates the basic characteristics of the load balancer using physical servers in the on-premise data center, by comparing the throughput with several experimental conditions.
+Then the author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
+1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
+2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
+3) Performance: whether the load balancer has sufficient throughput for 1 Gbps network.
+}
+  
+\deleted[id=2nd]{
 In order to verify the feasibility of the proposed load balancer architecture, the author evaluated the performance of the load balancer with the following criteria;
 (1) Performance analysis:
 The author evaluated the basic characteristics of the load balancer using physical servers in the on-premise data center, and compared performance with those of iptables DNAT and nginx as a load balancer.
@@ -7,17 +16,18 @@ The author also carried out the same performance measurement in GCP and AWS to s
 (3) Redundancy and Scalability:
 The author evaluated ECMP functionality by monitoring routing table updates on the router when the new load balancer is added or removed.
 The author also evaluated the aggregated performance level of the ECMP redundant load balancer.
+}
 
 \section{Performance analysis of proposed load balancer}
 
 \subsubsection{Experimental conditions}
 
-Throughput measurements were carried out in order to examine the basic characteristics of the containerized ipvs load balancer in an on-premise data center.
-Figure~\ref{fig:benchmark-schem} shows the schematic diagram of the experimental setup for the measurement.
+Throughput measurements were carried out in order to examine the basic characteristics of the containerized \replaced[id=2nd]{IPVS}{ipvs} load balancer in an on-premise data center.
+Figure~\ref{fig:benchmark-schem} shows the schematic diagram of the experimental setup for the measurement. 
 A benchmark program called wrk \cite{Glozer2016} were used.
 Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the Kubernetes cluster.
 In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
-The author then launched ipvs pod and nginx pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
+The author then launched \replaced[id=2nd]{IPVS}{ipvs} pod and nginx pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
 On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
 The author also measured throughput of this internal load balancer.
 The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
@@ -31,9 +41,9 @@ The throughput is measured by sending out HTTP requests from the wrk towards a l
     \caption[Benchmark setup]{
       Benchmark setup.
       There are nodes on which nginx pods are deployed as web servers.
-      There is another node where ipvs pod and nginx pod are deployed.
+      There is another node where \replaced[id=2nd]{IPVS}{ipvs} pod and nginx pod are deployed.
       Iptables DNAT rules exist on every Kubernetes node as an internal load balancer.
-      Throughput measurements are performed against ipvs pod, nginx pod, and iptables DNAT rules.
+      Throughput measurements are performed against \replaced[id=2nd]{IPVS}{ipvs} pod, nginx pod, and iptables DNAT rules.
       Each of the load balancers distributes the packets from the wrk to the nginx web servers.
       The response packets from the nginx web servers follow the same route as the request packets.  
     }
@@ -157,7 +167,7 @@ The author compared the performance levels of three backends settings \cite{Core
 
 \subsubsection{Effect of multicore processing}
 
-Figure~\ref{fig:ipvs_mcore_proccessing} shows the result of the throughput measurement for the ipvs load balancer with different multicore processing settings.
+Figure~\ref{fig:ipvs_mcore_proccessing} shows the result of the throughput measurement for the \replaced[id=2nd]{IPVS}{ipvs} load balancer with different multicore processing settings.
 Since hardware used in the experiment has a NIC with four rx-queues, and a CPU with eight cores,
 the setting \enquote{(RSS, RPS) = (on, off)} uses four cores and \enquote{(RSS, RPS) = (off, on)} uses eight cores for packet processing.
 For the setting \enquote{(RSS, RPS) = (off, off)}, only one core is used for the packet processing.
@@ -173,11 +183,11 @@ Throughput is highest for the setting with eight cores (rps = on), followed by f
 This indicates that the more cores are used, the better the throughput is.
 
 Figure~\ref{fig:iptables_mcore_proccessing} shows the result of the throughput measurement for iptables DNAT as a load balancer, with different multicore processing settings.
-As is the case for the ipvs result, there is a general trend where the throughput increases as the number of nginx {\em pod}s increases and then it eventually saturates.
+As is the case for the \replaced[id=2nd]{IPVS}{ipvs} result, there is a general trend where the throughput increases as the number of nginx {\em pod}s increases and then it eventually saturates.
 Also, throughput is highest for the setting with eight cores (rps = on), followed by four cores (rss = on), then single core (none).
 %
-The saturated performance levels of iptables DNAT and ipvs are the same for the condition with eight cores (rss = on). 
-The saturated performance levels of iptables DNAT are higher than those of ipvs, for the conditions with four cores (rss = on) and single core (none).
+The saturated performance levels of iptables DNAT and \replaced[id=2nd]{IPVS}{ipvs} are the same for the condition with eight cores (rss = on). 
+The saturated performance levels of iptables DNAT are higher than those of \replaced[id=2nd]{IPVS}{ipvs}, for the conditions with four cores (rss = on) and single core (none).
 
 \begin{figure}[h]
   \centering
@@ -185,8 +195,8 @@ The saturated performance levels of iptables DNAT are higher than those of ipvs,
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Effect of multicore packet processing on ipvs throughput]{
-Effect of multicore packet processing on ipvs throughput.
+    \caption[Effect of multicore packet processing on IPVS throughput]{
+Effect of multicore packet processing on \replaced[id=2nd]{IPVS}{ipvs} throughput.
 Throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
 The throughput is highest for the setting with eight cores (rps = on), followed by four cores (rss = on), then single core (none).
     }
@@ -215,7 +225,7 @@ The throughput is highest for the setting with eight cores (rps is on), followed
 
 \subsubsection{Effect of overlay network}
 
-Figure~\ref{fig:ipvs_flannel_mode} shows the ipvs throughput results for different overlay network settings.
+Figure~\ref{fig:ipvs_flannel_mode} shows the \replaced[id=2nd]{IPVS}{ipvs} throughput results for different overlay network settings.
 The author used the flannel for the overlay network.
 Flannel has three backend modes, host-gw, vxlan and udp, and the throughput for each setting are compared.
 
@@ -225,7 +235,7 @@ followed by the vxlan mode where the Linux kernel encapsulates the Ethernet fram
 The udp mode where flanneld itself encapsulates the IP packet shows significantly lower performances levels.
 
 Figure~\ref{fig:iptables_flannel_mode} shows throughput results of the iptables DNAT as a load balancer for different overlay network settings.
-The same characteristics can be seen for the iptables DNAT, although the performance level of the iptables DNAT for udp mode is slightly better than that of ipvs.
+The same characteristics can be seen for the iptables DNAT, although the performance level of the iptables DNAT for udp mode is slightly better than that of \replaced[id=2nd]{IPVS}{ipvs}.
 
 As is shown here, overlay network settings greatly affect the performance level.
 The author considers the host-gw mode is the best, the vxlan tunnel the second best and the udp tunnel mode unusable.
@@ -239,8 +249,8 @@ The author used vxlan mode for the experiments conducted in cloud environments a
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Effect of flannel backend modes on ipvs throughput]{
-      Effect of flannel backend modes on ipvs throughput.
+    \caption[Effect of flannel backend modes on IPVS throughput]{
+      Effect of flannel backend modes on \replaced[id=2nd]{IPVS}{ipvs} throughput.
       The host-gw mode shows the highest performance level, followed by the vxlan mode.
       The udp mode shows significantly lower performances levels.
     }
@@ -274,9 +284,9 @@ The author used vxlan mode for the experiments conducted in cloud environments a
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Throughput of ipvs, iptables DNAT and nginx]{
-      Throughput of ipvs, iptables DNAT and nginx.
-      The performance levels of ipvs and iptables DNAT are almost the same.
+    \caption[Throughput of IPVS, iptables DNAT and nginx]{
+      Throughput of \replaced[id=2nd]{IPVS}{ipvs}, iptables DNAT and nginx.
+      The performance levels of \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT are almost the same.
       The nginx as a load balancer does not perform well in the experiment.
     }
     \label{fig:ipvs-iptables-nginx}
@@ -286,9 +296,9 @@ The author used vxlan mode for the experiments conducted in cloud environments a
 \interfootnotelinepenalty=10000
 
 Figure~\ref{fig:ipvs-iptables-nginx} presents the throughput results of the different load balancers.
-The performance levels of ipvs, iptables DNAT and nginx as the load balancers are compared.
-The throughput of the ipvs and iptables DNAT increases almost linearly as the number of nginx pods (web servers) increase from 1 to around 14, and then it saturates.
-The proposed ipvs load balancer exhibits almost equivalent performance levels as the iptables DNAT as a load balancer.
+The performance levels of \replaced[id=2nd]{IPVS}{ipvs}, iptables DNAT and nginx as the load balancers are compared.
+The throughput of the \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT increases almost linearly as the number of nginx pods (web servers) increase from 1 to around 14, and then it saturates.
+The proposed \replaced[id=2nd]{IPVS}{ipvs} load balancer exhibits almost equivalent performance levels as the iptables DNAT as a load balancer.
 
 The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client machine and the load balancer node, or CPU performance levels of these machines.
 %
@@ -297,7 +307,7 @@ In this specific experiment, the performance level was limited by the 1 Gbps ban
 All of the nodes use a single interface for communication. 
 At the load balancer node, the bandwidth for each direction of Full duplex Ethernet is consumed by the sum of request and response packets.
 },
-\added{and therefore, we can not see the real difference between ipvs performance and iptables DNAT performance.}
+\added{and therefore, we can not see the real difference between \replaced[id=2nd]{IPVS}{ipvs} performance and iptables DNAT performance.}
 \added{This fact has been}\deleted{which is} revealed by packet level analysis using tcpdump (Appendix~\ref{appendix:performance_limit}).
 %
 On average the data size of each request and the corresponding response was about 636 [byte/req] in total, including TCP/IP headers, Ethernet header, and inter-frame gaps.
@@ -305,8 +315,8 @@ Multiplying that with 190K [req/sec] and 8 [bit/byte] will result in 966.72 Mbps
 Therefore the throughput of about 190K [req/sec] is a reasonable number as the maximum performance level in 1Gbps network environment.
 
 \deleted{
-While nginx did not show any benefit as the load balancer, the performance of the ipvs load balancer container showed equivalent performance level as iptables DNAT.
-This means that the proposed ipvs container load balancer is at least as good as the internal load balancer for Kubernetes in the 1 Gbps network.
+While nginx did not show any benefit as the load balancer, the performance of the \replaced[id=2nd]{IPVS}{ipvs} load balancer container showed equivalent performance level as iptables DNAT.
+This means that the proposed \replaced[id=2nd]{IPVS}{ipvs} container load balancer is at least as good as the internal load balancer for Kubernetes in the 1 Gbps network.
 }
 
 \begin{figure}[h]
@@ -315,18 +325,18 @@ This means that the proposed ipvs container load balancer is at least as good as
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Latency for ipvs and iptables DNAT]{
-      Latency for ipvs and iptables DNAT.
-      Cumulative Distribution Function (CDF) of the latency for ipvs and iptables DNAT are compared, at the two constant loads, 160K[req/sec] and 180K[req/sec] .
-      Smaller latencies are observed for ipvs.
+    \caption[Latency for IPVS and iptables DNAT]{
+      Latency for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
+      Cumulative Distribution Function (CDF) of the latency for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT are compared, at the two constant loads, 160K[req/sec] and 180K[req/sec] .
+      Smaller latencies are observed for \replaced[id=2nd]{IPVS}{ipvs}.
 }
     \label{fig:latency_cdf_rps_40pods}
   \end{minipage}
 \end{figure}
 
-Figure~\ref{fig:latency_cdf_rps_40pods} compares Cumulative Distribution Function (CDF) of the load balancer latency at the two constant loads, 160K[req/sec] and 180K[req/sec] for ipvs and iptables DNAT.
-It is seen that the latencies are a little bit smaller for ipvs.
-For example, the median values at 160K[req/sec] load for ipvs and iptables DNAT are, 1.14 msec and 1.24 msec, respectively.
+Figure~\ref{fig:latency_cdf_rps_40pods} compares Cumulative Distribution Function (CDF) of the load balancer latency at the two constant loads, 160K[req/sec] and 180K[req/sec] for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
+It is seen that the latencies are a little bit smaller for \replaced[id=2nd]{IPVS}{ipvs}.
+For example, the median values at 160K[req/sec] load for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT are, 1.14 msec and 1.24 msec, respectively.
 Also, at 160K[req/sec], they are 1.39 msec and 1.45 msec, respectively.
 %
 While these may be considered a subtle difference, however, this indicates that proposed load balancer is at least as good as iptables DNAT.
@@ -355,13 +365,13 @@ While these may be considered a subtle difference, however, this indicates that 
 
 \subsubsection{L3DSR using ipvs-tun}
 
-The performance levels of ipvs and iptables DNAT have been limited by 1 Gbps bandwidth.
-This can be alleviated in the case of ipvs by using so-called Layer 3 Direct Server Return (L3DSR) setup.
+The performance levels of \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT have been limited by 1 Gbps bandwidth.
+This can be alleviated in the case of \replaced[id=2nd]{IPVS}{ipvs} by using so-called Layer 3 Direct Server Return (L3DSR) setup.
 Figure~\ref{fig:benchmark-schem-dsr} shows the schematic diagram illustrating the packet flow of the L3DSR experiment.
 The red arrows indicate the route HTTP request packets follow and the blue arrows indicate the route response packets follow.
 Since the response packets directly return to the client, the load balancer is expected to perform better.
 
-The ipvs has a mode called ipvs-tun.
+The \replaced[id=2nd]{IPVS}{ipvs} has a mode called ipvs-tun.
 When the ipvs-tun send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet that is destined to real servers.
 The real server receives the packet on a tunl0 device and decapsulates the ipip packet, revealing the original packet.
 Since the source IP address of the original packet is maintained, the returning packets are sent directly toward the benchmark client.
@@ -391,16 +401,16 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
   \begin{minipage}{0.9\columnwidth}
     \caption[Throughput of L3DSR using ipvs-tun.]{
       Throughput of L3DSR using ipvs-tun.
-      The throughput of ipvs-tun is 1.5 times higher than those of conventional ipvs and iptables DNAT.
+      The throughput of ipvs-tun is 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
     }
     \label{fig:ipvs_l3dsr_1g.png}
   \end{minipage}
 \end{figure}
 
 The author carried out throughput measurement using the experimental setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
-Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the ipvs-tun, conventional ipvs and iptables DNAT.
-As can be seen in the figure, while the performance levels for ipvs and iptables DNAT exactly match\added{ because of the network band width limitation}, the performance level of ipvs-tun is much higher than those.
-For example, the throughput of ipvs-tun is about 1.5 times higher than those of conventional ipvs and iptables DNAT.
+Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the ipvs-tun, conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
+As can be seen in the figure, while the performance levels for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT exactly match\added{ because of the network band width limitation}, the performance level of ipvs-tun is much higher than those.
+For example, the throughput of ipvs-tun is about 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
 \added{
   The saturated throughput indicates the maximum performance level of the load balancer, which is determined either by network bandwidth, or CPU performance levels of these machines.
   In the case of ipvs-tun, the response packet could fill the network band withs at the benchmark client.
@@ -424,7 +434,7 @@ For example, the throughput of ipvs-tun is about 1.5 times higher than those of 
 
 \section{Cloud experiment}
 
-The throughput measurements were also carried \added{out} in GCP and AWS to show the containerized ipvs load balancer is runnable even in the cloud environment.
+The throughput measurements were also carried \added{out} in GCP and AWS to show the containerized \replaced[id=2nd]{IPVS}{ipvs} load balancer is runnable even in the cloud environment.
 The specifications of virtual machines used for the experiment in both environment are summarized in Table~\ref{fig:gcp_machine_spec} and Table~\ref{fig:aws_machine_spec}.
 In the cases of cloud environments, it is easy to change the machine specifications, especially CPU counts.
 Therefore, the author measured throughput with several conditions of them.
@@ -542,10 +552,10 @@ The maximum throughput is higher for instances with more virtual CPUs.
 Figure~\ref{fig:gcp_all_tp} and Figure~\ref{fig:aws_c4_tp} show throughput results that are measured in GCP and AWS, respectively. 
 Both results show similar characteristics as the experiment in an on-premise data center in Figure~\ref{fig:ipvs-iptables-nginx}, where throughput increased linearly to a certain saturation level that is determined by either network speed or machine specifications.
 It is also seen that the performance levels are higher for load balancer nodes with more CPUs in both GCP and AWS. 
-These results indicate that the proposed ipvs load balancers function properly in GCP and AWS, and hence can be run in those environments.
+These results indicate that the proposed \replaced[id=2nd]{IPVS}{ipvs} load balancers function properly in GCP and AWS, and hence can be run in those environments.
 
 In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even though much more powerful CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
-For example, while the maximum throughput of the ipvs load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center (Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 and 36 virtual CPUs.
+For example, while the maximum throughput of the \replaced[id=2nd]{IPVS}{ipvs} load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center (Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 and 36 virtual CPUs.
 Although the author suspects that this is probably due to the inefficiency of the virtual machines as opposed to Bare Metal servers,
 it is not clear what limits the maximum performance levels of cloud environments. 
 The author leaves a detailed analysis for future work.
@@ -560,10 +570,10 @@ The author leaves a detailed analysis for future work.
 
 \section{Redundancy with ECMP}
 
-While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the traffic to the ipvs container in a redundant and scalable manner.
+While containerizing \replaced[id=2nd]{IPVS}{ipvs} makes it runnable in any environment, it is essential to discuss how to route the traffic to the \replaced[id=2nd]{IPVS}{ipvs} container in a redundant and scalable manner.
 The ECMP technique is expected to make the load balancers redundant and scalable since all the load balancer containers act as active.
 The author examined the behavior of the ECMP routing table updates, by changing the number of the load balancers.
-After that, in order to explore the scalability, the author also measured the throughput from a benchmark client with ECMP routes when multiple of the ipvs container load balancers are deployed.
+After that, in order to explore the scalability, the author also measured the throughput from a benchmark client with ECMP routes when multiple of the \replaced[id=2nd]{IPVS}{ipvs} container load balancers are deployed.
 
 \begin{figure}[h]
   \centering
@@ -574,7 +584,7 @@ After that, in order to explore the scalability, the author also measured the th
   \begin{minipage}{0.9\columnwidth}
     \caption[Benchmark setup for ECMP experiment]{
       Benchmark setup for ECMP experiment.
-      Each load balancer pods consists of both an ipvs container and an exabgp container.
+      Each load balancer pods consists of both an \replaced[id=2nd]{IPVS}{ipvs} container and an exabgp container.
       The routing table of the benchmark client is updated by BGP protocol through a route reflector.
     }
     \label{fig:ecmp-benchmark-schem}
@@ -629,9 +639,9 @@ After that, in order to explore the scalability, the author also measured the th
 
 Figure~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experimental setup. Table~\ref{tab:ecmp-hw_sw_spec} summarizes hardware and software specifications.
 Notable differences from the previous throughput experiment in Figure~\ref{fig:benchmark-schem} and Table~\ref{tab:hw_machine_spec} are as follows;
-1) Each load balancer pods now consists of both an ipvs container and an exabgp container.
+1) Each load balancer pods now consists of both an \replaced[id=2nd]{IPVS}{ipvs} container and an exabgp container.
 2) The routing table of the benchmark client is updated by BGP protocol through a route reflector.
-3) The NIC of the benchmark client has been changed to 10 Gbps card since now we have multiple of ipvs container load balancers that are capable of filling up 1 Gbps bandwidth.
+3) The NIC of the benchmark client has been changed to 10 Gbps card since now we have multiple of \replaced[id=2nd]{IPVS}{ipvs} container load balancers that are capable of filling up 1 Gbps bandwidth.
 4) Some of the software have been updated to the most recent versions at the time of the experiment.
 
 \FloatBarrier
@@ -766,7 +776,7 @@ However, it is possible to set up the “hold-time” short enough so that the r
   \begin{minipage}{0.9\columnwidth}
     \caption[ECMP update delay histogram]{
       ECMP update delay histogram.
-      This shows the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, when the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
+      This shows the delays until the number of running \replaced[id=2nd]{IPVS}{ipvs} pods is reflected in the routing table on the benchmark client, when the number of the \replaced[id=2nd]{IPVS}{ipvs} pods is changed randomly every 60 seconds for 20 hours.
     }
     \label{fig:ecmp_delay_histgram}
   \end{minipage}
@@ -775,18 +785,18 @@ However, it is possible to set up the “hold-time” short enough so that the r
 The author also carried out throughput measurement to show that the proposed architecture increases the throughput as the number of the load balancers is increased.
 Figure~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
 There are four solid lines in the figure, each corresponding to the throughput result when there are one through four of the proposed load balancers.
-The saturated levels, i.e. performance levels depend on the number of the ipvs load balancer pods (lb x 1 being the case with one ipvs pods, and lb x2 being two of them and as such). 
-The performance level increases linearly as the number of the load balancers increases up to four of the ipvs load balancers, but does not scale further.
+The saturated levels, i.e. performance levels depend on the number of the \replaced[id=2nd]{IPVS}{ipvs} load balancer pods (lb x 1 being the case with one \replaced[id=2nd]{IPVS}{ipvs} pods, and lb x2 being two of them and as such). 
+The performance level increases linearly as the number of the load balancers increases up to four of the \replaced[id=2nd]{IPVS}{ipvs} load balancers, but does not scale further.
 This is because the benchmark program uses up CPU power of the benchmark client, i.e., the CPU usage is 100\% when there are more than four load balancers.
 The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can simultaneously perform the throughput measurements, will improve the performance level further.
 
 Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
-The red line in the figure shows the number of ipvs load balancer pods, which is changed randomly every 60 seconds.
+The red line in the figure shows the number of \replaced[id=2nd]{IPVS}{ipvs} load balancer pods, which is changed randomly every 60 seconds.
 The blue line corresponds to the resulting throughput.
 As can be seen from the figure, the blue line nicely follows the shape of the red line.
 This indicates that new load balancers are immediately utilized after they are created, and after removing some load balancers, the traffic to them is immediately directed to the existing load balancers.
 
-Figure~\ref{fig:ecmp_delay_histgram} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running ipvs pods is reflected in the routing table on the benchmark client, as the number of the ipvs pods is changed randomly every 60 seconds for 20 hours.
+Figure~\ref{fig:ecmp_delay_histgram} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running \replaced[id=2nd]{IPVS}{ipvs} pods is reflected in the routing table on the benchmark client, as the number of the \replaced[id=2nd]{IPVS}{ipvs} pods is changed randomly every 60 seconds for 20 hours.
 As can be seen from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
 The author concludes that ECMP routing update in the proposed architecture is quick enough.
 
@@ -799,9 +809,9 @@ The author carried out throughput measurement to verify the feasibility of the l
 (1) The throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
 (2) The throughput maximum depends on the multicore packet processing settings and overlay network settings.
 %
-(3) The throughput of the ipvs in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
-(4) The throughput of the ipvs container can be further improved up to 1.5 times by utilizing ipvs-tun mode, i.e., L3DSR settings.
-(5) The ipvs container is able to run and function properly, both in GCP and AWS.
+(3) The throughput of the \replaced[id=2nd]{IPVS}{ipvs} in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
+(4) The throughput of the \replaced[id=2nd]{IPVS}{ipvs} container can be further improved up to 1.5 times by utilizing ipvs-tun mode, i.e., L3DSR settings.
+(5) The \replaced[id=2nd]{IPVS}{ipvs} container is able to run and function properly, both in GCP and AWS.
 (6) The ECMP routing update in the proposed architecture is properly functioning and quick enough.
 (7) The linear scalability of the ECMP throughput has been confirmed up to 4x of single load balancer throughput.
 From these results, the author concludes that the proposed load balancer is portable, redundant and scalable while providing 1.5 times better throughput than iptables DNAT in 1Gbps network environment.

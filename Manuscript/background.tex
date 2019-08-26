@@ -159,18 +159,6 @@ they prohibit the use of the flannel host-gw mode in those cloud providers.
 
 \subsubsection{Communication with router}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
-\caption{The network architecture of an exemplified container cluster system. }
-
-  A load balancer (lb) pod (the white box with "lb") and web pods are running on nodes (the blue boxes).
-  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
-  and the distributed to web pods using the overlay network.
-
-\label{fig:overlay}
-\end{figure}
-
 The overlay network also causes a problem when communicating with a host that knows nothing about the overlay network.
 Fig.~\ref{fig:overlay} shows schematic diagram of network architecture of a container cluster system. 
 There is a physical network (node network) with IP address range of 10.0.0.0/16 and an overlay network with IP address range of 172.16.0.0/16.
@@ -184,6 +172,18 @@ When a container communicates with the upstream router that does not have routin
 The SNAT caused a problem when the author tried to co-host multiple load balancer pods for different services on a single node and let them connect the upstream router directly.
 This was due to the fact that the BGP agent used in our experiment only used the source IP address of the connection to distinguish the BGP peer.
 The agent on the router behaved as though different BGP connections from different containers belonged to a single BGP session because the source IP addresses were identical due to the SNAT.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
+\caption{The network architecture of an exemplified container cluster system. }
+
+  A load balancer (lb) pod (the white box with "lb") and web pods are running on nodes (the blue boxes).
+  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
+  and the distributed to web pods using the overlay network.
+
+\label{fig:overlay}
+\end{figure}
 
 \FloatBarrier
 
