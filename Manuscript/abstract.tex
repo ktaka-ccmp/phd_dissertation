@@ -38,7 +38,7 @@ By using the proposed\added{ architecture,}\deleted{ load balancer, the way to r
 
 \deleted[id=2nd]{The author has implemented a containerized software load balancer using Linux kernel's ipvs to prove the feasibility of the proposed load balancer architecture, and carried out performance measurements in the 1 Gbps network environment.}
 
-It has been shown that the proposed load balancers \replaced[id=2nd]{can run}{are runnable} in an on-premise data center, Google Cloud Platform (GCP)\added[id=2nd]{,} and Amazon Web Service (AWS).
+\replaced[id=2nd]{From the results of the experiment, i}{I}t has been shown that the proposed load balancers \replaced[id=2nd]{can run}{are runnable} in an on-premise data center, Google Cloud Platform (GCP)\added[id=2nd]{,} and Amazon Web Service (AWS).
 Therefore the proposed load balancers can be said to be portable.
 %
 \deleted[id=2nd]{The throughputs of a load balancer are dependent on the settings for multi-core packet processing and the setting for the overlay network.
@@ -49,7 +49,7 @@ It has been also shown that the backend mode for the overlay network without any
 \added[id=2nd]{
   In the case of 1 Gbps network environment, the throughput of the IPVS in a container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times higher than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an internal load balancer. 
   And it has been shown that the proposed load balancer has more than enough throughput to fillup 1 Gbps bandwidth.
-  In the case of 10 Gbps network environment, a single IPVS load balancer in the container can only provide 1/4 of required throughput.
+  In the case of 10 Gbps network environment, a single IPVS load balancer in the container can \deleted[id=2nd]{only} provide 1/4 of required throughput.
   However, ECMP setups using more than four of them can deal with  10 Gbps equivalent of the traffic.
   Therefore, the proposed load balancer has been proven to be portable with sufficient performance in both 1 Gbps and 10 Gbps network environments.
 }
@@ -72,10 +72,10 @@ The BGP helps automatic setup of the ECMP route.
 The BGP and ECMP are both standard protocols supported by most of the commercial router products.
 }
 %
-\added[id=2nd]{The author has also verified that ECMP routes are automatically created on the upstream router, upon launch of new load balancer containers.}
+\added[id=2nd]{The author has also verified that ECMP routes are properly created on the upstream router, upon launch of new load balancer containers.}
 \deleted[id=2nd]{The author verified that an ECMP route has been automatically created upon launch of a new load balancer container on the upstream router.}
 The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
-The maximum performance level\deleted[id=2nd]{s} of \replaced[id=2nd]{a}{the} cluster of load balancers \replaced[id=2nd]{has}{have} scaled linearly up to four times as the number of the load balancer containers has been increased to four of them.
+The maximum performance level\deleted[id=2nd]{s} of \replaced[id=2nd]{a}{the} cluster of load balancers \replaced[id=2nd]{has}{have} scaled linearly up to four times as the number of the load balancer containers has been increased \added[id=2nd]{up} to four\deleted[id=2nd]{of them}.
 The maximum aggregated throughput obtained through the experiment is 780k [req/sec], which is limited by the CPU performance of the benchmark client and \deleted[id=2nd]{therefore }can be improved using better hardware in the future experiment.
 Therefore the author has proved that proposed load balancer has the capability of the automatic setup of ingress traffic in a redundant and scalable manner.
 
@@ -102,7 +102,7 @@ The proposed load balancer has been verified to be portable while providing  \re
   As a consequence, the proposed architecture with this load balancer will help improve the portability of web applications.
 }
 
-The outcome of this study will benefit users who want to deploy their web services on any cloud provider where no scalable load balancer is provided to achieve high scalability.
+The outcome of this study will benefit users who want to \replaced[id=2nd]{improve the portability of web applications and deploy them anywhere they want.}{deploy their web services on any cloud provider where no scalable load balancer is provided to achieve high scalability.}
 Moreover, the result of this study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
 In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
 

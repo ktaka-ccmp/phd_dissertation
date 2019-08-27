@@ -36,8 +36,8 @@ In the data center multiple servers cooperate to fulfill the need of the clients
 A group of these servers is often called a web application cluster or a web cluster.
 Figure~\ref{fig:web_cluster} shows schematic diagram of an example of a web application cluster.
 
-In this example, there are two load balancers, four web servers and two database (DB) servers that work together to respond to the requests from clients.
-The load balancers distribute the requests from clients to multiple web servers.
+In this example, there are two load balancers, four web servers and two database (DB) servers that work together to respond to \deleted[id=2nd]{the} requests from \added[id=2nd]{the} clients.
+The load balancers distribute the requests from \added[id=2nd]{the} clients to multiple web servers.
 Then the web servers form responses using data retrieved from the database servers and send it back to the clients.
 Sometimes the web servers also store and update important data into the database servers.
 
@@ -45,10 +45,10 @@ Sometimes the web servers also store and update important data into the database
 
 \added{
 As web applications become an essential part of daily life, improving their portabilities \replaced[id=2nd]{is getting to be}{become} very important.
-If a web application is portable, it will become much easier for web application providers to migrate the service when there is a disaster, or expand their business to different geographical locations, etc. 
+If a web application is portable, it will become much easier for web application providers to migrate the service when there is a disaster, or \added[id=2nd]{when they want to} expand their business to different geographical locations, etc. 
 }
 
-\deleted{As web applications become an essential part of daily life,} \replaced[id=2nd]{Nowadays,}{These days,} an outage of the web application service \replaced[id=2nd]{has already become a critical}{is getting to be a bigger} problem \cite{}.
+\deleted{As web applications become an essential part of daily life,} \replaced[id=2nd]{Nowadays,}{These days,} an outage of the web application service \replaced[id=2nd]{will cause a critical}{is getting to be a bigger} problem \cite{}.
 If something happens to a web application cluster in a data center, people will not be able to access the necessary information.
 %
 For example, if web pages run by local government stops, people will not be able to access the information regarding public services.
@@ -128,7 +128,7 @@ Also, they will be able to move their web applications quickly depending on a va
 Historically, most of the web application providers purchased servers and installed them in server housing facilities called data centers.
 In this type of infrastructure, web application providers typically need to sign a contract with data center company for server housing rack spaces, buy servers and install them in their rented racks by themselves.
 They also install OS and software stacks needed to run their web applications in the servers.
-Since web application providers place servers in their facilities (either owned or rented), and they are responsible for managing the servers, this type of infrastructure is often called on-premise infrastructure in contrast to Cloud Computing infrastructure.
+Since web application providers place servers in their facilities (either owned or rented) \added[id=2nd]{by themselves}, and they are responsible for managing the servers, this type of infrastructure is often called on-premise infrastructure in contrast to Cloud Computing infrastructure.
 
 Preparing data centers, installing the servers and configuring software stacks for web application services often require a considerable amount of time, money and effort.
 If web application providers want to expand their services to different countries or if they want to prepare for natural disasters by preparing an additional web application cluster in a different data center, they probably need about the same amount of time, money and effort required to build their original infrastructures.
@@ -138,8 +138,8 @@ Therefore migration of web application in this type of infrastructures has alway
 
 The emergence of Cloud Computing made many things easier for web application providers than before.
 Cloud computing utilizes a virtual machine (VM) technology, e.g. KVM, Xen, or VMware.
-\mytodo[inline]{Citations for KVM, Xen, and VMware}
 Cloud computing service providers offer VMs to web application providers with pay-per-use billings.
+\mytodo[inline]{Citations for KVM, Xen, and VMware}
 
 Figure~\ref{fig:physical_vm_container} compares different type of usages of a single physical server and Figure~\ref{fig:physical_vm_container} (b) shows an example architecture of VM technology.
 VMs share a single physical server.
@@ -195,17 +195,17 @@ The Linux container can run on any Linux systems including physical servers and 
 Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for migrations.
 
 Several management tools are available for Linux containers, including LXC \cite{noronha2018performance}, systemd-nspawn \cite{jedge2013} and Docker \cite{merkel2014docker}.
-These tools assign an appropriate namespace to a process upon the launch of itself and make it look like running in its own virtual Linux system.
+These tools assign an appropriate namespace to a process upon the launch\deleted[id=2nd]{ of itself} and make it look like running in its own virtual Linux system.
 For example, container tools restore a file system from an archive file every time a container is launched. 
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
 
 The fact that each container has its own file system that is restored from a single archive file brings a significant benefit, i.e. a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
 Therefore a process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
 This was not easy when there was no container technology.
-Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions could \replaced[id=2nd]{break}{have broken} the expected behavior.
+Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions \replaced[id=2nd]{would break}{could have broken} the expected behavior.
 
-In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers\added[id=2nd]{, and host OSs}.
-In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects\added[id=2nd]{ to those programs that use the library}.
+In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers\added[id=2nd]{ and host OSs}.
+In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects\added[id=2nd]{ to those programs that depend on that library}.
 Container tools alleviate these problems by packing necessary libraries into archives. 
 
 Thanks to these benefits\added[id=2nd]{,} container technologies are very attractive for \added[id=2nd]{improving the portability of the} web applications and \added[id=2nd]{hence, facilitating} their migrations.
@@ -229,7 +229,7 @@ Container orchestrator receive configuration file(1), schedule containers(2), se
 \label{fig:container_management_system}
 \end{figure}
 
-A container orchestrator is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
+\replaced[id=2nd]{While container tools focused on launching individual container, a}{A} container orchestrator is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
 %
 %A container orchestrator is the most important part of the infrastructure for easy migration, not only because it can act as common middleware that hides differences among base infrastructures, but also because it can drastically simplify the deployment of interdependent container clusters.
 %
@@ -241,17 +241,17 @@ Orchestrator must also maintain the state described in configuration files, for 
 3) {\bf Ingress routing:} The orchestrator must be able to set up routes for incoming traffic from the \replaced[id=2nd]{Internet}{internet} to multiple containers in a redundant and scalable manner.
 4) {\bf Internal routing:} If the web application consists of multiple interdependent container clusters, the orchestrator must be able to set up routes between them in a redundant and scalable manner.
 
-In a configuration file a user can describe how a container cluster should be configured, and also can describe relationships between different clusters.
+In a configuration file a user can describe how a container cluster should be configured, and also can describe relationships between different \added[id=2nd]{container} clusters.
 As a result, a user can launch a web application that consists of interdependent container clusters just by supplying the configuration file to the orchestrator.
 For example, a web application cluster in Figure~\ref{fig:container_management_system} consists of three different functionalities, namely http server, key-value store, and database.
 Each of those consists of a container cluster.
-In the configuration file, the relationships between http server cluster, key-value store cluster, and database cluster are specified.
-The configuration file also contains how each cluster should be configured, including the number of the containers and resources assigned to them.
-Users only need to feed the configuration file to the orchestrator to launch \replaced[id=2nd]{this}{the} web application.
+In the configuration file, the relationships between \added[id=2nd]{the} http server cluster, \added[id=2nd]{the} key-value store cluster, and \added[id=2nd]{the} database cluster \replaced[id=2nd]{should be}{are} specified.
+The configuration file \added[id=2nd]{must} also contain\deleted[id=2nd]{s} how each cluster should be configured, including the number of the containers and resources assigned to them.
+\replaced[id=2nd]{If these requirements are met for the configuration file, u}{ U}sers only need to feed the configuration file to the orchestrator to launch \replaced[id=2nd]{this}{the} web application.
 
 Thanks to these features, an orchestrator can be viewed as if it is an Operating System for a server farm in a data center, which not only schedules and launches containers on the server farm but also routes the traffic to the appropriate containers.
 By using orchestrators, a user can start a complex web application that consists of multiple interdependent container clusters, on multiple servers in a data center, as easily as starting a single process on a single computer.
-As a result, a user can also easily migrate their web applications at his or her convenience.
+As a result, \added[id=2nd]{web applications become portable, and} a user can also easily migrate their web applications at his or her convenience.
 And migrated web applications are guaranteed to behave exactly the same manner, not only because the same program binary and libraries are used in container, but also because container orchestrators hide \replaced[id=2nd]{differences}{difference} among the base infrastructures.
 
 Several container orchestrators are available, including Kubernetes, Docker swarm and Mesos/Marathon.
@@ -295,9 +295,9 @@ Because of the broader scope of applications, an out of box Mesos might not be p
 
 \paragraph{}
 Table\ref{table:orchestrator_comparison} compares these orchestrators based on necessary features as an infrastructure for web applications.
-Although all of these orchestrators mostly satisfy the requirements, they \added{fail to support the automatic routing of the ingress traffic.}
+Although all of these orchestrators mostly satisfy the requirements, they \added{fail to support the automatic routing of the ingress traffic \added[id=2nd]{from the Internet}.}
 \added{Docker swarm and Mesos/Marathon} rely on manual set up of a static routing for ingress traffic.
-\added{Only }Kubernetes has the functionality to manage cloud load balancer so that ingress traffic from the Internet is \added{automatically} routed to containers in a redundant and scalable manner\added{.
+\added{Only }Kubernetes has the functionality to manage cloud load balancer so that ingress traffic\deleted[id=2nd]{ from the Internet} is \added{automatically} routed to containers in a redundant and scalable manner\added{.
   However,}
 \deleted{, nevertheless,} this functionality is applicable only for a few cloud environments.
 
@@ -316,9 +316,9 @@ On the master, daemons that control the Kubernetes cluster are typically deploye
 These daemons include, apiserver, scheduler, controller-manager and etcd. 
 On the nodes, kubelet and proxy are deployed.
 The kubelet daemon will run {\it pods}, depending on the PodSpec (pod specification) information obtained from the apiserver on the master.
+\added[id=2nd]{A {\em pod} is a group of containers that share the same network namespace and cgroup, and is the basic execution unit in a Kubernetes cluster.}
 The proxy daemon on every node will set up iptables Destination Network Address Translation (DNAT) rules that function as the internal load balancer.
-A {\em pod} is a group of containers that share the same network namespace and cgroup,
-and is the basic execution unit in a Kubernetes cluster.
+\deleted[id=2nd]{A {\em pod} is a group of containers that share the same network namespace and cgroup, and is the basic execution unit in a Kubernetes cluster.}
 
 Thanks to the expressive syntax of the configuration file, Kubernetes allows users to easily launch complex web applications that consist of multiple interdependent container clusters as if they were launching a single application program.
 It also allows users to modify the state of their container clusters, just by \replaced[id=2nd]{feeding the modified}{modifying the} configuration file.
@@ -326,7 +326,7 @@ Kubernetes always \replaced[id=2nd]{tries to make}{keeps} the states of containe
 
 When a service is created, the master schedules where to run {\em pods}, and \added[id=2nd]{the} kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
-The proxy daemon on the nodes also setup iptables DNAT \cite{MartinA.Brown2017} rules. 
+The proxy daemon on the nodes also setup iptables DNAT\deleted[id=2nd]{ \cite{MartinA.Brown2017}} rules. 
 The \replaced[id=2nd]{ingress}{Ingress} traffic will then be evenly distributed by the cloud load balancer to all of the existing nodes, 
 after which it will be distributed again by the DNAT rules on the nodes to the designated {\em pods}. 
 The returning packets follows the exact same route as the incoming ones.
@@ -351,8 +351,8 @@ The returning packets follows the exact same route as the incoming ones.
   
 \end{figure}
 
-In general, load balancers are often used to distribute high volume traffic from the Internet to thousands of web servers.
-They are implemented as dedicated hardware or as software on commodity hardware.
+In general, load balancers are often used to distribute high volume traffic from the Internet to \replaced[id=2nd]{hundreds}{thousands} of web servers.
+They are implemented as \added[id=2nd]{a} dedicated hardware or as \added[id=2nd]{a} software on commodity hardware.
 Major cloud providers have developed software load balancers \cite{eisenbud2016maglev,patel2013ananta} dedicated for their infrastructures.
 For on-premise data centers, there are a variety of proprietary hardware load balancers.
 
@@ -367,7 +367,8 @@ Once the traffic reaches the nodes, Kubernetes nicely route them to appropriate 
 However, in environments where there are no supported load balancers, Kubernetes fails to automatically set up the route for ingress traffic.
 In such cases Kubernetes expects users to manually set up a route for the ingress traffic, which generally lacks redundancy and scalabilities.
 
-In this way, Kubernetes fails to provide uniformity\deleted{ that is essential for easy deployment and migration of complex}\added{ to improve the portability of} web applications.
+In this way, Kubernetes fails to provide \added[id=2nd]{a uniform interface to container clusters, which degrades the portabilities of web applications.}
+\deleted[id=2nd]{uniformity\deleted{ that is essential for easy deployment and migration of complex}\added{ to improve the portability of} web applications.}
 Other container orchestrators, e.g. Docker swarm or Mesos/Marathon, do not even have partial support for load balancers and expect users to manually set up the route for ingress traffic.
 Therefore this is a generic problem that current container cluster orchestrators possess.
 
@@ -378,7 +379,7 @@ Therefore this is a generic problem that current container cluster orchestrators
 \added{
   The ultimate goal of this research is to improve the portability of web applications by providing global container infrastructure.
   Doing so will give users the freedom to migrate their services when there is a disaster, expand their businesses, and prevent vendor lock-ins, etc.
-  To bring this into reality, container orchestrators need to function as a standard middleware. Container orchestrators must provide the same interfaces to web applications, regardless of the base infrastructure, e.g., cloud providers or on-premise data centers.
+  To bring this into reality, container orchestrators need to function as a \replaced[id=2nd]{common}{standard} middleware. Container orchestrators must provide the same interfaces to web applications, regardless of the base infrastructure, e.g., cloud providers or on-premise data centers.
   However, existing orchestrators fail to do so, since the way to route the ingress traffic from the Internet is either by setting up a static route or by relying on cloud load balancers.
 }
 
@@ -386,10 +387,10 @@ Therefore this is a generic problem that current container cluster orchestrators
   The purpose of this research is to propose a generic architecture that can set up a route for ingress traffic automatically without relying on the cloud load balancers.
   For that purpose, the author proposes a cluster of software load balancer containers, instead of relying on load balancers provided by infrastructures.
 }
-\added[id=2nd]{  Proposed load balancer can run both in the cloud infrastructure and in the on-premise data center and can be utilized to set up the route for ingress traffic automatically.}
+\added[id=2nd]{  Proposed load balancer can run both in cloud infrastructures and in on-premise data centers and can be utilized to set up the route for ingress traffic automatically.}
 \deleted[id=2nd]{  Proposed load balancer is runnable in both cloud infrastructure and on-premise data center and can be utilized to set up the route for ingress traffic automatically.}
 \added{
-  The proposed load balancer should have the following features;
+  The proposed load balancer should \added[id=2nd]{possess}{have} the following features;
 }
 %
 \added{1) The proposed load balancer properly functions both in on-premise data centers and cloud infrastructures.
@@ -471,7 +472,7 @@ Since this scheme does not rely on external load balancers, users no longer need
 }
 
 \added{
-While the method to acquire information about running containers is specific to Kubernetes, the other technologies used are not.
+While the method to acquire information about running containers is specific to \added[id=2nd]{the orchestrator, i.e, }Kubernetes, the other technologies used are not.
 Therefore, the author expects} \added[id=2nd]{that the load balancer with the same architecture}\deleted[id=2nd]{ the proposed load balancer} \added{can also be implemented for} \added[id=2nd]{the} \added{other container orchestrators, i.e., Docker Swarm and Mesos/Marathon, just by writing the code to acquire information about running containers.
 }
 
@@ -479,7 +480,7 @@ Therefore, the author expects} \added[id=2nd]{that the load balancer with the sa
 The author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
 1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
 2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
-3) Performance: whether the load balancer has} \added[id=2nd]{sufficient}\deleted[id=2nd]{enough} \added{throughput for 10 Gbps network.
+3) Performance: whether the load balancer has} \added[id=2nd]{sufficient}\deleted[id=2nd]{enough} \added{throughput for \added[id=2nd]{1 Gbps and} 10 Gbps network.
 }
 
 \added{
@@ -505,7 +506,7 @@ By removing the \replaced{dependencies}{dependence} on external load balancers p
 \added{The author carries out a performance evaluation and quantitably prove the feasibility of the proposed load balancer up to 10 Gbps network environment.}
 4) The author \deleted{clarifies }\added{points out} the remaining problems for future improvement and explores other technology to be used in faster networks.
 
-The outcome of this study will\deleted{ benefit users who want to deploy their web applications on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
+The outcome of this study will \added[id=2nd]{improve the portability of web applications, and}\deleted{ benefit users who want to deploy their web applications on any cloud provider where no scalable load balancer is provided, to achieve high scalability.
   Moreover, the result of this study will} potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
 In other words, users will become being able to deploy a complex web application on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
 
@@ -549,7 +550,7 @@ The author also evaluates the aggregated performance level of the ECMP redundant
 }
 
 %\subsubsection{Chapter~\ref{chapter:Further Improvement}}
-It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
+\replaced[id=2nd]{In}{It} the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
 It is also important to investigate its validity in 10 Gbps network.
 In Chapter~\ref{chapter:Further Improvement} the performance level of the proposed load balancer is evaluated.
 The author carries out throughput measurements of \replaced[id=2nd]{IPVS}{ipvs}, \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}, and iptables DNAT in 10 Gbps environment.

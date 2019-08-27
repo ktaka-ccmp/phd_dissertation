@@ -72,7 +72,7 @@ For example, in the case of gobgpd, after launching gobgpd, a user is required t
 This is a bit complex and error-prone, especially when one needs to make sure the route injection is done inside a container.
 
 As for the route reflector, add-path \cite{rfc7911} feature is needed for multi-path advertisement, which is supported by gobgpd.
-For the upstream router Forwarding Information Base (FIB) manipulation \cite{exa-networks_2018} feature is needed, which is supported by gobgpd through zebra \cite{osrg_gobgp_zebra}.
+For the upstream router Forwarding Information Base (FIB) manipulation \cite{exa-networks_2018} feature is needed, which is supported by gobgpd through zebra \cite{jakma2014introduction,osrg_gobgp_zebra}.
 As a result, exabgp is used for the load balancer pods, gobgpd is used for the route reflector, and gobgpd and zebra are used for the upstream router.
 
 The other features needed for the route reflector are a dynamic-neighbor feature to describe peer group as a range of IP address, and overlay network feature on the Linux system.
