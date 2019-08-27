@@ -154,14 +154,14 @@ The hardware had eight physical CPU cores and a network interface card (NIC) wit
 The author configured nginx HTTP server to return a small HTTP content, the IP address of the {\em pod}, to make a relatively severe condition for load balancers. 
 The size of the character string making up an IP address is limited to 15 bytes.
 
-The author also investigated the performance level, varying two types of network conditions:
+The author also \added[id=2nd]{measured throughputs of the load balancers}\deleted[id=2nd]{ investigated the performance level,} varying two types of network conditions:
 The first condition is the setting for multicore packet processing.
-It is known that distributing handling of interrupts from the NIC and the subsequent IP protocol processing, among multiple cores impact the network performance.
+It is known that distributing handling of interrupts from the NIC and the subsequent IP protocol processing\deleted[id=2nd]{,} among multiple cores \replaced[id=2nd]{improve the network throughput of a Linux machine.}{ impact the network performance.}
 To derive the best performance from load balancers, the author investigated how this setting would affect their performance levels.
-The second condition is an overlay network setting \cite{Sill2016,Marmol2015}.
-The overlay network is often used to build the Kubernetes cluster and therefore used in the experiment.
-Flannel \cite{CoreOSFlannel} is one of the popular overlay network technologies. 
-The author compared the performance levels of three backends settings \cite{CoreOSFlannelBackend} of flannel, i.e., operating modes, to find the best setting.
+The second condition is \replaced[id=2nd]{the}{an} overlay network setting\added[id=2nd]{s} \cite{Sill2016,Marmol2015}.
+\replaced[id=2nd]{An}{The} overlay network is often used to build the Kubernetes cluster and therefore used in the experiment.
+\replaced[id=2nd]{The author used flannel}{Flannel} \cite{CoreOSFlannel}\added[id=2nd]{, which} is one of the popular overlay network technologies. 
+The author compared the \replaced[id=2nd]{throughputs}{ performance levels} of three backend \replaced[id=2nd]{modes}{settings} \cite{CoreOSFlannelBackend} of flannel\deleted[id=2nd]{, i.e., operating modes,} to find the best setting.
 
 \FloatBarrier
 
@@ -169,14 +169,14 @@ The author compared the performance levels of three backends settings \cite{Core
 
 Figure~\ref{fig:ipvs_mcore_proccessing} shows the result of the throughput measurement for the \replaced[id=2nd]{IPVS}{ipvs} load balancer with different multicore processing settings.
 Since hardware used in the experiment has a NIC with four rx-queues, and a CPU with eight cores,
-the setting \enquote{(RSS, RPS) = (on, off)} uses four cores and \enquote{(RSS, RPS) = (off, on)} uses eight cores for packet processing.
+the setting \enquote{(RSS, RPS) = (on, off)} uses four cores and \enquote{(RSS, RPS) = (off, on)} uses eight cores for packet processing\added[id=2nd]{ respectively}.
 For the setting \enquote{(RSS, RPS) = (off, off)}, only one core is used for the packet processing.
 
 There is a general trend in the throughput result, where the throughput linearly increases as the number of nginx {\em pod}s increases and then it eventually saturates.
 For example, if we look at the red line in the Figure~\ref{fig:ipvs_mcore_proccessing}, the throughput increases almost linearly as the number of the nginx pods (web servers) increases from 1 to around 14, and then saturates.
 The increase indicates that the load balancer functions properly, as the load balancer increased throughput by distributing HTTP requests to multiple of the web servers.
 %
-The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client machine and the load balancer node, or CPU performance levels of these machines.
+The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client \deleted[id=2nd]{machine }and the load balancer node, or CPU performance levels of these machines.
 %
 The maximum performance levels are dependent on the number of cores used for packet processing.
 Throughput is highest for the setting with eight cores (rps = on), followed by four cores (rss = on), then single core (none).
@@ -302,9 +302,8 @@ The proposed \replaced[id=2nd]{IPVS}{ipvs} load balancer exhibits almost equival
 
 The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client machine and the load balancer node, or CPU performance levels of these machines.
 %
-In this specific experiment, the performance level was limited by the 1 Gbps bandwidth of the network
-\footnote{
-All of the nodes use a single interface for communication. 
+In this specific experiment, the performance level was limited by the 1 Gbps \replaced[id=2nd]{network bandwidth at the load balancer node}{ bandwidth of the network}
+\footnote{All of the nodes use a single interface for communication. 
 At the load balancer node, the bandwidth for each direction of Full duplex Ethernet is consumed by the sum of request and response packets.
 },
 \added{and therefore, we can not see the real difference between \replaced[id=2nd]{IPVS}{ipvs} performance and iptables DNAT performance.}
@@ -363,20 +362,20 @@ While these may be considered a subtle difference, however, this indicates that 
 
 \FloatBarrier
 
-\subsubsection{L3DSR using ipvs-tun}
+\subsubsection{L3DSR using \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}}
 
-The performance levels of \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT have been limited by 1 Gbps bandwidth.
+The performance levels of \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT have been limited by 1 Gbps bandwidth\added[id=2nd]{ at the load balancer node}.
 This can be alleviated in the case of \replaced[id=2nd]{IPVS}{ipvs} by using so-called Layer 3 Direct Server Return (L3DSR) setup.
 Figure~\ref{fig:benchmark-schem-dsr} shows the schematic diagram illustrating the packet flow of the L3DSR experiment.
 The red arrows indicate the route HTTP request packets follow and the blue arrows indicate the route response packets follow.
-Since the response packets directly return to the client, the load balancer is expected to perform better.
+Since the response packets directly return to the client\added[id=2nd]{ and do not consume the bandwidth at the load balancer node}, the load balancer is expected to perform better.
 
-The \replaced[id=2nd]{IPVS}{ipvs} has a mode called ipvs-tun.
-When the ipvs-tun send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet that is destined to real servers.
+The \replaced[id=2nd]{IPVS}{ipvs} has a mode called \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}.
+When the \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet that is destined to real servers.
 The real server receives the packet on a tunl0 device and decapsulates the ipip packet, revealing the original packet.
 Since the source IP address of the original packet is maintained, the returning packets are sent directly toward the benchmark client.
 In this scheme, the returning packets do not consume the bandwidth nor the CPU power of the load balancer node.
-Since iptables DNAT does not have the functions that enable L3DSR settings, this is one of the benefits available only for the proposed load balancer.
+Since iptables DNAT does not have the functions that enable L3DSR settings, this is one of the benefits \added[id=2nd]{only} available \deleted[id=2nd]{only} for the proposed load balancer.
 
 \begin{figure}[h]
   \centering
@@ -399,36 +398,32 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
-    \caption[Throughput of L3DSR using ipvs-tun.]{
-      Throughput of L3DSR using ipvs-tun.
-      The throughput of ipvs-tun is 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
+    \caption[Throughput of L3DSR using IPVS-TUN.]{
+      Throughput of L3DSR using \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}.
+      The throughput of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
     }
     \label{fig:ipvs_l3dsr_1g.png}
   \end{minipage}
 \end{figure}
 
 The author carried out throughput measurement using the experimental setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
-Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the ipvs-tun, conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
-As can be seen in the figure, while the performance levels for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT exactly match\added{ because of the network band width limitation}, the performance level of ipvs-tun is much higher than those.
-For example, the throughput of ipvs-tun is about 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
-\added{
-  The saturated throughput indicates the maximum performance level of the load balancer, which is determined either by network bandwidth, or CPU performance levels of these machines.
-  In the case of ipvs-tun, the response packet could fill the network band withs at the benchmark client.
-  Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
-  Therefore, the network bandwidth is the limiting factor of the maximum performance in this case.
-}
-
-%% \footnote{\deleted{
-%% The limit is due to the bandwidth of benchmark client's NIC.
-%% Multipling 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] . }
+Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}, conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
+As can be seen in the figure, while the performance levels for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT exactly match\added{ because of the network band width limitation}, the performance level of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is much higher than those.
+For example, the throughput of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is about 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
+%% \added[id=2nd]{
+%%   The saturated throughput indicates the maximum performance level of the load balancer, which is determined by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.
+%%   In the case of IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client.
+%%   Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
+%%   The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
 %% }
-
-%\mytodo[inline]{Add tunneling setup needed on web container for L3DSR, if there is enough time. }
-
-%% The author summarises this section as follows;
-%% In experiments in 1Gbps network, the proposed load balancer, i.e., ipvs in container showed equivalent performance level as the iptables DNAT as a load balancer.
-%% The efficiency of the ipvs may be inferior to that of iptables DNAT.
-%% By using the ipvs-tun (L3DSR mode), the throughput of the proposed load balancer improved 1.5 times.
+\added{
+  The saturated throughput indicates the maximum performance level of the load balancer, which is determined \replaced[id=2nd]{by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.}{ either by network bandwidth, or CPU performance levels of these machines.}
+  In the case of \replaced[id=2nd]{IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client}{ipvs-tun, the response packet could fill the network band withs at the benchmark client}.
+  Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
+  \replaced[id=2nd]{
+    The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
+  }{Therefore, the network bandwidth is the limiting factor of the maximum performance in this case.}
+}
 
 \FloatBarrier
 
@@ -556,15 +551,12 @@ These results indicate that the proposed \replaced[id=2nd]{IPVS}{ipvs} load bala
 
 In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even though much more powerful CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
 For example, while the maximum throughput of the \replaced[id=2nd]{IPVS}{ipvs} load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center (Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 and 36 virtual CPUs.
-Although the author suspects that this is probably due to the inefficiency of the virtual machines as opposed to Bare Metal servers,
-it is not clear what limits the maximum performance levels of cloud environments. 
-The author leaves a detailed analysis for future work.
-
-%% From the first look of the results, since changing CPU counts changed the load balancer's throughput saturation levels, we thought VM's computation power limited the performance levels.
-%% However, since there are cases in the cloud environment, where changing the VM types or CPU counts also changes the network bandwidth limit, a detailed analysis is further required in the future to clarify which factor limits the throughput in the cases of these cloud environments.
-%% Still, we can say that 
-
-%\mytodo[inline]{Mention that BGP peering is unavailable in cloud , in somewhere.}
+\replaced[id=2nd]{The}{Although the} author suspects that this is\deleted[id=2nd]{ probably} due to the inefficiency of the virtual machines as opposed to Bare Metal servers\replaced[id=2nd]{.}{,}
+\deleted[id=2nd]{it is not clear what limits the maximum performance levels of cloud environments.
+The author leaves a detailed analysis for future work.}
+\added[id=2nd]{
+Although a detailed analysis is left for future work, the author confirmed that proposed load balancer could run both in GCP and AWS.
+}
 
 \FloatBarrier
 
@@ -641,7 +633,7 @@ Figure~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experim
 Notable differences from the previous throughput experiment in Figure~\ref{fig:benchmark-schem} and Table~\ref{tab:hw_machine_spec} are as follows;
 1) Each load balancer pods now consists of both an \replaced[id=2nd]{IPVS}{ipvs} container and an exabgp container.
 2) The routing table of the benchmark client is updated by BGP protocol through a route reflector.
-3) The NIC of the benchmark client has been changed to 10 Gbps card since now we have multiple of \replaced[id=2nd]{IPVS}{ipvs} container load balancers that are capable of filling up 1 Gbps bandwidth.
+3) The NIC of the benchmark client has been changed to 10 Gbps card\replaced[id=2nd]{, which prevented the bandwidth at the benchmark client from becoming the bottleneck too early.}{ since now we have multiple of ipvs container load balancers that are capable of filling up 1 Gbps bandwidth.}
 4) Some of the software have been updated to the most recent versions at the time of the experiment.
 
 \FloatBarrier
@@ -733,7 +725,7 @@ The one has three load balancers and the other has two load balancers.
 The update of the routing entry was almost instant as the author started the load balancers for the second service.
 
 As far as the route withdrawal is concerned, if an exabgp is killed by SIGKILL or SIGTERM the kernel of the node close the BGP connection by sending out a packet with FIN flag to the peer gobgpd on the route reflector, and thus the route is withdrawn immediately.
-The gobgp on the route reflector also periodically check the BGP connection, and if the peer exabgp container is unresponsive for more than the specified duration, “hold-time“ setting in gobgpd, it will also terminate the connection and withdraw the route.
+The gobgp on the route reflector also periodically check\added[id=2nd]{s} the BGP connection, and if the peer exabgp container is unresponsive for more than the specified duration, “hold-time“ setting in gobgpd, it will also terminate the connection and withdraw the route.
 The packets arriving within that duration will be dropped.
 However, it is possible to set up the “hold-time” short enough so that the retransmitted TCP packets from the client will be forwarded correctly to functioning load balancers.
 
@@ -786,8 +778,9 @@ The author also carried out throughput measurement to show that the proposed arc
 Figure~\ref{fig:ecmp_lb_cubic} shows the results of the measurements.
 There are four solid lines in the figure, each corresponding to the throughput result when there are one through four of the proposed load balancers.
 The saturated levels, i.e. performance levels depend on the number of the \replaced[id=2nd]{IPVS}{ipvs} load balancer pods (lb x 1 being the case with one \replaced[id=2nd]{IPVS}{ipvs} pods, and lb x2 being two of them and as such). 
-The performance level increases linearly as the number of the load balancers increases up to four of the \replaced[id=2nd]{IPVS}{ipvs} load balancers, but does not scale further.
-This is because the benchmark program uses up CPU power of the benchmark client, i.e., the CPU usage is 100\% when there are more than four load balancers.
+The performance level increases linearly as the number of the load balancers increases up to four of the \replaced[id=2nd]{IPVS}{ipvs} load balancers, \added[id=2nd]{indicating that the load balancer with the proposed architecture is scalable.}
+\added[id=2nd]{The throughput of the load balancers} \deleted[id=2nd]{but} does not scale further\replaced[id=2nd]{,}{.
+This is} because the benchmark program uses up CPU power of the benchmark client, i.e., the CPU usage is 100\% when there are more than four load balancers.
 The author expects that replacing the benchmark client with more powerful machines, or changing the experimental setup so that multiple benchmark clients can simultaneously perform the throughput measurements, will improve the performance level further.
 
 Figure~\ref{fig:ecmp_response} shows the throughput measurement results when the author periodically changed the number of the load balancers. 
@@ -798,20 +791,35 @@ This indicates that new load balancers are immediately utilized after they are c
 
 Figure~\ref{fig:ecmp_delay_histgram} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running \replaced[id=2nd]{IPVS}{ipvs} pods is reflected in the routing table on the benchmark client, as the number of the \replaced[id=2nd]{IPVS}{ipvs} pods is changed randomly every 60 seconds for 20 hours.
 As can be seen from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
-The author concludes that ECMP routing update in the proposed architecture is quick enough.
+The author concludes that \added[id=2nd]{the proposed redandancy architecture for the load balancer functions properly and the} ECMP routing update \deleted[id=2nd]{in the proposed architecture }is quick enough.
 
 \FloatBarrier
 
 \section{Summary}\label{Conclusions}
 
+
 In this chapter, the performance levels of the proposed load balancer have been evaluated. 
 The author carried out throughput measurement to verify the feasibility of the load balancer and verified the followings;
+\added[id=2nd]{
+  (1) Portability: From the experiment in the on-premise data center, it is seen the throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
+  This characteristic is also seen in the experiment in GCP and AWS, also indicating that the proposed load balancer properly functions in these environments.
+  (2) Redundancy and scalability: The ECMP routing update in the proposed architecture is properly functioning and quick enough.
+  The linear scalability of the ECMP throughput has been confirmed up to 4x of single load balancer throughput.
+  (3) Performance: The throughput of the load balancers are limited by the network bandwidth in the 1 Gbps environment.
+  In the case of the IPVS and the iptables DNAT, maximum throughputs are the same, because they are determined by network bandwidth at load balancer node.
+  In the case of the IPVS-TUN (L3DSR), the maximum throughput is determined by network bandwidth at the benchmark client, and about 1.5 times larger than those of the IPVS and the iptables DNAT.
+  The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
+  From these results, the author concludes that the proposed load balancer is portable, redundant and scalable while providing sufficient performance levels in 1Gbps network environment.
+}
+%
+\deleted[id=2nd]{
 (1) The throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
 (2) The throughput maximum depends on the multicore packet processing settings and overlay network settings.
 %
-(3) The throughput of the \replaced[id=2nd]{IPVS}{ipvs} in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
-(4) The throughput of the \replaced[id=2nd]{IPVS}{ipvs} container can be further improved up to 1.5 times by utilizing ipvs-tun mode, i.e., L3DSR settings.
-(5) The \replaced[id=2nd]{IPVS}{ipvs} container is able to run and function properly, both in GCP and AWS.
+(3) The throughput of the IPVS in a container is equivalent to that of the iptables DNAT as a load balancer, in 1Gbps network environment.
+(4) The throughput of the IPVS container can be further improved up to 1.5 times by utilizing IPVS-TUN mode, i.e., L3DSR settings.
+(5) The IPVS container is able to run and function properly, both in GCP and AWS.
 (6) The ECMP routing update in the proposed architecture is properly functioning and quick enough.
 (7) The linear scalability of the ECMP throughput has been confirmed up to 4x of single load balancer throughput.
 From these results, the author concludes that the proposed load balancer is portable, redundant and scalable while providing 1.5 times better throughput than iptables DNAT in 1Gbps network environment.
+}
