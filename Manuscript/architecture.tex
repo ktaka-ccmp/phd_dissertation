@@ -1,3 +1,5 @@
+\mytodo[inline]{Refine Intro of this chapter}
+
 One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
 In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
 Key features required for such load balancers are;
@@ -10,7 +12,7 @@ Then the author proposes a portable software load balancer in a container in Sec
 %
 The author also presents an implementation of the proof of the concept system for the proposed load balancer architecture in detail.
 The first overall architecture is explained in Section~\ref{sec:poc}.
-Then ipvs containerization is explained in detail in Section~\ref{sec:ipvs}.
+Then \replaced[id=2nd]{IPVS}{ipvs} containerization is explained in detail in Section~\ref{sec:ipvs}.
 Finally, the implementation of BGP software container is explained in Section~\ref{sec:bgp}.
 
 \section{Architecture}
@@ -57,8 +59,8 @@ The problem of Kubernetes is its partial support for the ingress traffic routing
 Figure~\ref{fig:K8sConventional} shows an exemplified Kubernetes cluster.
 When a service is created, the master schedules where to run {\em pods}, and kubelets on the nodes launch them accordingly.
 At the same time, the master sends out requests to cloud provider's API endpoints, asking them to set up external cloud load balancers that distribute ingress traffic to every node in the Kubernetes cluster.
-The proxy daemon on the nodes also setup iptables DNAT \cite{MartinA.Brown2017} rules\added{ as a internal load balancer}. 
-The Ingress traffic will then be evenly distributed by the cloud load balancer to all the existing nodes, 
+The proxy daemon on the nodes also setup iptables DNAT \cite{MartinA.Brown2017} rules\added{ as an internal load balancer}. 
+The Ingress traffic will then be evenly distributed by the cloud load balancer to all \added[id=2nd]{of} the existing nodes, 
 after which it will be distributed again by the DNAT rules on the nodes to the designated {\em pods}. 
 The returning packets follows the exact same route as the incoming ones.
 
@@ -70,7 +72,7 @@ These include the hardware load balancers for on-premise data centers.
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, and hence it would be very difficult to find out which node is malfunctioning.   
 3) The ingress traffic is distributed to all the existing nodes in the Kubernetes cluster. 
-\replaced{If}{Suppose} there are 1,000 nodes and one of the web applications only uses 10 nodes, distributing the ingress traffic to all the 1,000 nodes seems inefficient and complicated.
+\replaced{If}{Suppose} there are 1,000 nodes and one of the web applications only uses 10 nodes, distributing the ingress traffic to all \added[id=2nd]{of} the 1,000 nodes seems inefficient and complicated.
 
 Regarding the first problem, if there is no load balancer that is supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
 The traffic will be routed to a node and then distributed by the DNAT rules on the node to the designated {\em pods}.
@@ -141,7 +143,7 @@ Therefore users do not need to manually add the route every time new load balanc
 \vspace{1mm}
 
 \begin{minipage}{0.9\columnwidth}
-   The traffic from the internet is distributed by the upstream router to multiple of load balancer (lb) pods using hash-based ECMP (the solid green line), after which distributed by the lb pods to web pods using Linux kernel's ipvs (the solid red line).
+   The traffic from the internet is distributed by the upstream router to multiple of load balancer (lb) pods using hash-based ECMP (the solid green line), after which distributed by the lb pods to web pods using Linux kernel's \replaced[id=2nd]{IPVS}{ipvs} (the solid red line).
   The route toward a service IP is advertised to the route reflector (the dotted red line), after which advertised to the upstream router (the blue dotted line) using iBGP.
 %  For the green lines, a service IP address is used. The red lines use the IP addresses of the overlay network. The blue line uses the IP addresses of the node network.
 \end{minipage}
@@ -149,7 +151,7 @@ Therefore users do not need to manually add the route every time new load balanc
 \label{fig:ecmp}
 \end{figure}
 
-While containerizing ipvs makes it runnable in any environment, it is essential to discuss how to route the ingress traffic to the ipvs container.
+While containerizing \replaced[id=2nd]{IPVS}{ipvs} makes it runnable in any environment, it is essential to discuss how to route the ingress traffic to the \replaced[id=2nd]{IPVS}{ipvs} container.
 The author proposes redundant architecture using ECMP with BGP for proposed load balancer containers.\footnote{The author also investigated redundancy architecture using VRRP in Appendix~\ref{appendix:vrrp}. However, VRRP had limitation in overlay networks used for container clusters.}
 The BGP and ECMP are both standard protocols supported by most of the commercial router products\added{, and they are used for cloud load balancers as well \cite{eisenbud2016maglev,patel2013ananta}}.
 \added{However, in the case of container environments, where overlay networks are often used, special cares are needed to make the mechanism work properly.}

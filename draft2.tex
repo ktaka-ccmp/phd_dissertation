@@ -1,0 +1,55 @@
+\documentclass[todo]{sokendai_draft}
+%\documentclass[todo]{sokendai_thesis}
+
+\newcommand{\Order}{\mathit{O}} % for computational complexity
+
+\title{A Study on Portable Load Balancer for Container Clusters}
+\author{Kimitoshi Takahashi}
+\date{September 2019}
+\crest{Figs/sokendai-logomark.png} % comment out if you don't have a crest.
+
+%\usepackage{endfloat}
+%% \usepackage[printwatermark]{xwatermark}
+%% \usepackage{graphicx}
+%% \newwatermark[allpages,color=pink!50,angle=45,scale=3,xpos=0,ypos=0]{Draft}
+
+\usepackage{xcolor}
+\definecolor{mygray}{rgb}{0.95,0.99,0.99}
+
+\usepackage[final]{changes}
+%\usepackage[draft]{changes}
+\colorlet{Changes@Color}{red}
+\definechangesauthor[name="2nd", color=blue]{2nd}
+
+\begin{document}
+%\listofchanges[style=list]
+%listoftodos
+
+\frontmatter
+\maketitle
+
+\include{Manuscript/acknowledgment}
+
+\include{Manuscript/abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+
+%-----------------------------------------------------------
+\input{Manuscript/body}
+%-----------------------------------------------------------
+
+%\bibliographystyle{unsrt}
+%\bibliographystyle{unsrturl}
+%\bibliographystyle{ACM-Reference-Format}
+%\bibliography{Bib/reference}
+
+\printbibliography
+\begin{appendices}
+\input{Manuscript/appendix}
+\end{appendices}
+
+\end{document}

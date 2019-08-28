@@ -1,23 +1,21 @@
 
-draft: draft.pdf
-main: main.pdf
+#TEX=main.tex draft.tex
+TEX=main.tex draft.tex draft2.tex
+PDF=$(TEX:.tex=.pdf)
+BCF=$(TEX:.tex=.bcf)
 
-#all: main.pdf draft.pdf
-all: draft.pdf main.pdf
+.SUFFIXES: .pdf .tex .bcf
 
-main.pdf: main.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
-	pdflatex main.tex
-#	bibtex main
-	biber main
-	pdflatex main.tex
-	pdflatex main.tex
+all:$(PDF)
 
-draft.pdf: draft.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
-	pdflatex draft.tex
-#	bibtex draft
-	biber draft
-	pdflatex draft.tex
-	pdflatex draft.tex
+%.bcf: %.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
+	pdflatex $<
+
+%.pdf: %.tex %.bcf Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
+	biber $(word 2,$^)
+	pdflatex $<
+	pdflatex $<
+
 clean:
-	$(RM)  *.aux main.pdf draft.pdf *.log *~ *.bbl *.blg *.lof *.lot *.toc *.out *.ttt *.xwm *.fff Manuscript/*.aux Manuscript/*~
+	$(RM)  $(PDF) *.aux *.log *~ *.bbl *.blg *.lof *.lot *.toc *.out *.ttt *.xwm *.fff Manuscript/*.aux Manuscript/*~ *.bcf *.loc *.run.xml *.soc *.tdo
 
