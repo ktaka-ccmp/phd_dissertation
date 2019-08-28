@@ -1,0 +1,29 @@
+
+draft: draft.pdf
+main: main.pdf
+draft2: draft2.pdf
+
+#all: main.pdf draft.pdf
+all: draft.pdf main.pdf
+
+main.pdf: main.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
+	pdflatex main.tex
+#	bibtex main
+	biber main
+	pdflatex main.tex
+	pdflatex main.tex
+
+draft.pdf: draft.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
+	pdflatex draft.tex
+#	bibtex draft
+	biber draft
+	pdflatex draft.tex
+	pdflatex draft.tex
+draft2.pdf: draft2.tex Manuscript/*.tex Bib/*.bib Makefile *.cls Figs/*.png
+	pdflatex draft2.tex
+	biber draft2
+	pdflatex draft2.tex
+	pdflatex draft2.tex
+clean:
+	$(RM)  *.aux main.pdf draft.pdf draft2.pdf *.log *~ *.bbl *.blg *.lof *.lot *.toc *.out *.ttt *.xwm *.fff Manuscript/*.aux Manuscript/*~
+

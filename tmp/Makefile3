@@ -1,0 +1,11 @@
+
+.SUFFIXES: .plt .tex .pdf
+
+%.tex: %.plt
+	touch $@
+
+%.pdf: %.tex
+	echo pdflatex $<  $@
+	touch $@
+
+all: test.pdf
