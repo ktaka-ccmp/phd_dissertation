@@ -48,9 +48,8 @@ It has been also shown that the backend mode for the overlay network without any
 
 \added[id=2nd]{
   In the case of 1 Gbps network environment, the throughput of the IPVS in a container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times higher than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an internal load balancer. 
-  And it has been shown that the proposed load balancer has more than enough throughput to fillup 1 Gbps bandwidth.
-  In the case of 10 Gbps network environment, a single IPVS load balancer in the container can \deleted[id=2nd]{only} provide 1/4 of required throughput.
-  However, ECMP setups using more than four of them can deal with  10 Gbps equivalent of the traffic.
+  And it has been shown that the proposed load balancer has more than enough throughput to fill up 1 Gbps bandwidth.
+  In the case of 10 Gbps network environment, while a single IPVS load balancer in the container can provide only 1/4 of required throughput, ECMP setups using more than four of them can deal with 10 Gbps equivalent of the traffic.
   Therefore, the proposed load balancer has been proven to be portable with sufficient performance in both 1 Gbps and 10 Gbps network environments.
 }
 

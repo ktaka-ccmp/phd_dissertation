@@ -1,6 +1,7 @@
 
 \added[id=2nd]{
-At first, the author evaluates the basic characteristics of the load balancer using physical servers in the on-premise data center, by comparing the throughput with several experimental conditions.
+In this chapter, the author evaluates the feasibility of the proposed load balancer.
+At first, the author evaluates the basic characteristics of the load balancer using physical servers in the on-premise data center, by comparing the throughput of the load balancer with several experimental conditions.
 Then the author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
 1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
 2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
@@ -302,12 +303,11 @@ The proposed \replaced[id=2nd]{IPVS}{ipvs} load balancer exhibits almost equival
 
 The saturated throughput indicates the maximum performance level of the load balancer, which could be determined either by network bandwidth between the benchmark client machine and the load balancer node, or CPU performance levels of these machines.
 %
-In this specific experiment, the performance level was limited by the 1 Gbps \replaced[id=2nd]{network bandwidth at the load balancer node}{ bandwidth of the network}
-\footnote{All of the nodes use a single interface for communication. 
+In this specific experiment, \added[id=2nd]{it was found that} the performance level\replaced[id=2nd]{s of IPVS and iptables DNAT were}{ was} limited by the 1 Gbps \replaced[id=2nd]{network bandwidth at the load balancer node.}{ bandwidth of the network,}\footnote{All of the nodes use a single interface for communication. 
 At the load balancer node, the bandwidth for each direction of Full duplex Ethernet is consumed by the sum of request and response packets.
-},
-\added{and therefore, we can not see the real difference between \replaced[id=2nd]{IPVS}{ipvs} performance and iptables DNAT performance.}
-\added{This fact has been}\deleted{which is} revealed by packet level analysis using tcpdump (Appendix~\ref{appendix:performance_limit}).
+}
+\deleted[id=2nd]{and therefore, we can not see the real difference between ipvs performance and iptables DNAT performance.}
+\added{This \replaced[id=2nd]{was}{fact has been}}\deleted{which is} revealed by packet\added[id=2nd]{-}level analysis using tcpdump (Appendix~\ref{appendix:performance_limit}).
 %
 On average the data size of each request and the corresponding response was about 636 [byte/req] in total, including TCP/IP headers, Ethernet header, and inter-frame gaps.
 Multiplying that with 190K [req/sec] and 8 [bit/byte] will result in 966.72 Mbps.
@@ -408,7 +408,7 @@ Since iptables DNAT does not have the functions that enable L3DSR settings, this
 
 The author carried out throughput measurement using the experimental setup shown in Figure~\ref{fig:benchmark-schem-dsr}.
 Figure~\ref{fig:ipvs_l3dsr_1g.png} compares the throughput of the \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}, conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
-As can be seen in the figure, while the performance levels for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT exactly match\added{ because of the network band width limitation}, the performance level of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is much higher than those.
+As can be seen in the figure, while the performance levels for \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT exactly match\added{ because of the network \replaced[id=2nd]{bandwidth}{band width} limitation}, the performance level of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is much higher than those.
 For example, the throughput of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is about 1.5 times higher than those of conventional \replaced[id=2nd]{IPVS}{ipvs} and iptables DNAT.
 %% \added[id=2nd]{
 %%   The saturated throughput indicates the maximum performance level of the load balancer, which is determined by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.
@@ -418,7 +418,7 @@ For example, the throughput of \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} is about 1.
 %% }
 \added{
   The saturated throughput indicates the maximum performance level of the load balancer, which is determined \replaced[id=2nd]{by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.}{ either by network bandwidth, or CPU performance levels of these machines.}
-  In the case of \replaced[id=2nd]{IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client}{ipvs-tun, the response packet could fill the network band withs at the benchmark client}.
+  In the case of \replaced[id=2nd]{IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client}{ipvs-tun, the response packet could fill the network \replaced[id=2nd]{bandwidth}{band width}s at the benchmark client}.
   Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
   \replaced[id=2nd]{
     The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
@@ -797,22 +797,23 @@ The author concludes that \added[id=2nd]{the proposed redandancy architecture fo
 
 \section{Summary}\label{Conclusions}
 
-
-In this chapter, the performance levels of the proposed load balancer have been evaluated. 
-The author carried out throughput measurement to verify the feasibility of the load balancer and verified the followings;
 \added[id=2nd]{
-  (1) Portability: From the experiment in the on-premise data center, it is seen the throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
+In this chapter, the author evaluated the feasibility of the proposed load balancer.
+The author carried out throughput measurement of the load balancer and verified the followings;
+  (1) Portability: In the on-premise data center, the throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
   This characteristic is also seen in the experiment in GCP and AWS, also indicating that the proposed load balancer properly functions in these environments.
   (2) Redundancy and scalability: The ECMP routing update in the proposed architecture is properly functioning and quick enough.
   The linear scalability of the ECMP throughput has been confirmed up to 4x of single load balancer throughput.
   (3) Performance: The throughput of the load balancers are limited by the network bandwidth in the 1 Gbps environment.
-  In the case of the IPVS and the iptables DNAT, maximum throughputs are the same, because they are determined by network bandwidth at load balancer node.
-  In the case of the IPVS-TUN (L3DSR), the maximum throughput is determined by network bandwidth at the benchmark client, and about 1.5 times larger than those of the IPVS and the iptables DNAT.
+  In the case of the IPVS and the iptables DNAT, maximum throughputs are the same, because they are limited by network bandwidth at load balancer node.
+  In the case of the IPVS-TUN (L3DSR), the maximum throughput is limited by network bandwidth at the benchmark client, and about 1.5 times larger than those of the IPVS and the iptables DNAT.
   The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
   From these results, the author concludes that the proposed load balancer is portable, redundant and scalable while providing sufficient performance levels in 1Gbps network environment.
 }
 %
 \deleted[id=2nd]{
+In this chapter, the performance levels of the proposed load balancer have been evaluated. 
+The author carried out throughput measurement to verify the feasibility of the load balancer and verified the followings;
 (1) The throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating the load balancer functions properly.
 (2) The throughput maximum depends on the multicore packet processing settings and overlay network settings.
 %

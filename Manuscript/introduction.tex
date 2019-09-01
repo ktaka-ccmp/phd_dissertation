@@ -301,7 +301,7 @@ Although all of these orchestrators mostly satisfy the requirements, they \added
   However,}
 \deleted{, nevertheless,} this functionality is applicable only for a few cloud environments.
 
-To the best knowledge of the author, none of the existing container orchestrators has full support for the redundant and scalable ingress routing feature.
+To the best knowledge of the author, none of the existing container orchestrators has \replaced[id=2nd]{fully support features for setting up ingress routing in a redundant and scalable manner.}{ full support for the redundant and scalable ingress routing feature.}
 The author believes \replaced[id=2nd]{solving this problem}{this} is an open and important topic for research and development, and therefore intends to pursue it.
 
 \subsection{\replaced{Kubernetes architecture and problem}{Problems of Kubernetes}}
@@ -479,7 +479,7 @@ Therefore, the author expects} \added[id=2nd]{that the load balancer with the sa
 \added{
 The author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
 1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
-2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
+2) Redundancy and scalability: whether the throughput is \replaced[id=2nd]{improved by increasing}{changed by changing} the number of load balancers.
 3) Performance: whether the load balancer has} \added[id=2nd]{sufficient}\deleted[id=2nd]{enough} \added{throughput for \added[id=2nd]{1 Gbps and} 10 Gbps network.
 }
 
@@ -497,7 +497,7 @@ BGP and ECMP are the standard protocol supported by most of the commercial route
 
 \subsection{Contribution}
 
-Contributions of this paper can be summarized as follows:
+Contributions of this \replaced[id=2nd]{thesis}{paper} can be summarized as follows:
 1) The author proposes a cluster of software load balancer containers that is deployed as a part of web applications.
 By removing the \replaced{dependencies}{dependence} on external load balancers provided by infrastructures, users can deploy their web applications in the same manner regardless of the infrastructure, which will \deleted{facilitate the migration }\added{improve the portability} of web applications.
 2) The author \replaced{implements}{ builds} a proof of concept system using Open Source Software (OSS), which means that anyone can test drive the proposed load balancers and use them in production for free.
@@ -550,12 +550,20 @@ The author also evaluates the aggregated performance level of the ECMP redundant
 }
 
 %\subsubsection{Chapter~\ref{chapter:Further Improvement}}
-\replaced[id=2nd]{In}{It} the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
+\deleted[id=2nd]{It the previous chapter the proposed load balancer is verified to be portable, redundant and scalable in 1Gbps network.
 It is also important to investigate its validity in 10 Gbps network.
-In Chapter~\ref{chapter:Further Improvement} the performance level of the proposed load balancer is evaluated \added[id=2nd]{in 10Gbps network}.
-The author carries out throughput measurements of \replaced[id=2nd]{IPVS}{ipvs}, \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}, and iptables DNAT in 10 Gbps environment.
-The author clarifies the reasons for performance limitations \replaced[id=2nd]{of each of the results and shows that the proposed load balancer has sufficient throughput in 10Gbps network.}{ and discusses improvement.}
-The author also proposes a novel software load balancer using eXpress Data Plane (XDP) technology \added[id=2nd]{for faster network} and presents preliminary experimental results.
+In Chapter~\ref{chapter:Further Improvement} the performance level of the proposed load balancer is evaluated in 10Gbps network.
+The author carries out throughput measurements of IPVS, IPVS-TUN, and iptables DNAT in 10 Gbps environment.
+The author clarifies the reasons for performance limitations of each of the results and shows that the proposed load balancer has sufficient throughput in 10Gbps network.
+The author also proposes a novel software load balancer using eXpress Data Plane (XDP) technology for faster network and presents preliminary experimental results.
+}
+
+\added[id=2nd]{In the previous chapter, the author evaluated the feasibility of the proposed load balancer in 1Gbps network.
+In Chapter~\ref{chapter:Further Improvement}, the author shows that the proposed load balancer has sufficient throughput in 10Gbps network.
+The author also discusses how to improve the performance levels in faster networks, e.g., 100 Gbps and finds that there are rooms for improvements in both the container network and the software load balancer itself.
+Although these should be explored further in the future work, the author presents preliminary experimental results of a novel software load balancer using eXpress Data Plane (XDP) technology.
+}
+
 
 %\subsubsection{Chapter~\ref{chapter:Related Work}}
 Chapter~\ref{chapter:Related Work} presents related work of this study.

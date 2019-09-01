@@ -259,7 +259,7 @@ request data with the size of 227.68[byte] and response data with the data(http 
 
 Since the node for load balancer recives and transmits both request and response packets using single network interface, each 1Gbps half duplex of full duplex must accomodate request and response data size.
 Therefore the theoretical maximum throughput can be expressed as; \\
-throughput[req/sec] = band width[byte/sec]/(request + response) \\
+throughput[req/sec] = \replaced[id=2nd]{bandwidth}{band width}[byte/sec]/(request + response) \\
 = 1e9/8/(data+665.36)
 
 Figure~\ref{fig:performance_limit} shows plot of theoretical maximum throughput 1Gbps ethernet together with actual benchmark results.
