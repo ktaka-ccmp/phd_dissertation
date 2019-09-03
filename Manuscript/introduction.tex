@@ -293,7 +293,7 @@ Because of the broader scope of applications, an out of box Mesos might not be p
   \label{table:orchestrator_comparison}
 \end{table}
 
-\paragraph{}
+%\paragraph{}
 Table\ref{table:orchestrator_comparison} compares these orchestrators based on necessary features as an infrastructure for web applications.
 Although all of these orchestrators mostly satisfy the requirements, they \added{fail to support the automatic routing of the ingress traffic \added[id=2nd]{from the Internet}.}
 \added{Docker swarm and Mesos/Marathon} rely on manual set up of a static routing for ingress traffic.
@@ -301,7 +301,7 @@ Although all of these orchestrators mostly satisfy the requirements, they \added
   However,}
 \deleted{, nevertheless,} this functionality is applicable only for a few cloud environments.
 
-To the best knowledge of the author, none of the existing container orchestrators has \replaced[id=2nd]{fully support features for setting up ingress routing in a redundant and scalable manner.}{ full support for the redundant and scalable ingress routing feature.}
+To the best knowledge of the author, none of the existing container orchestrators \replaced[id=2nd]{fully support features that automatically set up ingress routing in a redundant and scalable manner.}{ has full support for the redundant and scalable ingress routing feature.}
 The author believes \replaced[id=2nd]{solving this problem}{this} is an open and important topic for research and development, and therefore intends to pursue it.
 
 \subsection{\replaced{Kubernetes architecture and problem}{Problems of Kubernetes}}
