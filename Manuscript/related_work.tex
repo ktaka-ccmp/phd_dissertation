@@ -13,32 +13,29 @@ ingress routing using load balancer
 \paragraph{\bf TOSCA:}
 
 
+
 \paragraph{\bf Kubernetes federation:}
-\added[id=2nd]{
-Kubernetes developers are trying to add federation\cite{K8sFederation2017} capability for handling situations 
-where multiple Kubernetes clusters\footnote{The {\em Kubernetes cluster} refers to a server cluster 
+
+Kubernetes developers are trying to add federation \cite{K8sFederation2017} capability for handling situations 
+where multiple Kubernetes clusters \footnote{The {\em Kubernetes cluster} refers to a server cluster 
 controlled by the Kubernetes container management system, in this paper.} 
 are deployed on multiple cloud providers or on-premise data centers, 
 and are managed via the Kubernetes federation API server (federation-apiserver). 
 However, how each Kubernetes cluster is run on different types of cloud providers
 and/or on-premise data centers, especially when the load balancers of such environments are not supported by Kubernetes, 
 seems beyond the scope of that project. 
-}
 
 These work are not specific for web apps and lacks important features for them.
 
 \section{Ingress routing in container orchestrator}
-\added[id=2nd]{
+
 Docker/Swarm
 Mesos/Marathon
 Kubernetes
-}
 
-\added[id=2nd]{
 The swarm mode of the Docker\cite{DockerCoreEngineering2016,DockerInc2017} also uses ipvs for internal load balancing,
 but it is also considered as part of Docker swarm infrastructure, 
 and thus lacks the portability that our proposal aims to provide.
-}
 
 \begin{table}[h]
   \centering
@@ -64,15 +61,12 @@ and thus lacks the portability that our proposal aims to provide.
 
 \section{Ingress routing in Kubernetes}
 
-\added[id=2nd]{
 Nginx-ingress,
 kube-keepalived,
 metal-lb,
 Static routing to, 
 Kubernetes conventional.
-}
 
-\added[id=2nd]{
 As far as load balancer containerization is concerned, the following related work has been identified:
 Nginx-ingress\cite{Pleshakov2016,NginxInc2016} utilizes the ingress\cite{K8sIngress2017} capability of Kubernetes, 
 to implement a containerized Nginx proxy as a load balancer. Nginx itself is famous as a high-performance web server program
@@ -88,44 +82,59 @@ Our approach differs in that the ipvs rules are set up in container's net namesp
 and function as a part of the web service container cluster itself.
 The load balancers are configurable one by one, and are  movable with the cluster once the migration is needed.
 The kube-keepalived-vip's approach lacks flexibility and portability whereas ours provide them.
-}
-
-
-\section{Load balancer tools in the container context}
-
-\added[id=2nd]{
-There are several other projects where efforts have been made to utilize ipvs in the context of container environment.
-For example, GORB\cite{Sibiryov2015} and clusterf\cite{Aaltodoc:http://urn.fi/URN:NBN:fi:aalto-201611025433} are daemons 
-that setup ipvs rules in the kernel inside the Docker container. 
-They utilize running container information stored in key-value storages
-like Core OS etcd\cite{CoreOSEtcd} and HashiCorp's Consul\cite{HashiCorpConsul}. 
-Although these were usable to implement a containerized load balancer in our proposal, we did not use them, 
-since Kubernetes ingress framework already provided the methods to retrieve running container information through standard API.
-}
-
-\section{Cloud load balancers}
-
-\added[id=2nd]{
-Maglev,
-Kataran,
-Ananta,
-}
-
-\added[id=2nd]{
-Although this work is not seeking the best software load balancer for cloud.
-This work is not seeking the better performance and scalability.
-This work is seeking to guarantee inter opearability while keeping decent performance.
-}
 
 \begin{table}[h]
   \centering
   \begin{tabular}{|l|c|c|c|c|c|}
     \hline
-    & \multicolumn{1}{c|}{OSS} & \multicolumn{1}{c|}{Container} & \multicolumn{1}{c|}{Redundancy} & \multicolumn{1}{c|}{Forwarding} & \multicolumn{1}{c|}{L3DSR} \\ \hline
+    & \multicolumn{1}{c|}{OSS} & \multicolumn{1}{c|}{Auto LB table update for container} & \multicolumn{1}{c|}{Redundancy} & \multicolumn{1}{c|}{Forwarding} & \multicolumn{1}{c|}{L3DSR} \\ \hline
+    Conventional & No & No & Cloud load balancer/Static & internal Load balancer  & No \\ \hline
+    Nginx-ingress & Yes & Yes & No & nginx & No  \\ \hline
+    kube-keepalived & Yes & Yes & VRRP & IPVS & No  \\ \hline
+    metal-lb & Yes & Yes & ECMP & IPVS & No  \\ \hline
+    This work & Yes & Yes & ECMP & IPVS (XDP in future) & IPinIP  \\ \hline
+  \end{tabular}
+
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Ingress routing techniques for Kubernetes]{
+    Ingress routing techniques for Kubernetes.
+    }   
+    \label{tabl:k8s_lb}
+  \end{minipage}
+\end{table}
+
+\section{Cloud load balancers}
+
+As far as the cloud load balancers are concerned, two articles have been identified.
+Google's Maglev \cite{eisenbud2016maglev} is a software load balancer used in Google Cloud Platform(GCP).
+Maglev uses modern technologies including per flow ECMP and kernel bypass for user space packet processing.
+Maglev serves as the GCP's load balancer that is used by the Kubernetes.
+Maglev is not a product that users can use outside of GCP nor is an open source software, while the users need open source software load balancer that can run even in on-premise data centers.
+
+Microsoft's Ananta \cite{patel2013ananta} is another software load balancer implementation using ECMP and windows network stack.
+Ananta can be solely used in Microsoft's Azure cloud infrastructure\cite{patel2013ananta}.
+The proposed load balancer by the author is different in that it is aimed to be used in every cloud provider and on-premise data centers.
+
+Facebook's Katran \cite{2018katran} is an OSS software load balancer using Linux XDP tehnology.
+Katran can also be used in ECMP redundant setups.
+Although Katran is expected to have high performance level, nothing is published in the academic jurnals..
+
+Although this work is not seeking the best software load balancer for cloud.
+This work is not seeking the better performance and scalability.
+This work is seeking to guarantee inter opearability while keeping decent performance.
+
+The proposed load balancer in not yet competeing highest throughput.
+The proposed load balancer in this thesis is more portable than cloud load balancers.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+    & \multicolumn{1}{c|}{OSS} & \multicolumn{1}{c|}{Container friendly} & \multicolumn{1}{c|}{Redundancy} & \multicolumn{1}{c|}{Forwarding} & \multicolumn{1}{c|}{L3DSR} \\ \hline
     Maglev & No & No & ECMP & Flexible I/O layer & GRE  \\ \hline
-    Ananta & No & No & ECMP & Windows  & GRE  \\ \hline
-    Kataran& No & No & ECMP & XDP & IPIP  \\ \hline
-    This work & Yes & Yes & ECMP & IPVS (XDP in future) & IPIP  \\ \hline
+    Ananta & No & No & ECMP & Windows Filtering Platform  & IPinIP  \\ \hline
+    Katran& Yes & No & ECMP & XDP & IPinIP  \\ \hline
+    This work & Yes & Yes & ECMP & IPVS (XDP in future) & IPinIP  \\ \hline
   \end{tabular}
 
   \begin{minipage}{0.9\columnwidth}
@@ -135,6 +144,18 @@ This work is seeking to guarantee inter opearability while keeping decent perfor
     \label{tabl:cloud_lb}
   \end{minipage}
 \end{table}
+
+
+\section{Load balancer tools in the container context}
+
+There are several other projects where efforts have been made to utilize ipvs in the context of container environment.
+For example, GORB\cite{Sibiryov2015} and clusterf\cite{Aaltodoc:http://urn.fi/URN:NBN:fi:aalto-201611025433} are daemons 
+that setup ipvs rules in the kernel inside the Docker container. 
+They utilize running container information stored in key-value storages
+like Core OS etcd\cite{CoreOSEtcd} and HashiCorp's Consul\cite{HashiCorpConsul}. 
+Although these were usable to implement a containerized load balancer in our proposal, we did not use them, 
+since Kubernetes ingress framework already provided the methods to retrieve running container information through standard API.
+
 
 \section{Summary}
 

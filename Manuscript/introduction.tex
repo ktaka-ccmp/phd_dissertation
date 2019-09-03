@@ -44,7 +44,10 @@ Sometimes the web servers also store and update important data into the database
 \subsection{\replaced{Portability}{ Migration } of web application\deleted{ cluster}}
 
 \added{
-As web applications become an essential part of daily life, improving their portabilities \replaced[id=2nd]{is getting to be}{become} very important.
+  As web applications become an essential part of daily life, improving their portabilities}\footnote{
+    \added[id=2nd]{The author defines portability as the extent of easiness when making a web application interoperable in various infrastructures.}
+  }\added{
+ \replaced[id=2nd]{is getting to be}{become} very important \cite{opara2016critical,petcu2014portability}.
 If a web application is portable, it will become much easier for web application providers to migrate the service when there is a disaster, or \added[id=2nd]{when they want to} expand their business to different geographical locations, etc. 
 }
 
@@ -112,7 +115,7 @@ In order to \replaced{improve the portability}{ realize an easy migration} of we
 Figure\ref{fig:global_container_infrastructure} shows an exemplified global container infrastructure having these features.
 Container orchestrators\added{, as a common middleware,} launch and manage web applications consisting of container clusters.
 Important data are stored in globally consistent data storage, which is similar to the Google spanner \cite{Corbett:2013:SGG:2518037.2491245,Cooper:2013:SGG:2485732.2485756} or CockroachDB \cite{pavlo2016s}.
-The traffic is routed to the closest data center using anycast \cite{rfc1546}.
+The traffic is routed to the closest data center using anycast \cite{rfc1546,weiden2010anycast}.
 
 Each of these features is important\added{,} and research efforts are on-going in many institutions.
 In this study, the author focuses on the research regarding container orchestrator as a \replaced{common}{ universal} middleware.
