@@ -371,7 +371,7 @@ The red arrows indicate the route HTTP request packets follow and the blue arrow
 Since the response packets directly return to the client\added[id=2nd]{ and do not consume the bandwidth at the load balancer node}, the load balancer is expected to perform better.
 
 The \replaced[id=2nd]{IPVS}{ipvs} has a mode called \replaced[id=2nd]{IPVS-TUN}{ipvs-tun}.
-When the \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet that is destined to real servers.
+When the \replaced[id=2nd]{IPVS-TUN}{ipvs-tun} send out the packets to real servers, it encapsulates the original packet in ipip tunneling packet \cite{kuznetsov1999tunnels} that is destined to real servers.
 The real server receives the packet on a tunl0 device and decapsulates the ipip packet, revealing the original packet.
 Since the source IP address of the original packet is maintained, the returning packets are sent directly toward the benchmark client.
 In this scheme, the returning packets do not consume the bandwidth nor the CPU power of the load balancer node.

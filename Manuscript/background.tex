@@ -39,7 +39,7 @@ The communication with the outside of the node follows the routing rules in the 
 \end{figure}
  
 When a container needs to communicate with other containers on different nodes, the kernel needs to know on which node the peer container exists.
-The kernel normally does not know this, but \replaced[id=2nd]{if there is}{with} the help of overlay network, the kernel eventually finds out the next hop towards peer container.
+The kernel normally does not know this, but \replaced[id=2nd]{if there is}{with} the help of overlay network \cite{zismer2016performance}, the kernel eventually finds out the next hop towards peer container.
 
 \FloatBarrier
 
@@ -164,7 +164,7 @@ Fig.~\ref{fig:overlay} shows schematic diagram of network architecture of a cont
 There is a physical network (node network) with IP address range of 10.0.0.0/16 and an overlay network with IP address range of 172.16.0.0/16.
 The node network is the network for nodes to communicate with each other.
 The overlay network is the network setups for containers to communicate with each other.
-An overlay network typically consists of appropriate routing tables on nodes, and optionally of tunneling setup using ipip or vxlan.
+An overlay network typically consists of appropriate routing tables on nodes, and optionally of tunneling setup using ipip \cite{kuznetsov1999tunnels} or vxlan \cite{zismer2016performance}.
 The upstream router usually belongs to the node network.
 When a container in the Fig.~\ref{fig:overlay} communicates with any of the nodes, it can use its IP address in 172.16.0.0/16 IP range as a source IP, since every node has proper routing table for the overlay network.
 When a container communicates with the upstream router that does not have routing information regarding the overlay network, the source IP address must be translated by Source Network Address Translation (SNAT) rules on the node the container resides.
