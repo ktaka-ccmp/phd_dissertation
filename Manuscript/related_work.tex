@@ -22,7 +22,12 @@ Therefore, the author also presents related work regarding the following subject
 
 \section{Portability of web applications}
 
-\paragraph{\bf TOSCA:}
+\paragraph{\bf Portability:}
+
+There have been numerous works that identify importance of interoperability, portability and vender lock-in issues in cloud computing \cite{kratzke2016clouns,opara2014critical,opara2016critical,mansour2016interoperability,kaur2017interoperability,kaur2017interoperability,di2015cloud}.
+There are good reviews \cite{kaur2017interoperability,petcu2014portability} \enquote{regarding the vendor lock-in problem, which is a direct consequence of the lack of interoperability and portability.}
+Some suggest migration of VM or process migration \cite{}.
+The others suggest Meta Cloud \cite{satzger2013winds} and federations \cite{K8sFederation2017}.
 
 \paragraph{\bf Kubernetes federation:}
 
@@ -36,11 +41,18 @@ Accoding to their explanation\cite{K8sFederation2017}, the federation capability
 High Availability: By spreading load across clusters and auto configuring DNS servers and load balancers, federation minimises the impact of cluster failure.
 Avoiding provider lock-in: By making it easier to migrate applications across clusters, federation prevents cluster provider lock-in.
 \end{quote}
+
 The author regards the federation capability very attractive.
 However, how each Kubernetes cluster is run on different types of cloud providers
 and/or on-premise data centers, especially when the load balancers of such environments are not supported by Kubernetes, 
 seems beyond the scope of that project.
-This thesis is mainly focused on how to provide a common load balancers to different type of infrastructures. 
+This thesis is mainly focused on how to provide a common load balancer to different types of infrastructures.
+
+There are other works \cite{kim2019tosca,goethals2019fuse} regarding Kubernetes federation. 
+Kim et.al. \cite{kim2019tosca} federate multiple Kubernetes clusters in the different cloud regions using TOSCA based approach.
+Goethals et.al.\cite{goethals2019fuse} connects different data centers using OpenVPN \cite{} and deploy Kuberenetes cluster in virtual data center that span across multiple loacations.
+
+The federation can be categorized into approaches to make web application portable using the common middleware.
 
 There have been numerous works regarding the portability of web applications.
 This study is more focused on practical architecture and verification of its feasibility.
