@@ -791,6 +791,9 @@ This indicates that new load balancers are immediately utilized after they are c
 
 Figure~\ref{fig:ecmp_delay_histgram} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running \replaced[id=2nd]{IPVS}{ipvs} pods is reflected in the routing table on the benchmark client, as the number of the \replaced[id=2nd]{IPVS}{ipvs} pods is changed randomly every 60 seconds for 20 hours.
 As can be seen from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
+\added[id=3rd]{
+This is practically quick enough because normally resizing of the load balancer cluster does not occur so often and from the viewpoint of a client, 6 seconds is within a duration of tree TCP retransmissions \cite{rfc6298}.
+}
 The author concludes that \added[id=2nd]{the proposed redandancy architecture for the load balancer functions properly and the} ECMP routing update \deleted[id=2nd]{in the proposed architecture }is quick enough.
 
 \FloatBarrier
