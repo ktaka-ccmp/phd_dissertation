@@ -213,8 +213,7 @@ If there is a cloud gateway between nodes, the gateway cannot identify the prope
 
 The author conducted an investigation to determine which of the flannel backend mode would be usable on AWS, GCP, and on-premise data centers.
 The results are summarized in Table~\ref{tab:Viable flannel backends}. 
-In the case of GCP, an IP address of {\tt /32} is assigned to every VM host and 
-every communication between VMs goes through GCP's gateway.
+In the case of GCP, an IP address \added[id=4th]{with the prefix length of 32 (/32 in CIDR notation)}\deleted[id=4th]{ of {\tt /32}} is assigned to every VM host and every communication between VMs goes through GCP's gateway.
 As for AWS, the VMs within the same subnet communicate directly, while the VMs in different subnets communicate via the AWS's gateway.
 Since the gateways do not have knowledge of the flannel overlay network, they drop the packets; thereby, 
 they prohibit the use of the flannel host-gw mode in those cloud providers.  
@@ -223,13 +222,13 @@ they prohibit the use of the flannel host-gw mode in those cloud providers.
 
 The overlay network also causes a problem when communicating with a host that knows nothing about the overlay network.
 Fig.~\ref{fig:overlay} shows schematic diagram of network architecture of a container cluster system. 
-There is a physical network (node network) with IP address range of 10.0.0.0/16 and an overlay network with IP address range of 172.16.0.0/16.
+There is a \replaced[id=4th]{node network (physical server network)}{physical network (node network)} with \added[id=4th]{the} IP address range of 10.0.0.0/16 and an overlay network with \added[id=4th]{the} IP address range of 172.16.0.0/16.
 The node network is the network for nodes to communicate with each other.
 The overlay network is the network setups for containers to communicate with each other.
 An overlay network typically consists of appropriate routing tables on nodes, and optionally of tunneling setup using ipip \cite{kuznetsov1999tunnels} or vxlan \cite{zismer2016performance}.
 The upstream router usually belongs to the node network.
-When a container in the Fig.~\ref{fig:overlay} communicates with any of the nodes, it can use its IP address in 172.16.0.0/16 IP range as a source IP, since every node has proper routing table for the overlay network.
-When a container communicates with the upstream router that does not have routing information regarding the overlay network, the source IP address must be translated by Source Network Address Translation (SNAT) rules on the node the container resides.
+When a container in the Fig.~\ref{fig:overlay} communicates with any of the nodes, it can use its IP address in 172.16.0.0/16 \deleted[id=4th]{IP }range as a source IP, since every node has proper routing table for the overlay network.
+When a container communicates with the upstream router that does not have routing information regarding the overlay network, the source IP address must be translated by \replaced[id=4th]{SNAT}{Source Network Address Translation (SNAT)} rules on the node \added[id=4th]{where} the container resides.
 
 The SNAT caused a problem when the author tried to co-host multiple load balancer pods for different services on a single node and let them connect the upstream router directly.
 This was due to the fact that the BGP agent used in our experiment only used the source IP address of the connection to distinguish the BGP peer.
