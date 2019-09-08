@@ -308,21 +308,17 @@ When packets arrive, they are distributed to these rx-queues depending on the fl
 Each receive queue has a separate IRQ associated with it. The NIC triggers
 this to notify a CPU when new packets arrive on the given queue.
 Then, the notified CPU handles the interrupt, and performs the protocol processing. 
-According to the \cite{TomHerbert}, the CPU cores allowed to be notified is controlled by setting 
-a hexadecimal value corresponding to the bit maps indicating the allowed CPU cores in \enquote{/proc/irq/\$irq\_number /smp\_affinity}.
+According to the \cite{TomHerbert}, the CPU cores allowed to be notified is controlled by setting a hexadecimal value corresponding to the bit maps indicating the allowed CPU cores in \enquote{/proc/irq/[IRQ number]/smp\_affinity}.
 %
-For example, in order to route the interrupt for eth0-rx-1 to CPU0, 
-one should set \enquote{/proc/irq/82/smp\_affinity} 
-to binary number {\tt 0001}, which is 1 in hexadecimal value.
-Further, in order to route the interrupt for eth0-rx-2 to CPU1, one 
-should set \enquote{/proc/irq/83/smp\_affinity} 
-to binary number {\tt 0010}, which is 2 in hexadecimal value.
+For example, in order to route the interrupt for eth0-rx-1 to CPU0, one should set \enquote{/proc/irq/82/smp\_affinity} to binary number {\tt 0001}, which is 1 in hexadecimal value.
+Further, in order to route the interrupt for eth0-rx-2 to CPU1, one should set \enquote{/proc/irq/83/smp\_affinity} to binary number {\tt 0010}, which is 2 in hexadecimal value.
 
-In this dissertation, the author refers to the setting to distribute interrupts from four rx-queues to CPU0, CPU1, CPU2, and CPU3 as \enquote{RSS = on}.
-It is configured as the setting in Figure~\ref{fig:rss=on}. 
-
-On the other hand, \enquote{RSS = off} means that an interrupt from any rx-queue is routed to CPU0. 
-It is configured as the setting in Figure~\ref{fig:rss=off}. 
+In this dissertation,
+\replaced[id=4th]{the setting that distributes interrupts from four rx-queues separately to CPU0, CPU1, CPU2, and CPU3 is referred to as}{the author refers to the setting to distribute interrupts from four rx-queues to CPU0, CPU1, CPU2, and CPU3 as} \enquote{RSS = on}.
+It is configured as the setting in Figure~\ref{fig:rss_settings}(a).
+%
+On the other hand, \enquote{RSS = off} means that \replaced[id=4th]{all the interrupts}{an interrupt} from any rx-queue \replaced[id=4th]{are}{is} routed to CPU0. 
+It is configured as the setting in Figure~\ref{fig:rss_settings}(b).
 
 \begin{figure}[h]
 
@@ -330,10 +326,10 @@ It is configured as the setting in Figure~\ref{fig:rss=off}.
     \centering
     \begin{minipage}{0.6\columnwidth}
 \begin{verbatim}
-   echo 1 > /proc/irq/82/smp_affinity
-   echo 2 > /proc/irq/83/smp_affinity
-   echo 4 > /proc/irq/84/smp_affinity
-   echo 8 > /proc/irq/85/smp_affinity
+echo 1 > /proc/irq/82/smp_affinity
+echo 2 > /proc/irq/83/smp_affinity
+echo 4 > /proc/irq/84/smp_affinity
+echo 8 > /proc/irq/85/smp_affinity
 \end{verbatim}
     \end{minipage}
     \caption{\underline{\textbf{RSS=on}}}
@@ -346,10 +342,10 @@ It is configured as the setting in Figure~\ref{fig:rss=off}.
     \centering
     \begin{minipage}{0.6\columnwidth}
 \begin{verbatim}
-   echo 1 > /proc/irq/82/smp_affinity
-   echo 1 > /proc/irq/83/smp_affinity
-   echo 1 > /proc/irq/84/smp_affinity
-   echo 1 > /proc/irq/85/smp_affinity
+echo 1 > /proc/irq/82/smp_affinity
+echo 1 > /proc/irq/83/smp_affinity
+echo 1 > /proc/irq/84/smp_affinity
+echo 1 > /proc/irq/85/smp_affinity
 \end{verbatim}
     \end{minipage}
     \caption{\underline{\textbf{RSS=off}}}
@@ -361,6 +357,10 @@ It is configured as the setting in Figure~\ref{fig:rss=off}.
   \begin{minipage}{0.9\columnwidth}
     \caption[RSS settings]{
       RSS settings used in this study.
+      \added[id=4th]{
+      (a) This setting distributes interrupts from the IRQ\# 82~85 to CPU0~CPU3, respectively.
+      (b) This setting directs all the interrupts from IRQ\# 82~85 to CPU0.
+      }
     }
     \label{fig:rss_settings}
   \end{minipage}
@@ -370,9 +370,12 @@ It is configured as the setting in Figure~\ref{fig:rss=off}.
 
 \subsubsection{RPS}
 
+\added[id=4th]{
+After the interrupts from the NIC are handled, IP protocol processings carried out.
+}
 The RPS distributes IP protocol processing by placing the packet
 on the desired CPU's backlog queue and wakes up the CPU using inter-processor interrupts.
-The author have used the settings in Figure~\ref{fig:rps=on} to enable the RPS.
+The author have used the settings in Figure~\ref{fig:rps_settings}(a) to enable the RPS.
 
 \begin{figure}[h]
 
@@ -411,6 +414,11 @@ echo 0 > /sys/class/net/eth0/queues/rx-3/RPS_cpus
   \begin{minipage}{0.9\columnwidth}
     \caption[RPS settings]{
       RPS settings used in this study.
+      \added[id=4th]{
+      (a) IP protocol proccessings are distributed to CPU1~CPU7 and CPU9~CPU15.
+      (b) Distribution of IP protocol proccessings is prohibitted.
+      Original CPUs that recieved interrupts will process the IP protocols.
+      }
     }
     \label{fig:rps_settings}
   \end{minipage}
@@ -419,33 +427,35 @@ echo 0 > /sys/class/net/eth0/queues/rx-3/RPS_cpus
 \end{figure}
 
 Since the hexadecimal value \enquote{fefe} represented as \enquote{1111 1110 1111 1110} in binary, 
-this setting will allow distributing protocol processing to all of the CPUs, except for CPU0 and CPU8.
-The CPU0 and CPU8 are logically different but share the same physical core.
+this setting will \replaced[id=4th]{distribute}{allow distributing} protocol processing to all of the CPUs, except for CPU0 and CPU8.
+The CPU0 and CPU8 are logically different but share the same physical core\footnote{\added[id=4th]{The hardware used in the experiment had Hyper-Threading functionality \cite{marr2002hyper}, therefore each of the physical cores are shared by two logical cores.}}.
 In this dissertation, the author refers to this setting as \enquote{RPS = on}.
 %
 On the other hand, \enquote{RPS = off} means that no CPU is allowed for RPS. 
 Here, the IP protocol processing is performed on the CPUs the initial hardware interrupt is received.
-It is configured as the settings in Figure~\ref{fig:rps=off}.
+It is configured as the settings in Figure~\ref{fig:rps_settings}(b).
 
 The RPS is especially effective when the NIC does not have multiple receive queues or when the number of queues is 
 much smaller than the number of CPU cores. 
-That was the case in the experiment, where the NIC had only four rx-queues, 
-while there was a CPU with eight physical cores.
-Figure~\ref{Figs/rss-rps-none} shows a schematic diagram of the setting used in this study.
-While merely enabling RSS results in four core packet processing, enabling RPS results in eight core packet processing.
+That was the case in the experiment\deleted[id=4th]{, where the NIC had only four rx-queues, while there was a CPU with eight physical cores}.
+\added[id=4th]{
+Since there were only four rx-queues, RSS could utilize only four physical cores out of eight.
+}
+Figure~\ref{Figs/rss-rps-none} shows a schematic diagram of the setting\added[id=4th]{s} used in this study.
+While merely enabling RSS results in four core packet processing, enabling RPS results in eight \added[id=4th]{physical} core packet processing.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/rss-rps-none}
+  \includegraphics[width=1.0\columnwidth]{Figs/rss-rps-none}
 
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
     \caption[RSS/RPS settings]{
       RSS/RPS settings used in this study.
-      (a) In the case of \enquote{RSS=on, RPS=off}, four cores are used for packet processing.
-      (b) In the case of \enquote{RSS=off, RPS=on}, eight cores are used for packet processing.
-      (c) In the case of \enquote{RSS=off, RPS=off}, single core is used for packet processing.
+      (a) In the case of \enquote{RSS=on,RPS=off}, \added[id=4th]{only} four cores are used for packet processing.
+      (b) In the case of \enquote{RSS=off,RPS=on}, eight cores are used for packet processing.
+      (c) In the case of \enquote{RSS=off,RPS=off}, \replaced[id=4th]{only one}{single} core is used for packet processing.
     }
     \label{Figs/rss-rps-none}
   \end{minipage}
