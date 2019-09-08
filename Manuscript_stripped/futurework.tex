@@ -1,0 +1,17 @@
+[Filled in later]
+
+%% The current limitations of this study are; 
+%% 1) Although our proposed architecture is feasible where users can set up iBGP peer connections to upstream routers, currently major cloud providers do not seem to provide such services.
+%% 2) ...
+%% These should be addressed in the future work.
+%% For other future work we plan to improve performance of a single software load balancer on standard Linux box using Xpress Data Plane(XDP) technology. 
+
+Although major cloud providers do not currently provide BGP peering service for their users, the authors expect our proposed load balancer will be able to run, once this approach is proven to be beneficial and they start BGP peering services.
+Therefore we focus our discussions on verifying that our proposed load balancer architecture is feasible, at least in on-premise data centers.
+For the cloud environment without BGP peering service, single instance of ipvs load balancer can still be run with redundancy.
+The liveness of the load balancer is constantly checked by one of the Kubernetes agents, and if anything that stop the load balancer happens, Kubernetes will restart the load balancer container.
+The routing table of the cloud provider can be updated by newly started ipvs container immediately.
+
+The authors limit the focus of this study on providing a portable load balancer for Kubernetes to prove the concept of proposed architecture.
+However, the same concept can be easily applied to other container management systems, which should be discussed in future work.
+
