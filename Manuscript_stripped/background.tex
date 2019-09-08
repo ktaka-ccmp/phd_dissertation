@@ -52,11 +52,12 @@ Here the setup used in the experiments is explained.
 Figure~\ref{fig:bridge+veth} shows a schematic diagram of the container network used in this study.
 The veth kernel module creates a pair of network interfaces that act like a pipe.
 One of the peer interfaces is kept in the host network namespace and the other is added to the container namespace.
-The interface in the host network namespace is connected to a network bridge.
+The interface in the host network namespace is connected to a network bridge\added[id=4th]{, docker0}.
 In the case of Docker, most of the veth setup is done by the Docker daemon.
 
 The communication between two containers on the same physical node is through the docker0.
-The communication with the outside of the node follows the routing rules in the kernel, and optionally iptables Masquerade.  
+The communication with the outside of the node \added[id=4th]{further} follows the routing rules in the kernel,
+and optionally \added[id=4th]{translated using} iptables Masquerade\added[id=4th]{ or Source Network Address Translation (SNAT) \cite{MartinA.Brown2017}}.  
 
 \begin{figure}[h]
   \centering
@@ -79,15 +80,24 @@ The kernel normally does not know this, but if there is the help of overlay netw
 
 \subsection{Overlay Network}
 
-\subsubsection{Flannel}
+%\subsubsection{Flannel}
 
+\added[id=4th]{
+There are several choices for the overlay networks with popular ones being flannel, calico, weave, etc.
+The author used flannel throughout this study because of its popularity and easiness.
+}
+\deleted[id=4th]{
 The author used flannel to build the Kubernetes cluster used in the experiment.
+}
 Flannel has three types of backend, {\it i.e.}, operating modes, host-gw, vxlan, and udp \cite{CoreOSFlannelBackend}.
+\added[id=4th]{
+These are explained here.
+}
 
 \subsubsection{host-gw mode}
 
 In the host-gw mode, the flanneld installed on a node simply configures the routing table in the kernel 
-based on the IP address assignment information of the overlay network, which is stored in the etcd on the master node of Kubernetes.
+based on the IP address assignment information of the overlay network, which is stored in the etcd \cite{CoreOSEtcd} on the master node of Kubernetes.
 When {\em pod1} on the node1 sends out an IP packet to {\em pod2} on the different node, node2, 
 the node1 consults its routing table and learn that the IP packet to {\em pod2} should be sent out to the node2.
 Then, the node1 forms Ethernet frames containing the destination MAC address of the node2 
@@ -133,7 +143,7 @@ An additional 50 bytes of header is used in the vxlan mode, thereby resulting in
 
 \subsubsection{udp mode}
 
-In the case of udp mode, flanneld creates the tun device, flannel0, and configures the routing table.
+In the case of udp mode, flanneld creates the tun device, flannel0, and configures the routing table\added[id=4th]{ appropriately based on the information stored in the etcd}.
 The flannel0 device is connected to the flanneld daemon itself.
 An IP packet routed to flannel0 is encapsulated by flanneld, and eventually sent out 
 to the appropriate node. 
@@ -194,11 +204,8 @@ If there is a cloud gateway between nodes, the gateway cannot identify the prope
   \centering
   \begin{minipage}{0.9\columnwidth}
     \caption[Flannel backend modes]{
-      
       Flannel backend modes.
       The host-gw mode without encapsulation does not work in GCP nor in AWS.
-      
-      
     }
     \label{tab:Viable flannel backends}
   \end{minipage}
