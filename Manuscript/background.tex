@@ -1,12 +1,61 @@
-%\section{Backgorund information}
 
+\added[id=3rd]{
+  This chapter provides explanations of the following technologies;
+  1) Overlay network
+  2) Multicore packet processing
+  3) IPVS load balancer
+  4) XDP technology.
+  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+}
+
+\deleted[id=3rd]{
 This chapter provides background information that is important in this research.
 First, the overlay network used in this study is explained in detail.
-Then the author explains how to utilize multi-core CPUs for packet processing in Linux,
+}
+
+\added[id=3rd]{
+  Overlay networks are used to deploy Kubernetes clusters in most cases in order to separate the node network and container network.
+  The author has found that the choice of the operation mode greatly affects the throughput of the load balancers, as will be explained in Chapter~\ref{chapter:Performance Evaluation}.
+  Therefore, flannel, which is one of the overlay networks and is used in this study, is explained in detail.
+}
+
+\replaced[id=3rd]{Secondly,}{Then} the author explains how to utilize multi-core CPUs for packet processing in Linux\replaced[id=3rd]{.}{,}
+\added[id=3rd]{
+The Linux kernel comes with built-in features for multi-core packet processing.
+However, the default setting of Linux distribution might not necessarily be optimized for best performance and sometimes hinder the understanding of experimental results.
+That was the case when the author first carried out the experiment.
+}
+
+\added[id=3rd]{
+  Thirdly, the author explains Linux kernel's IPVS load balancer, because IPVS is used to implement a load balancer in a container.
+  The IPVS has three operating modes and they are also explained.
+}
+
+\deleted[id=3rd]{
 which is followed by the explanations of the ipvs load balancer and two of its operation modes.
-Finally, the author briefly explains about novel XDP technology.
+}
+
+\replaced[id=3rd]{Lastly,}{Finally,} the author briefly explains about novel XDP technology.
+%
+\added[id=3rd]{
+The author plans to replace IPVS based load balancer with the one based on XDP technology in future work.
+The author has already started the implementation of such load balancer and presented a preliminary result in Chapter~\ref{chapter:Further Improvement}.
+The explanation of XDP technology is necessary to understand why it is supposed to be faster than IPVS.
+}
 
 \section{Overlay network}
+
+\added[id=3rd]{
+  An overlay network is used to deploy a Kubernetes cluster in most cases in order to separate the node network and container network.
+  %  It is also possible to let nodes and containers use the same network
+  In the case of Kubernetes, every {\em pod}}
+\footnote{\added[id=3rd]{A {\em pod} is a group of containers that share the same network namespace and cgroup, and is the basic execution unit in a Kubernetes cluster.}}
+\added[id=3rd]{
+ is assigned with its own IP address.
+  If the administrator of Kubernetes cluster plans to host up to 10 {\em pod}s on a single node, roughly 10 times larger IP address space is required for container network than for node network.
+  And if he or she plans to host up to 100 {\em pod}s on a single node, 100 times larger IP address space is needed. 
+  Therefore in practice, it is often convenient to separate administrations of node network and container network using overlay network.
+}
 
 \subsection{Container network}
 
@@ -127,6 +176,17 @@ In the case of the udp mode, only 28 bytes of header are used for encapsulation,
 There are caveats in using overlay network.
 The author explains two of them that are identified in the course of this study.
 
+\added[id=3rd]{
+  The first is that overlay network without encapsulation has issues when used in cloud environments.
+  There are chances when there is a gateway host without a knowledge of the overlay network between two containers.
+  When such gateway host received a packet destined to a container without encapsulation, it simply drops the packet because it does not know where to send it.
+}
+
+\added[id=3rd]{
+  The second is that there is an issue when two containers communicate with a host without knowledge of the ovelay network.
+  Since the packets are translated using Source Network Address Translation (SNAT) \cite{MartinA.Brown2017}, the host can not identify if the two connections are coming from a single container or from two containers only by looking into IP and TCP headers.
+}
+
 \subsubsection{Overlay network and cloud}
 
 Although the host-gw mode is expected to be most efficient since no packet encapsulation is used, it has a significant drawback that prohibit it to work correctly in cloud platforms. 
@@ -143,10 +203,20 @@ If there is a cloud gateway between nodes, the gateway cannot identify the prope
     vxlan & OK & OK & OK \\
     udp & OK & OK & OK \\
     \bottomrule
-\end{tabular}
+  \end{tabular}
 
-  \caption{Viable flannel backend modes. In cloud environment tunneling using vxlan or udp is needed.}
-  \label{tab:Viable flannel backends}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Flannel backend modes]{
+      \added[id=3rd]{
+      Flannel backend modes.
+      The host-gw mode without encapsulation does not work in GCP nor in AWS.
+      }
+      \deleted[id=3rd]{Viable flannel backend modes. In cloud environment tunneling using vxlan or udp is needed.}
+    }
+    \label{tab:Viable flannel backends}
+  \end{minipage}
 \end{table}
 
 The author conducted an investigation to determine which of the flannel backend mode would be usable on AWS, GCP, and on-premise data centers.
@@ -174,15 +244,22 @@ This was due to the fact that the BGP agent used in our experiment only used the
 The agent on the router behaved as though different BGP connections from different containers belonged to a single BGP session because the source IP addresses were identical due to the SNAT.
 
 \begin{figure}[h]
-\centering
-\includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
-\caption{The network architecture of an exemplified container cluster system. }
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
 
-  A load balancer (lb) pod (the white box with "lb") and web pods are running on nodes (the blue boxes).
-  The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
-  and the distributed to web pods using the overlay network.
-
-\label{fig:overlay}
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[A network architecture of container cluster system]{
+      \added[id=3rd]{A network architecture of container cluster system.}
+      \deleted[id=3rd]{The network architecture of an exemplified container cluster system.}
+      A load balancer (lb) pod (the white box with "lb") and web pods are running on nodes (the blue boxes).
+      The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
+      and the distributed to web pods using the overlay network.
+    }
+    \label{fig:overlay}
+  \end{minipage}
+  
 \end{figure}
 
 \FloatBarrier

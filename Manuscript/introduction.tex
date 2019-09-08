@@ -520,11 +520,22 @@ In other words, users will become being able to deploy a complex web application
 The rest of the paper is organized as follows;
 
 %\subsubsection{Chapter~\ref{chapter:Background}}
+\added[id=3rd]{
+  This chapter provides explanations of the following technologies;
+  1) Overlay network
+  2) Multicore packet processing
+  3) IPVS load balancer
+  4) XDP technology.
+  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+}
+
+\deleted[id=3rd]{
 Chapter~\ref{chapter:Background} provides background information that is important in this research.
 First, the overlay network used in this study is explained in detail.
 Then the author explains how to utilize multi-core CPUs for packet processing in Linux,
 which is followed by the explanations of the \replaced[id=2nd]{IPVS}{ipvs} load balancer and two of its operation modes.
 Finally, the author briefly explains about novel XDP technology.
+}
 
 %\subsubsection{Chapter~\ref{chapter:Architecture and Implementation}}
 Chapter~\ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
