@@ -273,8 +273,8 @@ Subsequently, Receive Packet Steering (RPS) \cite{TomHerbert} distributes the IP
 to multiple CPU cores by issuing inter core software interrupts.
 
 Since \replaced[id=4th]{performance levels of a load balancer}{load balancer performance levels} could be affected by these technologies,
-the author conducted an experiment to determine how load balancer performance level changes depending on the RSS and RPS settings in Chapter~\ref{chapter:Performance Evaluation}.
-The following shows how RSS and RPS are enabled and disabled in the experiment. 
+the author conducted an experiment to determine how \replaced[id=4th]{performance levels of the load balancers are changed by}{ how load balancer performance level changes depending on} the RSS and RPS settings in Chapter~\ref{chapter:Performance Evaluation}.
+The \replaced[id=4th]{lest of this section explains}{following shows} how RSS and RPS are enabled and disabled in the experiment. 
 The NIC used in the experiment is Broadcom BCM5720, which has four rx-queues and one tx-queue.
 Figure~\ref{fig:rx-queue} shows the interrupt request (IRQ) number assignments to those NIC queues at the time of experiments.
 
