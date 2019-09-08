@@ -236,14 +236,13 @@ The agent on the router behaved as though different BGP connections from differe
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/overlay.png}
+  \includegraphics[width=1.0\columnwidth]{Figs/overlay.png}
 
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
     \caption[A network architecture of container cluster system]{
       A network architecture of container cluster system.
-      
       A load balancer (lb) pod (the white box with "lb") and web pods are running on nodes (the blue boxes).
       The traffic from the internet are forwarded to the lb pod by the upstream router using the node network,
       and the distributed to web pods using the overlay network.
@@ -257,6 +256,12 @@ The agent on the router behaved as though different BGP connections from differe
 
 \section{Multicore packet processing}
 
+\added[id=4th]{
+The Linux kernel comes with built-in features for multi-core packet processing.
+However, the default setting of Linux distribution might not \replaced[id=4th]{be necessarily}{necessarily be} optimized for the best performance, which sometimes hinders the understanding of experimental results.
+That was the case when the author first carried out the experiment, and therefore the author explains about it.
+}
+
 The performance of a computer system has been improved significantly thanks to the development of multi-core CPUs.
 One of the top of the line server processors from Intel now includes up to 28 cores in a single CPU.
 In order to enjoy the benefits of multi-core CPUs in communication performance,
@@ -267,8 +272,8 @@ to distribute handling of the interrupt from NIC queues to multiple CPU cores.
 Subsequently, Receive Packet Steering (RPS) \cite{TomHerbert} distributes the IP protocol processing 
 to multiple CPU cores by issuing inter core software interrupts.
 
-Since load balancer performance levels could be affected by these technologies,
-The author conducted an experiment to determine how load balancer performance level changes depending on the RSS and RPS settings in Chapter~\ref{chapter:Performance Evaluation}.
+Since \replaced[id=4th]{performance levels of a load balancer}{load balancer performance levels} could be affected by these technologies,
+the author conducted an experiment to determine how load balancer performance level changes depending on the RSS and RPS settings in Chapter~\ref{chapter:Performance Evaluation}.
 The following shows how RSS and RPS are enabled and disabled in the experiment. 
 The NIC used in the experiment is Broadcom BCM5720, which has four rx-queues and one tx-queue.
 Figure~\ref{fig:rx-queue} shows the interrupt request (IRQ) number assignments to those NIC queues at the time of experiments.
