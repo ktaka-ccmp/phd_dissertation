@@ -15,15 +15,15 @@ First, the overlay network used in this study is explained in detail.
 
 \added[id=3rd]{
   Overlay networks are used to deploy Kubernetes clusters in most cases in order to separate the node network and container network.
-  The author has found that the choice of the operation mode greatly affects the throughput of the load balancers, as will be explained in Chapter~\ref{chapter:Performance Evaluation}.
+  The author has also found that the choice of the operation mode greatly affects the throughput of the load balancers, as will be explained in Chapter~\ref{chapter:Performance Evaluation}.
   Therefore, flannel, which is one of the overlay networks and is used in this study, is explained in detail.
 }
 
 \replaced[id=3rd]{Secondly,}{Then} the author explains how to utilize multi-core CPUs for packet processing in Linux\replaced[id=3rd]{.}{,}
 \added[id=3rd]{
 The Linux kernel comes with built-in features for multi-core packet processing.
-However, the default setting of Linux distribution might not necessarily be optimized for best performance and sometimes hinder the understanding of experimental results.
-That was the case when the author first carried out the experiment.
+However, the default setting of Linux distribution might not necessarily be optimized for the best performance, which sometimes hinders the understanding of experimental results.
+That was the case when the author first carried out the experiment, and therefore the author explains about it.
 }
 
 \added[id=3rd]{
@@ -39,7 +39,7 @@ which is followed by the explanations of the ipvs load balancer and two of its o
 %
 \added[id=3rd]{
 The author plans to replace IPVS based load balancer with the one based on XDP technology in future work.
-The author has already started the implementation of such load balancer and presented a preliminary result in Chapter~\ref{chapter:Further Improvement}.
+The author has already started the implementation of such load balancer and presents a preliminary result in Chapter~\ref{chapter:Further Improvement}.
 The explanation of XDP technology is necessary to understand why it is supposed to be faster than IPVS.
 }
 
@@ -264,7 +264,7 @@ The agent on the router behaved as though different BGP connections from differe
 
 \FloatBarrier
 
-\section{Multicore Packet Processing}
+\section{Multicore \replaced[id=3rd]{p}{P}acket \replaced[id=3rd]{p}{P}rocessing}
 
 The performance of a computer system has been improved significantly thanks to the development of multi-core CPUs.
 One of the top of the line server processors from Intel now includes up to 28 cores in a single CPU.
@@ -457,7 +457,7 @@ While merely enabling RSS results in four core packet processing, enabling RPS r
 
 \FloatBarrier
 
-\section{Linux kernel's ipvs load balancer}
+\section{\replaced[id=3rd]{IPVS load balancer}{Linux kernel's ipvs load balancer}}
 
 The ipvs is a Layer-4 load balancer capability, which is included in the Linux kernel 2.6.0 released in 2003 or later, 
 to distribute incoming Transmission Control Protocol (TCP) traffic to 
@@ -523,7 +523,7 @@ The author refers to the tunneling mode of the ipvs as ipvs-tun hereafter, in th
 
 \FloatBarrier
 
-\section{eXpress Data Path}
+\section{\replaced[id=3rd]{XDP technology}{eXpress Data Path}}
 
 In Chapter~\ref{chapter:Further Improvement} this author implements a software load balancer using eXpress Data Path (XDP) \cite{hoiland2018express} technology.
 Here the XDP is briefly explaned.
@@ -559,8 +559,25 @@ Use cases for XDP include DDoS protection, packet forwarding, and load balancing
 
 \section{Summary}
 
+\deleted[id=3rd]{
 This chapter has presented background information that is important in this research.
 First, the overlay network used in this study has been explained in detail.
 Then the author explained how to utilize multi-core CPUs for packet processing in Linux,
 which is followed by the explanations of the ipvs load balancer and two of its operation modes.
 Finally, the author briefly explained about novel XDP technology.
+}
+
+\added[id=3rd]{
+This chapter provided explanations of the following technologies; 1) Overlay network
+2) Multicore packet processing 3) IPVS load balancer 4) XDP technology.
+These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+}
+
+\added[id=3rd]{
+  Overlay networks are used to deploy Kubernetes clusters, and its operation mode greatly affects the throughput of the load balancers.
+  The Linux kernel comes with built-in features for multi-core packet processing.
+  However, the setting might not be optimized for the best performance, and lack of knowledge might hinder the understanding of the experimental results.
+  The Linux kernel's IPVS is also necessary to be understood because this is one of the core technology used in this study.
+  The author plans to replace IPVS based load balancer with the one based on XDP technology in order to improve the performance to meet 100 Gbps level in future work.
+  The explanation of XDP technology is necessary to understand why it is supposed to be faster than IPVS.
+}
