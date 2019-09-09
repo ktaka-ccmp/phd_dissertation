@@ -49,20 +49,18 @@ and allow those threads to send out a total of 800 concurrent HTTP requests over
 The output example shows information including per-thread statistics, error counts, throughput in [Request/sec] and data rate in [Transfer/sec].
 
 
-{
-%\setlength{\tabcolsep}{3em}
-\renewcommand{\arraystretch}{1.1}
-
 \begin{table}[h]
 
   \begin{subtable}{1\textwidth}
+
     \centering
-    \begin{tabular}{lll}
-      \hline
-      &\verb|  wrk -c800 -t40 -d30s http://172.16.72.2:8888/       |& \\
-      &\verb|      -c: concurrency, -t: # of thread, -d: duration  |& \\
-      \hline
-    \end{tabular}
+    \begin{minipage}{0.9\columnwidth}
+      \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ wrk -c800 -t40 -d30s http://172.16.72.2:8888/
+     -c: concurrency, -t: # of thread, -d: duration
+      \end{lstlisting}
+    \end{minipage}
+
     \centering\caption{Command line}
   \end{subtable}
  
@@ -70,22 +68,24 @@ The output example shows information including per-thread statistics, error coun
  
   \begin{subtable}{1\textwidth}
     \centering
-    \begin{tabular}{lll}
-      \hline
-      &\verb| Running 30s test @ http://10.254.0.10:81/            |& \\ 
-      &\verb|  40 threads and 800 connections                      |& \\
-      &\verb|  Thread Stats   Avg      Stdev     Max   +/- Stdev   |& \\
-      &\verb|    Latency    15.82ms   41.45ms   1.90s    91.90\%   |& \\
-      &\verb|    Req/Sec     4.14k   342.26     6.45k    69.24\%   |& \\
-      &\verb|  4958000 requests in 30.10s, 1.14GB read             |& \\
-      &\verb|  Socket errors: connect 0, read 0, write 0, timeout 1|& \\
-      &\verb|Requests/sec: 164717.63                               |& \\
-      &\verb|Transfer/sec:     38.86MB                             |& \\
-      \hline
-    \end{tabular}
+    \begin{minipage}{0.9\columnwidth}
+      \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ Running 30s test @ http://10.254.0.10:81/
+   40 threads and 800 connections
+   Thread Stats   Avg      Stdev     Max   +/- Stdev
+     Latency    15.82ms   41.45ms   1.90s    91.90\%
+     Req/Sec     4.14k   342.26     6.45k    69.24\%
+   4958000 requests in 30.10s, 1.14GB read
+   Socket errors: connect 0, read 0, write 0, timeout 1
+ Requests/sec: 164717.63
+ Transfer/sec:     38.86MB
+      \end{lstlisting}
+    \end{minipage}
+
     \centering\caption{Output example}
   \end{subtable}
 
+  \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
     \caption[Benchmark command line and output example]{
@@ -97,38 +97,30 @@ The output example shows information including per-thread statistics, error coun
     \label{tab:bench_example}
   \end{minipage}
 \end{table}
-}
-
-{
-\setlength{\tabcolsep}{2em}
-\renewcommand{\arraystretch}{1.1}
 
 \begin{table}[h]
   \centering
-  \begin{tabular}{ll}
-    \hline 
-    \multicolumn{2}{l}{[Hardware Specification]}   \\
-    & CPU: Xeon E5-2450 2.10GHz (with 8 core, Hyper Threading) \\
-    & Memory: 32GB \\
-    & NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps \\
-    & (Node x 6, Load Balancer x 1, Client x 1) \\
-%    \hline 
-    & \\
-%    \hline 
-    \multicolumn{2}{l}{[Node Software]}  \\
-    & OS: Debian 8.7, linux-3.16.0-4-amd64 \\
-    & Kubernetes v1.10.6 \\
-    & flannel v0.7.0 \\
-    & etcd version: 3.0.15 \\
-%    \hline 
-    & \\
-%    \hline 
-    \multicolumn{2}{l}{[Container Software]}   \\
-    & Keepalived: v1.3.2 (12/03,2016) \\
-    & nginx : 1.11.1 (load balancer), 1.13.0 (web server) \\
-    \hline
-  \end{tabular}
+    \begin{minipage}{0.9\columnwidth}
+      \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ [Hardware Specication]
+    CPU: Xeon E5-2450 2.10GHz (with 8 core, Hyper Threading)
+    Memory: 32GB
+    NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps
+    (Node x 6, Load Balancer x 1, Client x 1)
 
+ [Node Software]
+    OS: Debian 8.7, linux-3.16.0-4-amd64
+    Kubernetes v1.10.6
+    flannel v0.7.0
+    etcd version: 3.0.15
+
+ [Container Software]
+    Keepalived: v1.3.2 (12/03,2016)
+    nginx : 1.11.1 (load balancer), 1.13.0 (web server)
+      \end{lstlisting}
+    \end{minipage}
+
+  \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
     \caption[Hardware and software specifications]{
@@ -138,7 +130,6 @@ The output example shows information including per-thread statistics, error coun
     \label{tab:hw_machine_spec}
   \end{minipage}
 \end{table}
-}
 
 Table~\ref{tab:hw_machine_spec} shows hardware and software configuration used in the experiment.
 The author used a total of eight servers; six servers for Nodes, one for the load balancer and one for the benchmark client, with all having the same hardware specifications.
@@ -427,29 +418,27 @@ The vxlan mode of the flannel is used for the overlay network in both of the clo
 As for multicore packet processing, different settings depending on the number of prepared queues for VMs are used. 
 The setting \enquote{(RSS, RPS) = (on, off)} is used in GCP and the setting \enquote{(RSS, RPS) = (off, on)} is used in AWS.
 
-{
-\setlength{\tabcolsep}{3em}
-\renewcommand{\arraystretch}{1.1}
-
 \begin{table}[h]
+
   \centering
-  \begin{tabular}{ll}
-    \hline 
-    \multicolumn{2}{l}{[GCP VM Instance Specification for Client and Web Server Nodes ]}   \\
-    & Instance type: custom instance \\
-    & CPU: Xeon 2.2GHz, 16 cpus \hspace{2cm} \\
-    & Memory: 16GB \\
-    & NIC: virtio\_net /w 16 rx-queues \\
-    & (Node x 6, Client x 1) \\
-    & \\
-    \multicolumn{2}{l}{[GCP VM Instance Specification for Load balancer Node ]}   \\
-    & Instance type: custom instance \\
-    & CPU: Xeon 2.2GHz, 8, 16, 32 cpus \hspace{2cm} \\
-    & Memory: 16GB \\
-    & NIC: virtio\_net /w 8, 16, 32 rx-queues \\
-    & (Load balancer x 1) \\
-    \hline
-  \end{tabular}
+  \begin{minipage}{0.9\columnwidth}
+    \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ [GCP VM Specication for Client and Web Server Nodes ]
+   Instance type: custom instance
+   CPU: Xeon 2.2GHz, 16 cpus
+   Memory: 16GB
+   NIC: virtio_net /w 16 rx-queues
+   (Node x 6, Client x 1)
+
+ [GCP VM Specication for Load balancer Node ]
+   Instance type: custom instance
+   CPU: Xeon 2.2GHz, 8, 16, 32 cpus
+   Memory: 16GB
+   NIC: virtio_net /w 8, 16, 32 rx-queues
+   (Load balancer x 1)
+    \end{lstlisting}
+  \end{minipage}
+
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
@@ -462,31 +451,28 @@ Since the same number of rx-queues as the number CPU is prepared, the setting wi
     \label{fig:gcp_machine_spec}
   \end{minipage}
 \end{table}
-}
-
-{
-\setlength{\tabcolsep}{3em}
-\renewcommand{\arraystretch}{1.1}
 
 \begin{table}[h]
+
   \centering
-  \begin{tabular}{ll}
-    \hline 
-    \multicolumn{2}{l}{[AWS VM Instance Specification for Client and Web Server Nodes ]}   \\
-    & Instance type: m4.4xlarge \\
-    & CPU: Xeon E5-2686 v4 2.30GHz, 16 cpus \\
-    & Memory: 64GB \\
-    & NIC: ixgbevf /w 2 rx-queues \\
-    & (Node x 6, Client x 1) \\
-    & \\
-    \multicolumn{2}{l}{[AWS VM Instance Specification for Load balancer Node ]}   \\
-    & Instance type: c4.2xlarge, c4.4xlarge, c4.8xlarge  \\
-    & CPU: Xeon E5-2666 v3 2.90GHz, 8, 16, 36 cpus \\
-    & Memory: 15GB, 30GB, 60GB \\
-    & NIC: ixgbevf /w 2 rx-queues \\
-    & (Load balancer x 1) \\
-    \hline
-  \end{tabular}
+  \begin{minipage}{0.9\columnwidth}
+    \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ [AWS VM Specication for Client and Web Server Nodes ]
+   Instance type: m4.4xlarge
+   CPU: Xeon E5-2686 v4 2.30GHz, 16 cpus
+   Memory: 64GB
+   NIC: ixgbevf /w 2 rx-queues
+   (Node x 6, Client x 1)
+
+ [AWS VM Specication for Load balancer Node ]
+   Instance type: c4.2xlarge, c4.4xlarge, c4.8xlarge
+   CPU: Xeon E5-2666 v3 2.90GHz, 8, 16, 36 cpus
+   Memory: 15GB, 30GB, 60GB
+   NIC: ixgbevf /w 2 rx-queues
+   (Load balancer x 1)
+    \end{lstlisting}
+  \end{minipage}
+
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
@@ -498,8 +484,6 @@ Since there are only two rx-queues, the setting with \enquote{(rss, rps) = (off,
     \label{fig:aws_machine_spec}
   \end{minipage}
 \end{table}
-}
-
 
 \begin{figure}[h]
   \centering
@@ -570,40 +554,36 @@ After that, in order to explore the scalability, the author also measured the th
   \end{minipage}
 \end{figure}
 
-{
-\setlength{\tabcolsep}{1em}
-\renewcommand{\arraystretch}{1.2}
-
 \begin{table}[h]
   \centering
-  \begin{tabular}{ll}
-    \hline 
-    \multicolumn{2}{l}{[Hardware Specification]}   \\
-    & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
-    & Memory: 32GB \\
-    & NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps \\
-    & (Node x 6, Load Balancer x 4) \\
-    & \\
-    & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
-    & Memory: 32GB \\
-    & NIC: Intel X550 \\
-    & (Client x 1) \\
-    & \\
-    \multicolumn{2}{l}{[Node Software]}  \\
-    & OS: Debian 9.5, linux-4.16.8 \\
-    & Kubernetes v1.5.2 \\
-    & flannel v0.7.0 \\
-    & etcd version: 3.0.15 \\
-    & \\
-    \multicolumn{2}{l}{[Container Software]}   \\
-    & Keepalived: v1.3.2 (12/03,2016) \\
-    & nginx : 1.15.4 (web server) \\
-    & \\
-    \multicolumn{2}{l}{[BGP Software]}   \\
-    & gobgp version 1.33 (route reflector \& benchmark client) \\
-    & exabgp 3.4.17 (load balancer) \\
-  \hline 
-  \end{tabular}
+  \begin{minipage}{0.9\columnwidth}
+    \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ [Hardware Specication]
+   CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading)
+   Memory: 32GB
+   NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps
+   (Node x 6, Load Balancer x 4)
+   CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading)
+   Memory: 32GB
+   NIC: Intel X550
+   (Client x 1)
+
+ [Node Software]
+   OS: Debian 9.5, linux-4.16.8
+   Kubernetes v1.5.2
+   flannel v0.7.0
+   etcd version: 3.0.15
+
+ [Container Software]
+   Keepalived: v1.3.2 (12/03,2016)
+   nginx : 1.15.4 (web server)
+
+ [BGP Software]
+   gobgp version 1.33 (route reector & benchmark client)
+   exabgp 3.4.17 (load balancer)
+    \end{lstlisting}
+  \end{minipage}
+
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
@@ -614,7 +594,6 @@ After that, in order to explore the scalability, the author also measured the th
     \label{tab:ecmp-hw_sw_spec}
   \end{minipage}
 \end{table}
-}
 
 Figure~\ref{fig:ecmp-benchmark-schem} shows the schematic diagram of the experimental setup. Table~\ref{tab:ecmp-hw_sw_spec} summarizes hardware and software specifications.
 Notable differences from the previous throughput experiment in Figure~\ref{fig:benchmark-schem} and Table~\ref{tab:hw_machine_spec} are as follows;
@@ -624,10 +603,6 @@ Notable differences from the previous throughput experiment in Figure~\ref{fig:b
 4) Some of the software have been updated to the most recent versions at the time of the experiment.
 
 \FloatBarrier
-
-{
-\setlength{\tabcolsep}{1em}
-\renewcommand{\arraystretch}{1.2}
 
 \begin{table}[h]
 
@@ -694,7 +669,6 @@ These load balancers share the same group of nodes, i.e., (10.0.0.105,10.0.0.106
     \label{tab:exabgp_routing_table}
   \end{minipage}
 \end{table}
-}
 
 First, the author examined ECMP functionality by monitoring the routing table on the benchmark client.
 Table~\ref{tab:exabgp_routing_table}~(\subref{tab:single}) shows the routing table entry on the router when a single load balancer pod exists.

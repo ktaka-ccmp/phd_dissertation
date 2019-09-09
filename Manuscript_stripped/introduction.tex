@@ -51,7 +51,7 @@ Sometimes the web servers also store and update important data into the database
 If a web application is portable, it will become much easier for web application providers to migrate the service when there is a disaster, or when they want to expand their business to different geographical locations, etc. 
 
 
- Nowadays, an outage of the web application service will cause a critical problem \cite{}.
+ Nowadays, an outage of the web application service will cause a critical problem.
 If something happens to a web application cluster in a data center, people will not be able to access the necessary information.
 %
 For example, if web pages run by local government stops, people will not be able to access the information regarding public services.
@@ -160,7 +160,7 @@ In short, cloud computing brought users agility, flexibility, and cost-effective
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.8\columnwidth]{Figs/physical_vm_container.png}
+\includegraphics[width=0.95\columnwidth]{Figs/physical_vm_container.png}
 \end{center}
 
 \par\bigskip
@@ -223,17 +223,20 @@ And to simplify the deployment of a complex web application that consists of int
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{Figs/container_management_system}
+\includegraphics[width=0.95\columnwidth]{Figs/container_management_system}
 \end{center}
-\caption{
-A web application cluster and container orchestrator.
-}
-\centering\parbox[c]{0.9\columnwidth}{
-A web application cluster consists of nginx (http), redis (key-value store) and mysqld (database) is depicted in this figure. 
-Each of the component consists of a container cluster.
-Container orchestrator receive configuration file(1), schedule containers(2), set up ingress routing using load balancer(3) and set up internal routing(4).
-}
-\label{fig:container_management_system}
+
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[A web application cluster and container orchestrator]{
+      A web application cluster and container orchestrator.
+      A web application cluster consists of nginx (http), redis (key-value store) and mysqld (database) is depicted in this figure. 
+      Each of the component consists of a container cluster.
+      Container orchestrator receive configuration file(1), schedule containers(2), set up ingress routing using load balancer(3) and set up internal routing(4).
+      }
+    \label{fig:container_management_system}
+  \end{minipage}
 \end{figure}
 
 While container tools focused on launching individual container, a container orchestrator is a tool to simplify the management of a cluster of containers that are launched on multiple servers.
@@ -293,11 +296,17 @@ Because of the broader scope of applications, an out of box Mesos might not be p
     \footnotesize{$^{*}$Users are expected to set up a static route to one of the internal load balancers manually. \par
     $^{**}$Support for Cloud load balancer is only available in limited infrastructures including GCP, AWS, Azure and OpenStack. }
   }
-  \caption{Container orchestrator comparison.}
-  \centering\parbox[c]{0.9\columnwidth}{
-    Important aspects of features as web application infrastructures are compared.
-  }
-  \label{table:orchestrator_comparison}
+
+    \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Container orchestrator comparison]{
+      Container orchestrator comparison.
+      Important aspects of features as web application infrastructures are compared.
+    }
+    \label{table:orchestrator_comparison}
+  \end{minipage}
+
 \end{table}
 
 %\paragraph{}
@@ -373,7 +382,6 @@ Once the traffic reaches the nodes, Kubernetes nicely route them to appropriate 
 %
 However, in environments where there are no supported load balancers, Kubernetes fails to automatically set up the route for ingress traffic.
 In such cases Kubernetes expects users to manually set up a route for the ingress traffic, which generally lacks redundancy and scalabilities.
-
 In this way, Kubernetes fails to provide a uniform interface to container clusters, which degrades the portabilities of web applications.
 
 Other container orchestrators, e.g. Docker swarm or Mesos/Marathon, do not even have partial support for load balancers and expect users to manually set up the route for ingress traffic.
@@ -383,29 +391,20 @@ Therefore this is a generic problem that current container cluster orchestrators
 
 \subsection{The purpose}
 
-
   The ultimate goal of this research is to improve the portability of web applications by providing global container infrastructure.
   Doing so will give users the freedom to migrate their services when there is a disaster, expand their businesses, and prevent vendor lock-ins, etc.
   To bring this into reality, container orchestrators need to function as a common middleware. Container orchestrators must provide the same interfaces to web applications, regardless of the base infrastructure, e.g., cloud providers or on-premise data centers.
   However, existing orchestrators fail to do so, since the way to route the ingress traffic from the Internet is either by setting up a static route or by relying on cloud load balancers.
 
-
-
   The purpose of this research is to propose a generic architecture that can set up a route for ingress traffic automatically without relying on the cloud load balancers.
   For that purpose, the author proposes a cluster of software load balancer containers, instead of relying on load balancers provided by infrastructures.
 
   Proposed load balancer can run both in cloud infrastructures and in on-premise data centers and can be utilized to set up the route for ingress traffic automatically.
-
-
-  The proposed load balancer should possess{have} the following features;
-
-%
+The proposed load balancer should possess the following features;
 1) The proposed load balancer properly functions both in on-premise data centers and cloud infrastructures.
 2) The proposed load balancer has redundancy and scalability.
 3) The proposed load balancer can set up routes for ingress traffic automatically.
 4) The proposed load balancer can update the load balancing table appropriately.
-
-
 
 % for redundancy and scalability.
 %\subsection{Load balancer for container clusters}

@@ -16,31 +16,28 @@ The setting \enquote{ (RSS, RPS)=(on, off)} is used because interrupts from each
 As a result, packet processing is distributed to all of the 16 logical cores, which results in the best performance in most of the cases.
 The host-gw mode is used as the backend mode of the flannel overlay network.
 
-{
-\setlength{\tabcolsep}{1em}
-\renewcommand{\arraystretch}{1.2}
-
 \begin{table}[h]
   \centering
-  \begin{tabular}{ll}
-    \hline 
-    \multicolumn{2}{l}{[Hardware Specification]}   \\
-    & CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading) \\
-    & Memory: 32GB \\
-    & NIC: Intel X550 with 64 rx-queues (16 activated), 10 Gbps \\
-    & (Node x 6, Load Balancer x 1, Client x 1)) \\
-    & \\
-    \multicolumn{2}{l}{[Node Software]}  \\
-    & OS: Debian 9.5, linux-4.16.8 \\
-    & Kubernetes v1.5.2 \\
-    & flannel v0.7.0 \\
-    & etcd version: 3.0.15 \\
-    & \\
-    \multicolumn{2}{l}{[Container Software]}   \\
-    & Keepalived: v1.3.2 (12/03,2016) \\
-    & nginx : 1.15.4 (web server) \\
-  \hline 
-  \end{tabular}
+  \begin{minipage}{0.9\columnwidth}
+    \begin{lstlisting}[frame=lines,breaklines=true,basicstyle=\small\ttfamily]
+ [Hardware Specication]
+   CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading)
+   Memory: 32GB
+   NIC: Intel X550 with 64 rx-queues (16 activated), 10 Gbps
+   (Node x 6, Load Balancer x 1, Client x 1))
+
+ [Node Software]
+   OS: Debian 9.5, linux-4.16.8
+   Kubernetes v1.5.2
+   flannel v0.7.0
+   etcd version: 3.0.15
+
+ [Container Software]
+   Keepalived: v1.3.2 (12/03,2016)
+   nginx : 1.15.4 (web server)
+    \end{lstlisting}
+  \end{minipage}
+
   \par\bigskip
   \centering
   \begin{minipage}{0.9\columnwidth}
@@ -51,7 +48,6 @@ The host-gw mode is used as the backend mode of the flannel overlay network.
     \label{tab:hw_sw_spec_10g}
   \end{minipage}
 \end{table}
-}
 
 \begin{figure}[h]
   \begin{subfigure}[t]{\columnwidth}
