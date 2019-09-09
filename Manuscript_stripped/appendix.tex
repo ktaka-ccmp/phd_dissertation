@@ -361,7 +361,7 @@ The authors have considered another redundant architecture using the VRRP protoc
 However, it turned out to be less preferable than the proposed ECMP redundancy with following reasons;
 (a)Redundancy is in an active-backup manner.
 (b)The VRRP protocols relied on multicast, which is often not supported in the overlay network environments.
-Here we explain our considerations.
+Here\replaced[id=4th]{, the author}{ we} explain our considerations.
 
 \begin{figure}[h]
 \begin{center}
@@ -395,7 +395,7 @@ Therefore the unicast mode is not feasible in container cluster environment.
 
 The other drawback compared with the ECMP case is that the redundancy of VRRP is provided in Active-Backup manner.
 This means that a single software load balancer limits the overall performance of the entire container cluster.
-Therefore we believe the ECMP redundancy is better than VRRP in our use cases.
+Therefore\replaced[id=4th]{, the author believes that}{ we believe} the ECMP redundancy is better than VRRP\deleted[id=4th]{ in our use cases}.
 
 
 

@@ -231,12 +231,8 @@ The proposed load balancer in this thesis aims to be portable using container te
   \end{minipage}
 \end{table}
 
-
-
 Regarding the cloud load balancers, Maglev and Ananta try to differentiate their own cloud infrastructure by seeking the best performances.
-
 On the other hand, this study attempts to provide a load balancer common to any infrastructure by using standard OSS technologies.
-
 
 Katran is an OSS software load balancer and hence can be used outside of their infrastructure.
 The proposed load balancer in this thesis differs in that it is portable due to containerization, and it is integrated with container infrastructure.
@@ -250,22 +246,17 @@ For example, GORB\cite{Sibiryov2015} and clusterf\cite{Aaltodoc:http://urn.fi/UR
 that setup ipvs rules in the kernel inside the Docker container. 
 They utilize running container information stored in key-value storages
 like Core OS etcd\cite{CoreOSEtcd} and HashiCorp's Consul\cite{HashiCorpConsul}. 
-Although these were usable to implement a containerized load balancer in our proposal, we did not use them, 
+Although these were usable to implement a containerized load balancer in our proposal, \replaced[id=4th]{the author}{we} did not use them, 
 since Kubernetes ingress framework already provided the methods to retrieve running container information through standard API.
-
 These are merely alternative technology components used in this study.
-
 
 \section{Summary}
 
 In this chapter, the author presented the related work regarding the following subjects:
 (1) Portability of web applications.
-
-
 (2) Ingress routing in Kubernetes.
 (3) Cloud load balancers.
 (4) Load balancer tools in the container context.
-
 
 There have been numerous works regarding the portability of web applications.
 This study is more focused on practical architecture and verification of its feasibility.

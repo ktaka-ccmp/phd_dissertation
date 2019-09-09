@@ -162,23 +162,27 @@ In short, cloud computing brought users agility, flexibility, and cost-effective
 \begin{center}
 \includegraphics[width=0.8\columnwidth]{Figs/physical_vm_container.png}
 \end{center}
-\captionsetup{margin=1cm}
-\caption{
-The difference in physical server usage between (a) Bare Metal servers, (b) Virtual Machine and (c) Container technology.
-}
 
-\centering\parbox[c]{0.9\columnwidth}{
-(a) Bare Metal servers is a word to describe conventional physical servers in contrast to Virtual Machines.
-On top of a Bare Metal server, an operating system and application programs are running.
-(b) Virtual Machine technology utilizes physical server hardware and a hypervisor.
-The hypervisor provides generic representations of server hardware, which are called virtual machines.
-A full operating system and applications are running on each of the virtual machines.
-(c) Container technology separates applications by containing them to their respective namespaces.
-Applications can not see each other's file systems, networks, users and process IDs unless they belong to the same namespace.
-Since container technology merely relies on Linux kernel's namespace function and optionally cgroup, a containerized process does not have any additional overhead compared with a process running on a conventional physical server and operating system.
-Container technology can be also utilized on top of virtual machines.
-}
-\label{fig:physical_vm_container}
+\par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[Bare Metal, Virtual Machine and Container technology]{
+      \added[id=4th]{
+        Bare Metal, Virtual Machine and Container technology
+      }
+      The difference in physical server usage between (a) Bare Metal servers, (b) Virtual Machine and (c) Container technology.
+      (a) Bare Metal servers is a word to describe conventional physical servers in contrast to Virtual Machines.
+      On top of a Bare Metal server, an operating system and application programs are running.
+      (b) Virtual Machine technology utilizes physical server hardware and a hypervisor.
+      The hypervisor provides generic representations of server hardware, which are called virtual machines.
+      A full operating system and applications are running on each of the virtual machines.
+      (c) Container technology separates applications by containing them to their respective namespaces.
+      Applications can not see each other's file systems, networks, users and process IDs unless they belong to the same namespace.
+      Since container technology merely relies on Linux kernel's namespace function and optionally cgroup, a containerized process does not have any additional overhead compared with a process running on a conventional physical server and operating system.
+      Container technology can be also utilized on top of virtual machines.
+    }
+    \label{fig:physical_vm_container}
+  \end{minipage}
 \end{figure}
 
 \subsection{Container technology}
