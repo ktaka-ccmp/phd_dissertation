@@ -1,0 +1,220 @@
+In this chapter, the author presents the related work of this study.
+The purpose of this study has been to improve the portability of web applications by using container orchestrators as a common middleware.
+Doing so will give users the freedom to migrate their services when there is a disaster, expand their businesses, and prevent vendor lock-ins, etc.
+However, none of the existing orchestrators has a standard method to fully automate the setup of routes for ingress traffic from the Internet, regardless of different type of infrastructures.
+As as a result, they fail to provide the standard interfaces to web applications.
+Therefore, the author proposes a cluster of software load balancer containers for Kubernetes, which can be used in different infrastructures.
+
+Following this logic, here the author presents related work regarding the following subjects:
+(1) Portability of web applications.
+(2) Software load balancers for Kubernetes.
+In addition to these, there are several software load balancers for cloud environments.
+The author presents related work regarding (3) Cloud load balancers.
+
+Cloud providers have developed cloud load balancers, aiming to differentiate their cloud infrastructure by seeking the best performances, while the author aims to provide a portable load balancer common to any infrastructure by using standard OSS technologies.
+%
+Despite the difference in purposes, it is worthwhile comparing the technology components in order to assess if the proposed load balancer is state of the art.
+
+
+\section{Portability of web applications}
+
+\paragraph{\bf Portability:}
+
+There have been numerous works that identify importance of interoperability, portability and avoiding vendor lock-in issues in cloud computing \cite{kratzke2016clouns,opara2014critical,opara2016critical,mansour2016interoperability,kaur2017interoperability,kaur2017interoperability,di2015cloud}.
+There are good reviews about this subject \cite{kaur2017interoperability,petcu2014portability}.
+According to one of the articles the vendor lock-in problem is a direct consequence of the lack of interoperability and portability.
+%
+Opara-Martins et al. \cite{opara2016critical} conducted a survey of 114 participants and argue from a business perspective that \enquote{vendor lock-in is a major barrier to the adaption of cloud computing, due to the lack of standardization.}
+%
+As for solutions for the portability issues,
+some suggest migration of VM or container \cite{nagin2011inter,messina2014trust} to different locations.
+The others suggest Meta Cloud \cite{satzger2013winds} and federations \cite{K8sFederation2017}.
+
+Federations use multiple clouds infrastructures in a coordinated way.
+Federations can also be called multi-cloud or inter-cloud.
+The following Kubernetes based federations also use multiple data centers or cloud infrastructures in a coordinated way, where Kubernetes controls each of the data centers and acts as a common middleware.
+
+
+\paragraph{\bf Kubernetes federation:}
+
+Kubernetes developers are trying to add federation \cite{K8sFederation2017} capability for handling situations 
+where multiple Kubernetes clusters \footnote{The {\em Kubernetes cluster} refers to a server cluster 
+controlled by the Kubernetes container management system, in this thesis.} 
+are deployed on multiple cloud providers or on-premise data centers. 
+Those Kubernetes clusters are managed by the Kubernetes federation API server (federation-apiserver).
+According to their explanation\cite{K8sFederation2017}, the federation capability provides the followings: 
+\begin{quote}
+\enquote{
+High Availability: By spreading load across clusters and auto configuring DNS servers and load balancers, federation minimizes the impact of cluster failure.
+Avoiding provider lock-in: By making it easier to migrate applications across clusters, federation prevents cluster provider lock-in.
+}
+\end{quote}
+
+The approach taken in Kubernetes federation aligns with this thesis.
+However, how each Kubernetes cluster is run on different types of cloud providers
+and/or on-premise data centers, especially when the load balancers of such environments are not supported by Kubernetes, 
+seems beyond the scope of that project.
+This thesis is mainly focused on how to provide a common load balancer to different types of infrastructures.
+
+There are other works \cite{kim2019tosca,goethals2019fuse} regarding Kubernetes federation. 
+Kim et.al. \cite{kim2019tosca} federate multiple Kubernetes clusters in the different cloud regions using TOSCA \cite{standard2013topology,binz2012portable} based approach.
+Goethals et.al.\cite{goethals2019fuse} connects different data centers using OpenVPN \cite{feilner2006openvpn} and deploy Kubernetes cluster in virtual data center that span across multiple locations.
+These justify that there are needs to commonize varying cloud infrastructures and data centers using Kubernetes as a common middleware.
+This thesis differs in that it is more focused on the load balancer features that are overlooked in the cloud portability context.
+
+\section{Software load balancers for Kubernetes}
+
+In this study the author proposed a container cluster architecture and verified its feasibility using Kubernetes as an example.
+The author proposed a cluster of software load balancer using IPVS in container.
+Other groups also have proposed software load balancers for Kubernetes.
+
+First, Kubernetes comes with proxy daemon that setup iptables DNAT based internal load balancer on every node\footnote{
+Until the author published the paper \cite{takahashi2018portable} regarding this thesis, the internal load balancer only used iptables DNAT.
+Latest release of the Kubernetes offers the internal load balancer using IPVS.
+}.
+%
+Once the ingress traffic reaches one of the nodes, the packets are directed to existing {\em pods}.
+In conventional setup, the traffic is manually routed to one of the nodes, which lacks the redundancy and scalability.
+In cloud environments where there is supported load balancers, Kubernetes has a feature to automatically setup the cloud load balancer, so that the traffic is distributed all of the existing nodes. 
+
+Nginx-ingress\cite{Pleshakov2016,NginxInc2016} utilizes the ingress\cite{K8sIngress2017} capability of Kubernetes,to implement a containerized Nginx proxy as a load balancer.
+Nginx itself is famous as a high-performance web server program that also has the functionality of a Layer-7 load balancer.
+Nginx is capable of handling Transport Layer Security(TLS) encryption, as well as Uniform Resource Identifier(URI) based switching.
+However, the flip side of Nginx is that it is slower than Layer-4 switching.
+
+The kube-keepalived-vip\cite{Prashanth2016} project is trying to use Linux kernel's ipvs\cite{Zhang2000} 
+load balancer capabilities by containerizing the keepalived\cite{ACassen2016}.
+The kernel ipvs function is set up in the host OS's net namespaces and is shared among multiple web services, as a part of the Kubernetes cluster infrastructure.
+Our approach differs in that the ipvs rules are set up in container's net namespaces 
+and function as a part of the web service container cluster itself.
+The load balancers are configurable one by one, and are  movable with the cluster once the migration is needed.
+The kube-keepalived-vip's approach lacks flexibility and portability whereas ours provide them.
+
+MetalLB \cite{metallb} is a load-balancer implementation for bare metal Kubernetes clusters, using standard routing protocols.
+It has two operating modes, layer 2 mode, and BGP mode.
+In the layer 2 mode, one of the nodes is chosen as a leader and the leader sends out gratuitous ARP (ipv4) or NDP (ipv6) packets to notify the upstream router.
+The leader also responds to ARP and NDP requests.
+In the BGP mode, each of the nodes establishes peering connection with the upstream router, announces themselves as a next hop of the service IP, and as a result, ECMP routing table can be created in the upstream router.
+Once the ingress traffic reaches one of the nodes, the packets are directed to existing {\em pods} by the internal load balancer.
+The problems with this implementation are as follows:
+In the case of the layer 2 mode, failover is slow (more than about 10 secs) \cite{metallb}.
+The ingress traffic is distributed to all of the nodes.
+It is impossible to localize the routes to a limited number of the nodes.
+
+\begin{table}[h]
+  \centering
+  \resizebox{\textwidth}{!}{
+  \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+    & \multicolumn{1}{c|}{OSS} & \begin{tabular}{c}Container \\friendly\end{tabular} & \multicolumn{1}{c|}{Redundancy} & \multicolumn{1}{c|}{Forwarding} & \multicolumn{1}{c|}{L3DSR} \\ \hline
+    Conventional & No & No$^{*}$ & Static & iptables DNAT/IPVS & No \\ \hline
+    Nginx-ingress & Yes & Yes & No & nginx & No  \\ \hline
+    kube-keepalived & Yes & Yes & VRRP & IPVS & No  \\ \hline
+    Metallb & Yes & Yes & ECMP$^{**}$ & IPVS & No  \\ \hline
+    This work & Yes & Yes & ECMP & IPVS$^{***}$ & IPIP  \\ \hline
+  \end{tabular}
+  }
+
+  \par\bigskip
+  \begin{minipage}{1.0\columnwidth}
+    \caption[Comparison of software load balancers for Kubernetes]{
+    Comparison of software load balancers for Kubernetes. 
+  $^{*}$ Conventional technology uses cloud load balancers if available, which is not necessarily container friendly. 
+  $^{**}$ Metallb also supports layer 2 mode, which uses unsolicited ARP or NDP packets to update layer 2 address table in the upstream router. 
+  $^{***}$ The author plans to add XDP feature in future work.
+    }   
+    \label{tabl:k8s_lb}
+  \end{minipage}
+
+\end{table}
+
+Table~\ref{tabl:k8s_lb} compares key features for above mentioned load balancers.
+Regarding the redundancy, ECMP is better than VRRP because all the load balancer are active in the former case whereas only one of the load balancer is active in the latter.
+As far as the L3DSR feature is concerned, the load balancer with this feature is beneficial because of the better performance.
+The proposed load balancer is better than those in related works in these respects.
+
+The proposed load balancer in this study differs in that it is deployed as part of a web application, giving the full control of the routing to the users rather than leaving them to the cluster administrators.
+This will help resolve issues when there are routing problems.
+
+\section{Cloud load balancers}
+
+
+As far as the cloud load balancers are concerned, two articles and one open source project have been identified.
+Google's Maglev \cite{eisenbud2016maglev} is a software load balancer used in Google Cloud Platform(GCP).
+Maglev uses modern technologies including per flow ECMP and kernel bypass for user space packet processing.
+Resulting performance provided by single hardware has been more than sufficient for 10 Gbps network.
+Maglev serves as the GCP's load balancer that is used by the Kubernetes.
+Maglev is not a product that users can use outside of GCP nor is an open source software, while the users need open source software load balancer that can run even in on-premise data centers.
+
+Microsoft's Ananta \cite{patel2013ananta} is another software load balancer implementation using ECMP and Windows Filtering Platform based kernel-mode driver.
+Ananta can be solely used in Microsoft's Azure cloud infrastructure\cite{patel2013ananta}.
+The proposed load balancer by the author is different in that it aims to be used in every cloud provider and on-premise data centers.
+
+Facebook's Katran \cite{2018katran} is an OSS software load balancer using Linux XDP technology.
+Katran also uses ECMP for redundancy.
+Although Katran is expected to have high performance levels, no data has been shown yet.
+The proposed load balancer in this thesis aims to be portable using container technology while Katran has no such features.
+
+\begin{table}[h]
+  \centering
+  \resizebox{\textwidth}{!}{
+  \begin{tabular}{|l|c|c|c|c|c|}
+    \hline
+    & \multicolumn{1}{c|}{OSS} & \begin{tabular}{c}Container \\friendly\end{tabular} & \multicolumn{1}{c|}{Redundancy} & \multicolumn{1}{c|}{Forwarding} & \multicolumn{1}{c|}{L3DSR} \\ \hline
+    Maglev & No & No & ECMP & Flexible I/O layer & GRE  \\ \hline
+    Ananta & No & No & ECMP & Windows Filtering Platform  & IPIP  \\ \hline
+    Katran& Yes & No & ECMP & XDP & IPIP  \\ \hline
+    This work & Yes & Yes & ECMP & IPVS (XDP in future) & IPIP  \\ \hline
+  \end{tabular}
+  }
+
+  \par\bigskip
+  \begin{minipage}{1.0\columnwidth}
+    \caption[Cloud load balancer comparison]{
+    Cloud load balancer comparison.
+    }   
+    \label{tabl:cloud_lb}
+  \end{minipage}
+
+  \par\bigskip
+  \begin{minipage}{0.9\columnwidth}
+    \label{tabl:cloud_lb}
+  \end{minipage}
+\end{table}
+
+Regarding the cloud load balancers, Maglev and Ananta try to differentiate their own cloud infrastructure by seeking the best performances.
+On the other hand, this study attempts to provide a load balancer common to any infrastructure by using standard OSS technologies.
+Katran is an OSS software load balancer and hence can be used outside of their infrastructure.
+The proposed load balancer in this thesis differs in that it is portable due to containerization, and it is integrated with container infrastructure.
+Despite these differences, the technology components used in this work and the cloud load balancers are similar, which indicates that the proposed load balancer is state of the art.
+
+\section{Load balancer tools in the container context}
+
+There are several other projects where efforts have been made to utilize ipvs in the context of container environment.
+For example, GORB\cite{Sibiryov2015} and clusterf\cite{Aaltodoc:http://urn.fi/URN:NBN:fi:aalto-201611025433} are daemons 
+that setup ipvs rules in the kernel inside the Docker container. 
+They utilize running container information stored in key-value storages
+like Core OS etcd\cite{CoreOSEtcd} and HashiCorp's Consul\cite{HashiCorpConsul}. 
+Although these were usable to implement a containerized load balancer in our proposal, \replaced[id=4th]{the author}{we} did not use them, 
+since Kubernetes ingress framework already provided the methods to retrieve running container information through standard API.
+These are merely alternative technology components used in this study.
+
+\section{Summary}
+
+In this chapter, the author presented the related work regarding the following subjects:
+(1) Portability of web applications.
+(2) Software load balancers for Kubernetes.
+(3) Cloud load balancers.
+(4) Load balancer tools in the container context.
+
+There have been numerous works regarding the portability of web applications.
+This study is more focused on practical architecture and verification of its feasibility.
+
+While the author proposes a portable load balancer for container clusters and verifies its feasibility using Kubernetes, 
+other groups also have proposed ingress routing using IPVS for Kubernetes.
+Compared with those related works, the proposed load balancer in this study differs in that it is deployed as part of a web application.
+Giving the full control of the routing to the users rather than leaving them to the cluster administrators will help resolve issues when there are problems.
+
+Regarding the cloud load balancers, all of them try to differentiate their own cloud infrastructure by seeking the best performances.
+On the other hand, this study attempts to provide a load balancer common to any infrastructure by using standard OSS technologies.
+Despite the differences in purpose, the technology components used in this work and the related work are similar, which indicates that the proposed load balancer is state of the art.

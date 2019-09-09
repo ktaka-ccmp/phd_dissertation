@@ -22,7 +22,6 @@
 \ProvidesClass{sokendai_thesis}[2015/11/22 v1.4]
 \LoadClass[12pt,a4paper,twoside]{book}
 
-
 % =====================================================
 %  Packages
 % =====================================================
@@ -52,6 +51,8 @@
 %\captionsetup[lstlisting]{format=listing}
 \usepackage{subcaption}
 \captionsetup{compatibility=false}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
 \usepackage{fancyvrb}
 
 \usepackage[export]{adjustbox}
@@ -61,7 +62,7 @@
 \usepackage{placeins}
 
 \usepackage[table,xcdraw]{xcolor}
-\usepackage{biblatex}
+\usepackage[sorting=none]{biblatex}
 \addbibresource{Bib/reference.bib}
 
 %\usepackage{pmboxdraw}
@@ -111,7 +112,8 @@
 %\doublespacing % double space
 %\renewcommand{\baselinestretch}{1.2}
 
-\usepackage[hmarginratio=1:1]{geometry}
+\usepackage[hmarginratio=3:2,twoside]{geometry}
+%\usepackage[hmarginratio=1:1]{geometry}
 
 
 % =====================================================
@@ -173,7 +175,6 @@
 % Go along with these packages
 \usepackage[nottoc]{tocbibind}
 \usepackage[title,titletoc]{appendix}
-
 
 % =====================================================
 %  Clickable PDF
@@ -329,8 +330,6 @@ in partial fulfillment of the requirements for the degree of
 %            - \mytodo[inline]{This is a inline todo note}
 %            - \mytodo{This is a todo note at margin}
 %
-
-
 
 
 

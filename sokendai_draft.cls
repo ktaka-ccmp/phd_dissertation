@@ -43,8 +43,6 @@
 %\usepackage{kantlipsum}
 
 %-ktaka------------------------------
-%\usepackage{endfloat}
-
 \usepackage{csquotes}
 %\usepackage[hyphens]{url}
 
@@ -53,6 +51,7 @@
 %\captionsetup[lstlisting]{format=listing}
 \usepackage{subcaption}
 \captionsetup{compatibility=false}
+\renewcommand\thesubfigure{(\alph{subfigure})}
 \usepackage{fancyvrb}
 
 \usepackage[export]{adjustbox}
@@ -62,8 +61,7 @@
 \usepackage{placeins}
 
 \usepackage[table,xcdraw]{xcolor}
-
-\usepackage{biblatex}
+\usepackage[sorting=none]{biblatex}
 \addbibresource{Bib/reference.bib}
 
 %\usepackage{pmboxdraw}
@@ -102,7 +100,6 @@
 %\usepackage{microtype}
 %\usepackage[final, stretch=30, shrink=60]{microtype}
 \usepackage[final, stretch=60, shrink=20]{microtype}
-
 
 
 % =====================================================
@@ -165,7 +162,6 @@
 
 %Options: Sonny, Lenny, Glenn, Conny, Rejne, Bjarne, Bjornstrup
 %\usepackage[Lenny]{fncychap}
-%\usepackage[Bjornstrup]{fncychap}
 
 % Options:
 \usepackage[palatino]{quotchap}
@@ -334,9 +330,7 @@ in partial fulfillment of the requirements for the degree of
 %
 
 \usepackage{titlesec}
-           
 \titleformat{\chapter}[display]{\normalfont\huge\bfseries\filleft}{\chaptertitlename\ \thechapter}{16pt}{\Huge}
-
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 
 

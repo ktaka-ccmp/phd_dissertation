@@ -1,5 +1,5 @@
-\documentclass[todo]{sokendai_draft}
-%\documentclass{sokendai_thesis}
+%\documentclass[todo]{sokendai_draft}
+\documentclass[todo]{sokendai_thesis}
 
 \newcommand{\Order}{\mathit{O}} % for computational complexity
 
@@ -14,14 +14,24 @@
 %% \newwatermark[allpages,color=pink!50,angle=45,scale=3,xpos=0,ypos=0]{Draft}
 
 \usepackage{xcolor}
-\definecolor{mygray}{rgb}{0.95,0.99,0.99}
+\definecolor{mygrey}{rgb}{0.98,0.98,0.98}
+\definecolor{mygreen}{RGB}{31,169,7}
+\definecolor{mynavy}{RGB}{0,0,100}
+
+%\usepackage[final]{changes}
+\usepackage[draft]{changes}
+\colorlet{Changes@Color}{red}
+\definechangesauthor[name="2nd", color=blue]{2nd}
+\definechangesauthor[name="3rd", color=mygreen]{3rd}
+\definechangesauthor[name="4th", color=mynavy]{4th}
 
 \begin{document}
+\listofchanges[style=list]
+%\listoftodos
 
 \frontmatter
 \maketitle
 
-\listoftodos
 \include{Manuscript/acknowledgment}
 
 \include{Manuscript/abstract}
