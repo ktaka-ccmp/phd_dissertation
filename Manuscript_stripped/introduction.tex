@@ -84,7 +84,6 @@ It is desirable to be able to migrate a web cluster from one place to another wi
 
 Improving the portability of a web application cluster is also very important for other purposes, including cost performance optimizations, meeting legal compliance, and avoiding vendor lock-in problems.
 These are the main concerns for web application providers in e-commerce, gaming, financial technology (Fintech) and Internet of Things (IoT) field.
-
 The purpose of this research is to improve the portability of web applications by proposing a common architecture, where web application providers can easily deploy their services across the world, regardless of cloud providers or data centers they use.
 
 \subsection{Ideal infrastructure for portable web application}
@@ -160,12 +159,12 @@ In short, cloud computing brought users agility, flexibility, and cost-effective
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figs/physical_vm_container.png}
+\includegraphics[width=0.75\columnwidth]{Figs/physical_vm_container.png}
 \end{center}
 
 \par\bigskip
   \centering
-  \begin{minipage}{0.9\columnwidth}
+  \begin{minipage}{0.95\columnwidth}
     \caption[Bare Metal, Virtual Machine and Container technology]{
       \added[id=4th]{
         Bare Metal, Virtual Machine and Container technology
@@ -218,6 +217,8 @@ Container tools alleviate these problems by packing necessary libraries into arc
 Thanks to these benefits, container technologies are very attractive for improving the portability of the web applications and hence, facilitating their migrations.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
 And to simplify the deployment of a complex web application that consists of interdependent container clusters, several container orchestrators (container cluster management systems)\footnote{The author uses the word 'container orchestrator' and 'container cluster management system' for the same meaning and uses them interchangeably} have been in development.
+
+\FloatBarrier
 
 \subsection{Container Orchestrator}
 
@@ -320,6 +321,8 @@ Only Kubernetes has the functionality to manage cloud load balancer so that ingr
 To the best knowledge of the author, none of the existing container orchestrators fully supports features that automatically set up ingress routing in a redundant and scalable manner.
 The author believes solving this problem is an open and important topic for research and development, and therefore intends to pursue it.
 
+\FloatBarrier
+
 \subsection{Kubernetes architecture and problem}
 
 As is mentioned in the previous subsection, none of the existing container orchestrators provides full support for automatic set up of ingress traffic routing.
@@ -382,10 +385,12 @@ Once the traffic reaches the nodes, Kubernetes nicely route them to appropriate 
 %
 However, in environments where there are no supported load balancers, Kubernetes fails to automatically set up the route for ingress traffic.
 In such cases Kubernetes expects users to manually set up a route for the ingress traffic, which generally lacks redundancy and scalabilities.
-In this way, Kubernetes fails to provide a uniform interface to container clusters, which degrades the portabilities of web applications.
 
+In this way, Kubernetes fails to provide a uniform interface to container clusters, which degrades the portabilities of web applications.
 Other container orchestrators, e.g. Docker swarm or Mesos/Marathon, do not even have partial support for load balancers and expect users to manually set up the route for ingress traffic.
 Therefore this is a generic problem that current container cluster orchestrators possess.
+
+\FloatBarrier
 
 \section{Focus of the dissertation}
 
@@ -398,7 +403,6 @@ Therefore this is a generic problem that current container cluster orchestrators
 
   The purpose of this research is to propose a generic architecture that can set up a route for ingress traffic automatically without relying on the cloud load balancers.
   For that purpose, the author proposes a cluster of software load balancer containers, instead of relying on load balancers provided by infrastructures.
-
   Proposed load balancer can run both in cloud infrastructures and in on-premise data centers and can be utilized to set up the route for ingress traffic automatically.
 The proposed load balancer should possess the following features;
 1) The proposed load balancer properly functions both in on-premise data centers and cloud infrastructures.
@@ -411,16 +415,20 @@ The proposed load balancer should possess the following features;
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{Figs/cluster_of_container_loadbalancer}
+  \includegraphics[width=0.9\columnwidth]{Figs/cluster_of_container_loadbalancer}
 \end{center}
-\caption{
+
+\par\bigskip
+\centering
+\begin{minipage}{0.9\columnwidth}
+  \caption[Load balancer for container clusters]{
 Load balancer for container clusters.
-}
-\centering\parbox[c]{0.9\columnwidth}{
 In order distribute the traffic, container orchestrator launches a cluster of software load balancer containers. 
 The container orchestrator also communicates with the upstream router through BGP protocol and the router set up an ECMP routing rule in the routing table.
-}
-\label{fig:cluster_of_container_loadbalancer}
+  }
+  \label{fig:cluster_of_container_loadbalancer}
+\end{minipage}
+
 \end{figure}
 
 Figure~\ref{fig:cluster_of_container_loadbalancer} shows schematic diagram of an example architecture for such load balancers.
@@ -436,9 +444,6 @@ The orchestrator also communicates with the upstream router using Border Gateway
   Therefore it seems to be very reasonable to make container orchestrator also manage load balancer containers.
   With the help of ECMP routing table on upstream router, redundancy and scalability are accomplished simultaneously.
   Since BGP and ECMP are the standard protocol supported by most of the commercial router hardware, the author regards this architecture is preferable in most of the environments.
-
-
-
 
 
 
@@ -472,7 +477,7 @@ The author also explores the possibility of enhancing the performance of the pro
 The author implements the novel load balancer using eXpress Data Path (XDP) technology \cite{bertin2017xdp} for that purpose and shows preliminary experimental results.
 
 
-
+\FloatBarrier
 
 \subsection{Contribution}
 
@@ -493,19 +498,13 @@ In other words, users will become being able to deploy a complex web application
 
 The rest of the paper is organized as follows;
 
-%\subsubsection{Chapter~\ref{chapter:Background}}
-
-  This chapter provides explanations of the following technologies;
+\replaced[id=4th]{Chapter~\ref{chapter:Background}}{This chapter} provides explanations of the following technologies;
   1) Overlay network
   2) Multicore packet processing
   3) IPVS load balancer
   4) XDP technology.
   These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
 
-
-
-
-%\subsubsection{Chapter~\ref{chapter:Architecture and Implementation}}
 Chapter~\ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
 One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
 In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
@@ -514,35 +513,25 @@ The author also presents an implementation of the proof of the concept system fo
 
 %\subsubsection{Chapter~\ref{chapter:Performance Evaluation}}
 Chapter~\ref{chapter:Performance Evaluation} presents the results of the evaluation.
-
 The author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
 1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
 2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
 3) Performance: whether the load balancer has sufficient throughput for 1 Gbps network.
 
-
-
 %\subsubsection{Chapter~\ref{chapter:Further Improvement}}
-
-
 In the previous chapter, the author evaluated the feasibility of the proposed load balancer in 1Gbps network.
 In Chapter~\ref{chapter:Further Improvement}, the author shows that the proposed load balancer has sufficient throughput in 10Gbps network.
 The author also discusses how to improve the performance levels in faster networks, e.g., 100 Gbps and finds that there are rooms for improvements in both the container network and the software load balancer itself.
 Although these should be explored further in the future work, the author presents preliminary experimental results of a novel software load balancer using eXpress Data Plane (XDP) technology.
 
-
-
 %\subsubsection{Chapter~\ref{chapter:Related Work}}
 Chapter~\ref{chapter:Related Work} presents related work of this study.
 %
-
 The author presents related work regarding the following subjects:
 (1) Portability of web applications.
 (2) Software load balancers for Kubernetes.
 (3) Cloud load balancers.
-(5) Load balancer tools in the container context.
-
-
+(4) Load balancer tools in the container context.
 
 %
 %\subsubsection{Chapter~\ref{chapter:Conclusion and future work}}

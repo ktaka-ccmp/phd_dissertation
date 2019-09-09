@@ -1,28 +1,9 @@
-
-
 In this chapter, the author evaluates the feasibility of the proposed load balancer.
 At first, the author evaluates the basic characteristics of the load balancer using physical servers in the on-premise data center, by comparing the throughput of the load balancer with several experimental conditions.
 Then the author verifies the feasibility of the proposed load balancer through experiments, with the following criteria;
 1) Portability: whether the load balancer can run in both on-premise data centers and cloud infrastructures.
 2) Redundancy and scalability: whether the throughput is changed by changing the number of load balancers.
 3) Performance: whether the load balancer has sufficient throughput for 1 Gbps network.
-
-  
-
-
-\section{Performance analysis of proposed load balancer}
-
-\subsubsection{Experimental conditions}
-
-Throughput measurements were carried out in order to examine the basic characteristics of the containerized IPVS load balancer in an on-premise data center.
-Figure~\ref{fig:benchmark-schem} shows the schematic diagram of the experimental setup for the measurement. 
-A benchmark program called wrk \cite{Glozer2016} were used.
-Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the Kubernetes cluster.
-In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
-The author then launched IPVS pod and nginx pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
-On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
-The author also measured throughput of this internal load balancer.
-The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
 
 \begin{figure}[h]
   \centering
@@ -42,6 +23,20 @@ The throughput is measured by sending out HTTP requests from the wrk towards a l
     \label{fig:benchmark-schem}
   \end{minipage}
 \end{figure}
+
+\section{Performance analysis of proposed load balancer}
+
+\subsubsection{Experimental conditions}
+
+Throughput measurements were carried out in order to examine the basic characteristics of the containerized IPVS load balancer in an on-premise data center.
+Figure~\ref{fig:benchmark-schem} shows the schematic diagram of the experimental setup for the measurement. 
+A benchmark program called wrk \cite{Glozer2016} were used.
+Multiple nginx {\em pods} are deployed on multiple nodes as web servers in the Kubernetes cluster.
+In each nginx {\em pod}, single nginx web server program that returns the IP address of the {\em pod} itself is running.
+The author then launched IPVS pod and nginx pod as load balancers on one of the nodes, after that, performed the throughput measurement changing the number of the nginx web server pods.
+On every Kubernetes node, there are iptables DNAT rules that function as an internal load balancer.
+The author also measured throughput of this internal load balancer.
+The throughput is measured by sending out HTTP requests from the wrk towards a load balancer and by counting the number of responses the benchmark client received.
 
 Table~\ref{fig:benchmark-schem} shows an example of the command-line for the benchmark program, wrk, and the corresponding output.
 The command-line in Table~\ref{tab:bench_example} will generate 40 wrk program threads
@@ -288,7 +283,6 @@ The saturated throughput indicates the maximum performance level of the load bal
 In this specific experiment, it was found that the performance levels of IPVS and iptables DNAT were limited by the 1 Gbps network bandwidth at the load balancer node.\footnote{All of the nodes use a single interface for communication. 
 At the load balancer node, the bandwidth for each direction of Full duplex Ethernet is consumed by the sum of request and response packets.
 }
-
 This was revealed by packet-level analysis using tcpdump (Appendix~\ref{appendix:performance_limit}).
 %
 On average the data size of each request and the corresponding response was about 636 [byte/req] in total, including TCP/IP headers, Ethernet header, and inter-frame gaps.
@@ -395,12 +389,10 @@ For example, the throughput of IPVS-TUN is about 1.5 times higher than those of 
 %%   Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
 %%   The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
 %% 
-
-  The saturated throughput indicates the maximum performance level of the load balancer, which is determined by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.
-  In the case of IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client.
-  Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
-  
-    The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
+The saturated throughput indicates the maximum performance level of the load balancer, which is determined by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.
+In the case of IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client.
+Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
+The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
   
 
 
@@ -524,8 +516,6 @@ These results indicate that the proposed IPVS load balancers function properly i
 In general, the throughput results in the cloud environments are inferior to those in the on-premise data center, even though much more powerful CPUs are used for VMs in the cloud environment than the experiment in the on-premise data center.
 For example, while the maximum throughput of the IPVS load balancer with eight physical cores was ~190K[req/sec] in the on-premise data center (Figure~\ref{fig:ipvs_mcore_proccessing}), the maximum throughput in GCP and AWS are ~160K[req/sec] and ~100K[req/sec], respectively, even with 32 and 36 virtual CPUs.
 The author suspects that this is due to the inefficiency of the virtual machines as opposed to Bare Metal servers.
-
-
 Although a detailed analysis is left for future work, the author confirmed that proposed load balancer could run both in GCP and AWS.
 
 
@@ -651,8 +641,11 @@ Notable differences from the previous throughput experiment in Figure~\ref{fig:b
       & nexthop via 10.0.0.106  dev eth0 weight 1 \\
       \hline
     \end{tabular}
+    \centering
+    \begin{minipage}{0.8\columnwidth}
     \caption{For a service with three load balancer {\em pod}s and a service with two load balancer {\em pod}s.}
     \label{tab:double_svc}
+    \end{minipage}
   \end{subtable}
   
   \par\bigskip
@@ -751,9 +744,7 @@ This indicates that new load balancers are immediately utilized after they are c
 
 Figure~\ref{fig:ecmp_delay_histgram} shows a histogram of the ECMP update delay, where the author measured the delays until the number of running IPVS pods is reflected in the routing table on the benchmark client, as the number of the IPVS pods is changed randomly every 60 seconds for 20 hours.
 As can be seen from the figure, most of the delays are within 6 seconds, and the largest delay during the 20 hours experiment was 10 seconds.
-
 This is practically quick enough because normally resizing of the load balancer cluster does not occur so often and from the viewpoint of a client, 6 seconds is within a duration of tree TCP retransmissions \cite{rfc6298}.
-
 The author concludes that the proposed redandancy architecture for the load balancer functions properly and the ECMP routing update is quick enough.
 
 \FloatBarrier

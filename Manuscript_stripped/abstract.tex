@@ -6,10 +6,8 @@ These services include e-mail, social media, search engines, shopping site, etc.
 As these services become an indispensable part of the daily lives, portability of the application becomes very important.
 
 For example, those who provide these services need to be able to recover from a disaster by migrating their web applications to different locations.
-
 They also need to be able to expand their businesses to different countries, once the web service is successful in one country.
 It is also preferable for them to be able to migrate their services without a hassle at their convenience in order to avoid lock-ins.
-
 
 For the portability of web applications,
  providing a web application consisting of a cluster of Linux containers is a promising candidate, since Linux containers can run on any Linux system regardless of the infrastructures.
@@ -26,7 +24,6 @@ The author provides a cluster of software load balancers in containers that can 
 %
 The architecture is also capable of setting up the route for the ingress traffic automatically by using standard protocols.
 For this, Equal Cost Multi Path(ECMP) routes are populated through Border Gateway Protocol(BGP) in order to provide redundancy and scalability at the same time.
-
 By using the proposed architecture, web application clusters no longer depend on the load balancers provided by infrastructures.
 And hence, container orchestrators become being able to better serve as a common middleware.
 
@@ -35,35 +32,20 @@ The author has implemented a containerized software load balancer using Linux ke
   2) verify if the proposed load balancer has a sufficient performance level for 1 Gbps and 10 Gbps networks.
   3) verify if the proposed redundancy architecture using ECMP with BGP properly functions.
 
-
-
-
 From the results of the experiment, it has been shown that the proposed load balancers can run in an on-premise data center, Google Cloud Platform (GCP), and Amazon Web Service (AWS).
 Therefore the proposed load balancers can be said to be portable.
-%
-
-
 
   In the case of 1 Gbps network environment, the throughput of the IPVS in a container with Layer 3 Direct Server Return(L3DSR) setting has been about 1.5 times higher than that of existing iptables DNAT rules, which is prepared by Kubernetes's daemons as an internal load balancer. 
   And it has been shown that the proposed load balancer has more than enough throughput to fill up 1 Gbps bandwidth.
   In the case of 10 Gbps network environment, while a single IPVS load balancer in the container can provide only 1/4 of required throughput, ECMP setups using more than four of them can deal with 10 Gbps equivalent of the traffic.
   Therefore, the proposed load balancer has been proven to be portable with sufficient performance in both 1 Gbps and 10 Gbps network environments.
 
-
-
-
-
-
-
-%
 The author has also verified that ECMP routes are properly created on the upstream router, upon launch of new load balancer containers.
 %
 The update of the ECMP routing table was correct and quick enough, i.e., within 10 seconds, throughout 20 hours experiment.
 The maximum performance level of a cluster of load balancers has scaled linearly up to four times as the number of the load balancer containers has been increased up to four.
 The maximum aggregated throughput obtained through the experiment is 780k [req/sec], which is limited by the CPU performance of the benchmark client and can be improved using better hardware in the future experiment.
 Therefore the author has proved that proposed load balancer has the capability of the automatic setup of ingress traffic in a redundant and scalable manner.
-
-
 
 Sooner or later, the day when the network in a data center becomes all 100 Gbps will come.
   Therefore, it is essential to improve the performance of the portable load balancers in future work.
@@ -73,9 +55,8 @@ Sooner or later, the day when the network in a data center becomes all 100 Gbps 
 The author estimates that about five of the software load balancer using this technology with 16 core packet processing can provide enough throughput in 100  Gbps environments in the future. 
 
 The proposed load balancer has been verified to be portable while providing  sufficient throughput in 10 Gbps environment.
-
-  And the proposed redundancy architecture using ECMP with BGP has also been verified to function properly.
-  As a consequence, the proposed architecture with this load balancer will help improve the portability of web applications.
+And the proposed redundancy architecture using ECMP with BGP has also been verified to function properly.
+As a consequence, the proposed architecture with this load balancer will help improve the portability of web applications.
 
 
 The outcome of this study will benefit users who want to improve the portability of web applications and deploy them anywhere they want.

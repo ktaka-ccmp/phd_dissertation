@@ -1,12 +1,17 @@
 
-\chapter{ingress controller}
+\chapter{Ingress controller}
 %\section{ingress controller}
 \label{appendix:ingress_controller}
 
 \begin{lstlisting}[
-    basicstyle=\footnotesize,
-    breaklines=true,
     postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    backgroundcolor=\color{mygrey},
+    linewidth=0.9\columnwidth,
+    frame=single,
+    framerule=0pt,
+    breaklines=true,
+    tabsize=2,
+    basicstyle=\footnotesize\ttfamily
   ]
 package main
 
@@ -126,14 +131,24 @@ func (ipvs IPVSController) DefaultIngressClass() string {
 \end{lstlisting}
 
 \chapter{ECMP settings}
-\section{Exabgp configuration on the load balancer container.}
-\label{appendix:exabgp_config}
+%% \section{Exabgp configuration on the load balancer container.}
+%% \label{appendix:exabgp_config}
 
 
 \section{Gobgpd and zebra configurations on the router.}
 
 {\bf\normalsize gobgp.conf:}
-\begin{verbatim}
+
+\begin{lstlisting}[
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    backgroundcolor=\color{mygrey},
+    linewidth=0.9\columnwidth,
+    frame=single,
+    framerule=0pt,
+    breaklines=true,
+    tabsize=2,
+    basicstyle=\footnotesize\ttfamily
+  ]
 global:
   config:
     as: 65021
@@ -160,25 +175,44 @@ zebra:
     version: 3
     redistribute-route-type-list: 
       - static
+\end{lstlisting}
 
-\end{verbatim}
 \label{appendix:router_config}
 
 The "use-multiple-paths" should be enabled for the gobgpd to redistribute BGP multipath routes to Zebra.
 
 \par\bigskip
 \noindent {\bf\normalsize zebra.conf:}
-\begin{verbatim}
-hostname Router
-log file /var/log/zebra.log
-\end{verbatim}
 
+\begin{lstlisting}[
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    backgroundcolor=\color{mygrey},
+    linewidth=0.7\columnwidth,
+    frame=single,
+    framerule=0pt,
+    breaklines=true,
+    tabsize=2,
+    basicstyle=\footnotesize\ttfamily
+  ]
+ hostname Router
+ log file /var/log/zebra.log
+\end{lstlisting}
 
 \section{Gobgpd configuration on the route reflector.}
 \label{appendix:route_reflector_config}
 
 {\bf\normalsize gobgp.conf:}
-\begin{verbatim}
+
+\begin{lstlisting}[
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    backgroundcolor=\color{mygrey},
+    linewidth=0.9\columnwidth,
+    frame=single,
+    framerule=0pt,
+    breaklines=true,
+    tabsize=2,
+    basicstyle=\footnotesize\ttfamily
+  ]
 global:
   config:
     as: 65021
@@ -214,8 +248,7 @@ neighbors:
       config:
         send-max: 255
         receive: true
-
-\end{verbatim}
+\end{lstlisting}
 
 The "dynamic-neighbors" section and the "peer-groups" section set up dynamic neighbor settings to avoid listing of every possible IP. 
 The "add-paths" setting in the "neighbors" section enables multi path advertisement for a single network prefix.
@@ -224,7 +257,17 @@ The "add-paths" setting in the "neighbors" section enables multi path advertisem
 \label{appendix:exabgp_config}
 
 {\bf\normalsize exabgp.conf:}
-\begin{verbatim}
+
+\begin{lstlisting}[
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    backgroundcolor=\color{mygrey},
+    linewidth=0.9\columnwidth,
+    frame=single,
+    framerule=0pt,
+    breaklines=true,
+    tabsize=2,
+    basicstyle=\footnotesize\ttfamily
+  ]
 neighbor 10.0.0.109 {
  description "peer1";
  router-id 172.16.20.2;
@@ -236,14 +279,12 @@ neighbor 10.0.0.109 {
      route 10.1.1.0/24 next-hop 10.0.0.106;
    }
 }
-\end{verbatim}
+\end{lstlisting}
 
 The IP address of the load balancer pod(i.e. container), "172.16.20.2", is used for "router-id" and "local-address".
 This address is dynamically assigned when the pod is started.
 The IP address of the node, "10.0.0.106", is used for "next-hop".
 The node address is found out when the pod starts.
-
-
 
 \chapter{Analysis of the performance limit}
 \label{appendix:performance_limit}
@@ -266,15 +307,19 @@ Figure~\ref{fig:performance_limit} shows plot of theoretical maximum throughput 
 Since experimnetal results agrees well with theory, the author concludes that when \enquote{RPS = on}, ipvs performance limit is due to the 1Gbps bandwidth.
 
 \begin{lstlisting}[
-    backgroundcolor = \color{mygray},
-    basicstyle=\footnotesize,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    backgroundcolor=\color{mygrey},
+    linewidth=1.0\columnwidth,
+    frame=single,
+    framerule=0pt,
     breaklines=true,
-    numbers=left,
-    %    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+    tabsize=2,
+    basicstyle=\footnotesize\ttfamily,
     caption={An example of the tcpdump output},
     captionpos=b,
     label={list:tcpdump}
   ]
+
   curl -s  http://172.16.72.2:8888/1000
   tcpdmup(response):
 
@@ -365,14 +410,24 @@ Here\replaced[id=4th]{, the author}{ we} explain our considerations.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=\columnwidth]{Figs/vrrp.png}
+\includegraphics[width=0.9\columnwidth]{Figs/vrrp.png}
 \end{center}
-\caption{ An alternative redundant load balancer architecture using VRRP.}
-  The traffic from the internet is forwarded by the upstream router to a active lb node(the solid green line) and then distributed by the lb pods to web pods using Linux kernel's ipvs(the solid red line).
-  The active lb pod is selected using VRRP protocol(the blue dotted line).
-  For the green lines global IP address is used. The red lines use IP addresses of overlay network. The blue line uses the IP address of node network.
 
-\label{fig:vrrp}
+\par\bigskip
+\centering
+\begin{minipage}{0.9\columnwidth}
+  \caption[An alternative redundant load balancer architecture using VRRP]{
+    An alternative redundant load balancer architecture using VRRP.
+    The traffic from the internet is forwarded by the upstream router to a active lb node(the solid green line) and then distributed by the lb pods to web pods using Linux kernel's ipvs(the solid red line).
+    The active lb pod is selected using VRRP protocol(the blue dotted line).
+    For the green lines global IP address is used. The red lines use IP addresses of overlay network.
+    The blue line uses the IP address of node network.
+  }
+  \label{fig:vrrp}
+\end{minipage}
+
+\caption{ An alternative redundant load balancer architecture using VRRP.}
+
 \end{figure}
 
 Fig.~\ref{fig:vrrp} shows the redundancy setup using the VRRP protocol.

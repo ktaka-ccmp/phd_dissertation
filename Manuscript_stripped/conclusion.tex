@@ -3,14 +3,12 @@
 As the web services become an indispensable part of the daily life, portability of the application becomes very important.
 %
 In order to improve the portability of web applications consisting of container clusters, container orchestrators need to be able to serve as a uniform platform by functioning as a common middleware.
-
 However, they fail to do so, because none of the existing container orchestrators can fully automate the setup of routes for ingress traffic from the Internet.
 
 
 
 To solve this problem, the author proposed an architecture using a portable software load balancer that can run on any infrastructure.
 The author proposed a cluster of software load balancers in containers that can be launched as a part of web applications for Kubernetes.
-
 %
 The proposed architecture is also capable of setting up the routes for the ingress traffic automatically in a redundant and scalable manner.
   For that purpose, Equal Cost Multi Path(ECMP) routes are populated through Border Gateway Protocol(BGP).
@@ -18,32 +16,21 @@ The proposed architecture is also capable of setting up the routes for the ingre
   By using the proposed architecture, container clusters no longer depend on the load balancers provided by infrastructures.
   And hence, container orchestrators become being able to better serve as a common middleware, which will improve the portability of the web applications consisting of container clusters.
 
-
-
-
 To prove the feasibility of the proposed load balancer architecture, the author has implemented a containerized software load balancer using Linux kernel's IPVS for Kubernetes, and carried out experiments with the following criteria:
-
   1) verify if the proposed load balancer works correctly both in the cloud and the on-premise data center.
   2) verify if the proposed load balancer has a sufficient performance level for 1 Gbps and 10 Gbps networks.
   3) verify if the proposed redundancy architecture using ECMP with BGP properly functions.
 
-
-
 From the results of the experiments, it has been shown that the 
-
 throughput of the proposed load balancer linearly increases as the number of nginx {\em pod}s increases, and then it eventually saturates, indicating that the load balancer functions properly.
 It has been also shown that the proposed load balancers can run in an on-premise data center, Google Cloud Platform (GCP) and Amazon Web Service (AWS).
 Therefore the proposed load balancers can be said to be portable.
 
 The throughputs of a load balancer are dependent on the settings for multi-core packet processing and the setting for the overlay network.
 To derive the best performance, the author used as many CPU cores as possible for packet processing, and the settings without any packet encapsulation for backend mode of the overlay network.
-
 %
 From the experiment in the 1 Gbps network environment, the author obtained the highest throughput for the IPVS-TUN (L3DSR) in a container, which is limited by the bandwidth of the benchmark client.
   Since the benchmark client is placed at the same location where the upstream router exists, the load balancer can be said to have sufficient performance to fill up 1 Gbps network bandwidth.
-
-
-
 
 The author also extended the throughput measurement into the 10 Gbps network environment, in order to verify that proposed software load balancer is capable of providing needed throughput for 10 Gbps environment.
 The throughputs of IPVS and IPVS-TUN are smaller than that of iptables DNAT in 10Gbps network, both due to the overhead of the container network and inefficiency in the program itself.
@@ -66,11 +53,7 @@ The maximum aggregated throughput obtained through the experiment is 780k [req/s
 Therefore the author has proved that proposed load balancer has the capability of the automatic setup of ingress traffic in a redundant and scalable manner.
 %
 
-
-
-
 Sooner or later, the day when the network in a data center becomes all 100 Gbps will come.
-
 Therefore, in the future, it becomes crucial to improve the throughput of portable load balancers by using better container network and implementing more efficient software load balancer itself.
 The author leaves these for future work, however, a preliminary result of the latter has also been presented.
 The author has implemented a software load balancer using XDP technology and carried out throughput measurement.
@@ -79,7 +62,6 @@ Nevertheless, the obtained throughput about 390K [req/sec] for the XDP load bala
 The author estimates that about five of the software load balancer using this technology with 16 core packet processing can provide enough throughput, 29M [req/sec] in 100 Gbps environments in the future. 
 
 The proposed load balancer has been verified to be portable while providing sufficient throughput in 10 Gbps environment.
-
   And the proposed redundancy architecture using ECMP with BGP has also been verified to function properly.
   As a consequence, the proposed architecture with this load balancer will help improve the portability of web applications.
 

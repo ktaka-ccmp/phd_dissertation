@@ -135,26 +135,27 @@ Therefore users do not need to manually add the route every time new load balanc
 
 \subsection{Redundancy with ECMP}\label{Redundancy with ECMP}
 
-\begin{figure}[tb]
-  \centering
-  \includegraphics[width=0.8\columnwidth]{Figs/ecmp.png}
-\caption{The proposed architecture of load balancer redundancy with ECMP}
-
-\vspace{1mm}
-
-\begin{minipage}{0.9\columnwidth}
-   The traffic from the internet is distributed by the upstream router to multiple of load balancer (lb) pods using hash-based ECMP (the solid green line), after which distributed by the lb pods to web pods using Linux kernel's IPVS (the solid red line).
-  The route toward a service IP is advertised to the route reflector (the dotted red line), after which advertised to the upstream router (the blue dotted line) using iBGP.
-%  For the green lines, a service IP address is used. The red lines use the IP addresses of the overlay network. The blue line uses the IP addresses of the node network.
-\end{minipage}
-
-\label{fig:ecmp}
-\end{figure}
-
 While containerizing IPVS makes it runnable in any environment, it is essential to discuss how to route the ingress traffic to the IPVS container.
 The author proposes redundant architecture using ECMP with BGP for proposed load balancer containers.\footnote{The author also investigated redundancy architecture using VRRP in Appendix~\ref{appendix:vrrp}. However, VRRP had limitation in overlay networks used for container clusters.}
 The BGP and ECMP are both standard protocols supported by most of the commercial router products, and they are used for cloud load balancers as well \cite{eisenbud2016maglev,patel2013ananta}.
 However, in the case of container environments, where overlay networks are often used, special cares are needed to make the mechanism work properly.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{Figs/ecmp.png}
+
+  \par\bigskip
+  \centering
+  \begin{minipage}{0.9\columnwidth}
+    \caption[The proposed architecture of load balancer redundancy with ECMP]{
+The proposed architecture of load balancer redundancy with ECMP.
+   The traffic from the internet is distributed by the upstream router to multiple of load balancer (lb) pods using hash-based ECMP (the solid green line), after which distributed by the lb pods to web pods using Linux kernel's IPVS (the solid red line).
+  The route toward a service IP is advertised to the route reflector (the dotted red line), after which advertised to the upstream router (the blue dotted line) using iBGP.
+    }
+    \label{fig:ecmp}
+  \end{minipage}
+
+\end{figure}
 
 Fig.~\ref{fig:ecmp} shows a schematic diagram to explain redundancy architecture with ECMP for the proposed load balancer.
 %
