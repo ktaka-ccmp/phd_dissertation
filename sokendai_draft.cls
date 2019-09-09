@@ -51,6 +51,7 @@
 %\captionsetup[lstlisting]{format=listing}
 \usepackage{subcaption}
 \captionsetup{compatibility=false}
+\renewcommand\thesubfigure{(\alph{subfigure})}
 \usepackage{fancyvrb}
 
 \usepackage[export]{adjustbox}

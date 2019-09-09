@@ -51,6 +51,8 @@
 %\captionsetup[lstlisting]{format=listing}
 \usepackage{subcaption}
 \captionsetup{compatibility=false}
+\renewcommand\thesubfigure{(\alph{subfigure})}
+
 \usepackage{fancyvrb}
 
 \usepackage[export]{adjustbox}
@@ -110,7 +112,8 @@
 %\doublespacing % double space
 %\renewcommand{\baselinestretch}{1.2}
 
-\usepackage[hmarginratio=1:1]{geometry}
+\usepackage[hmarginratio=3:2,twoside]{geometry}
+%\usepackage[hmarginratio=1:1]{geometry}
 
 
 % =====================================================
