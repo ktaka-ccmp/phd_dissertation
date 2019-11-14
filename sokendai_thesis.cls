@@ -49,7 +49,7 @@
 \usepackage{caption}
 %\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{#1#2#3}}}
 %\captionsetup[lstlisting]{format=listing}
-\usepackage{subcaption}
+\usepackage[labelformat=simple]{subcaption}
 \captionsetup{compatibility=false}
 \renewcommand\thesubfigure{(\alph{subfigure})}
 
