@@ -117,11 +117,15 @@ Important data are stored in globally consistent data storage, which is similar 
 The traffic is routed to the closest data center using anycast \cite{rfc1546,weiden2010anycast}.
 
 Each of these features is important, and research efforts are on-going in many institutions.
+\deleted[id=5th]{
 In this study, the author focuses on the research regarding container orchestrator as a common middleware.
+}
 %
 By realizing global container infrastructure portability of web application will be significantly improved, and web application providers will be able to deploy their web applications whenever and wherever they want.
 Also, they will be able to move their web applications quickly depending on a variety of circumstances, including disaster recovery, cost performance optimization, and compliance to government regulations due to trade wars, etc.
-
+\added[id=5th]{
+In this study, the author focuses on the research regarding container orchestrator as a common middleware.
+}
 
 \section{Infrastructure for web applications}
 
@@ -196,7 +200,7 @@ Therefore, it is possible to configure processes as if they were running in diff
 While a VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence expected to impose much less extra overhead \cite{felter2015updated}.
 
 The Linux container can run on any Linux systems including physical servers and VMs.
-Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for migrations.
+Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for \replaced[id=5th]{interoperability}{migrations}.
 
 Several management tools are available for Linux containers, including LXC \cite{noronha2018performance}, systemd-nspawn \cite{jedge2013} and Docker \cite{merkel2014docker}.
 These tools assign an appropriate namespace to a process upon the launch and make it look like running in its own virtual Linux system.
@@ -204,13 +208,13 @@ For example, container tools restore a file system from an archive file every ti
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
 
 The fact that each container has its own file system that is restored from a single archive file brings a significant benefit, i.e. a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
-Therefore a process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
+\replaced[id=5th]{A}{Therefore a} process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
 This was not easy when there was no container technology.
 Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions would break the expected behavior.
 
 In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers and host OSs.
 In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects to those programs that depend on that library.
-Container tools alleviate these problems by packing necessary libraries into archives. 
+Container tools alleviate these problems by packing necessary libraries \added[id=5th]{for each program separately} into \added[id=5th]{respective} archives. 
 
 Thanks to these benefits, container technologies are very attractive for improving the portability of the web applications and hence, facilitating their migrations.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
@@ -277,7 +281,7 @@ The swarm manager is responsible for controlling the deployment and the life cyc
 
 \paragraph{Mesos/Marathon}
 Mesos \cite{hindman2011mesos} is a common resource sharing layer for different type of applications like Hadoop, MPI jobs, and Spark in a Data Center. 
-By using Mesos user does not need to have dedicated physical server cluster for each applications.
+By using Mesos user does not need to have \added[id=5th]{a} dedicated physical server cluster for each application\deleted[id=5th]{s}.
 Marathon is a framework which uses Mesos in order to orchestrate Docker containers.
 Because of the broader scope of applications, an out of box Mesos might not be particularly suited for web applications.
 
@@ -317,7 +321,7 @@ Only Kubernetes has the functionality to manage cloud load balancer so that ingr
  this functionality is applicable only for a few cloud environments.
 
 To the best knowledge of the author, none of the existing container orchestrators fully supports features that automatically set up ingress routing in a redundant and scalable manner.
-The author believes solving this problem is an open and important topic for research and development, and therefore intends to pursue it.
+The author believes solving this problem is an open and important topic for research and development, and therefore intends to pursue it\added[id=5th]{ in this study}.
 
 \FloatBarrier
 
@@ -517,7 +521,7 @@ The author verifies the feasibility of the proposed load balancer through experi
 3) Performance: whether the load balancer has sufficient throughput for 1 Gbps network.
 
 %\subsubsection{Chapter~\ref{chapter:Further Improvement}}
-In the previous chapter, the author evaluated the feasibility of the proposed load balancer in 1Gbps network.
+In \replaced[id=5th]{Chapter~\ref{chapter:Performance Evaluation}}{the previous chapter}, the author evaluate\replaced[id=5th]{s}{d} the feasibility of the proposed load balancer in \added[id=5th]{the} 1Gbps network.
 In Chapter~\ref{chapter:Further Improvement}, the author shows that the proposed load balancer has sufficient throughput in 10Gbps network.
 The author also discusses how to improve the performance levels in faster networks, e.g., 100 Gbps and finds that there are rooms for improvements in both the container network and the software load balancer itself.
 Although these should be explored further in the future work, the author presents preliminary experimental results of a novel software load balancer using eXpress Data Plane (XDP) technology.

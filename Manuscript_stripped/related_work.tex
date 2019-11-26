@@ -2,7 +2,7 @@ In this chapter, the author presents the related work of this study.
 The purpose of this study has been to improve the portability of web applications by using container orchestrators as a common middleware.
 Doing so will give users the freedom to migrate their services when there is a disaster, expand their businesses, and prevent vendor lock-ins, etc.
 However, none of the existing orchestrators has a standard method to fully automate the setup of routes for ingress traffic from the Internet, regardless of different type of infrastructures.
-As as a result, they fail to provide the standard interfaces to web applications.
+As \deleted[id=5th]{as }a result, they fail to provide the standard interfaces to web applications.
 Therefore, the author proposes a cluster of software load balancer containers for Kubernetes, which can be used in different infrastructures.
 
 Following this logic, here the author presents related work regarding the following subjects:
@@ -26,6 +26,7 @@ According to one of the articles the vendor lock-in problem is a direct conseque
 %
 Opara-Martins et al. \cite{opara2016critical} conducted a survey of 114 participants and argue from a business perspective that \enquote{vendor lock-in is a major barrier to the adaption of cloud computing, due to the lack of standardization.}
 %
+
 As for solutions for the portability issues,
 some suggest migration of VM or container \cite{nagin2011inter,messina2014trust} to different locations.
 The others suggest Meta Cloud \cite{satzger2013winds} and federations \cite{K8sFederation2017}.
@@ -59,7 +60,7 @@ This thesis is mainly focused on how to provide a common load balancer to differ
 There are other works \cite{kim2019tosca,goethals2019fuse} regarding Kubernetes federation. 
 Kim et.al. \cite{kim2019tosca} federate multiple Kubernetes clusters in the different cloud regions using TOSCA \cite{standard2013topology,binz2012portable} based approach.
 Goethals et.al.\cite{goethals2019fuse} connects different data centers using OpenVPN \cite{feilner2006openvpn} and deploy Kubernetes cluster in virtual data center that span across multiple locations.
-These justify that there are needs to commonize varying cloud infrastructures and data centers using Kubernetes as a common middleware.
+These \added[id=5th]{related works} justify that there are needs to commonize varying cloud infrastructures and data centers using Kubernetes as a common middleware.
 This thesis differs in that it is more focused on the load balancer features that are overlooked in the cloud portability context.
 
 \section{Software load balancers for Kubernetes}
@@ -77,7 +78,7 @@ Once the ingress traffic reaches one of the nodes, the packets are directed to e
 In conventional setup, the traffic is manually routed to one of the nodes, which lacks the redundancy and scalability.
 In cloud environments where there is supported load balancers, Kubernetes has a feature to automatically setup the cloud load balancer, so that the traffic is distributed all of the existing nodes. 
 
-Nginx-ingress\cite{Pleshakov2016,NginxInc2016} utilizes the ingress\cite{K8sIngress2017} capability of Kubernetes,to implement a containerized Nginx proxy as a load balancer.
+Nginx-ingress\cite{Pleshakov2016,NginxInc2016} utilizes the ingress\cite{K8sIngress2017} capability of Kubernetes,\added[id=5th]{ }to implement a containerized Nginx proxy as a load balancer.
 Nginx itself is famous as a high-performance web server program that also has the functionality of a Layer-7 load balancer.
 Nginx is capable of handling Transport Layer Security(TLS) encryption, as well as Uniform Resource Identifier(URI) based switching.
 However, the flip side of Nginx is that it is slower than Layer-4 switching.
@@ -117,12 +118,13 @@ It is impossible to localize the routes to a limited number of the nodes.
 
   \par\bigskip
   \begin{minipage}{1.0\columnwidth}
+%    \captionsetup{justification=centerfirst}
     \caption[Comparison of software load balancers for Kubernetes]{
-    Comparison of software load balancers for Kubernetes. 
+    Comparison of software load balancers for Kubernetes. % \newline
   $^{*}$ Conventional technology uses cloud load balancers if available, which is not necessarily container friendly. 
   $^{**}$ Metallb also supports layer 2 mode, which uses unsolicited ARP or NDP packets to update layer 2 address table in the upstream router. 
-  $^{***}$ The author plans to add XDP feature in future work.
-    }   
+  $^{***}$ The author plans to add XDP feature in future work. 
+    }
     \label{tabl:k8s_lb}
   \end{minipage}
 
@@ -143,7 +145,7 @@ As far as the cloud load balancers are concerned, two articles and one open sour
 Google's Maglev \cite{eisenbud2016maglev} is a software load balancer used in Google Cloud Platform(GCP).
 Maglev uses modern technologies including per flow ECMP and kernel bypass for user space packet processing.
 Resulting performance provided by single hardware has been more than sufficient for 10 Gbps network.
-Maglev serves as the GCP's load balancer that is used by the Kubernetes.
+Maglev serves as the GCP's load balancer\deleted[id=5th]{ that is used by the Kubernetes}.
 Maglev is not a product that users can use outside of GCP nor is an open source software, while the users need open source software load balancer that can run even in on-premise data centers.
 
 Microsoft's Ananta \cite{patel2013ananta} is another software load balancer implementation using ECMP and Windows Filtering Platform based kernel-mode driver.
