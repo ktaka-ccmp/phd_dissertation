@@ -3,7 +3,7 @@
 One of the most \replaced[id=5th]{critical}{important} problems of existing container orchestrators is that none of them \replaced[id=5th]{can fully automate the setup of}{has full support for automatically setting up} routes for ingress traffic in a redundant and scalable manner.
 In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
 Key features required for such load balancers are;
-1) to implement a mechanism where the routing table of the upstream router is updated automatically so that the router can forward ingress traffic to running load balances.
+1) to implement a mechanism where the routing table of the upstream router is updated automatically so that the router can forward ingress traffic to running load balancers.
 2) to implement software load balancer in a container that is runnable in any environment while having the feature to instantly update load balancing tables so that it can forward the packets to running web application containers.
 
 This chapter provides a discussion of such load balancer architecture.
