@@ -9,7 +9,7 @@ For example, people use these devices to look up web pages, emails, social media
 These services are often called web applications or web services, where information is delivered using Hyper Text Transfer Protocols (HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
 Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, etc.
 
-For example, Google provides a variety of web services including, Gmail, Search engines, Google Suite, etc.
+For example, Google provides a variety of web  \replaced[id=5th]{application}{service}s including, Gmail, Search engines, Google Suite, etc.
 Facebook provides social media service, Amazon provides shopping sites.
 Governments provides information regarding the service they provide to their citizens.
 Schools often provide a syllabus to their students, which is important for campus life.
@@ -60,7 +60,7 @@ Outages of web applications by giant companies can have an even bigger impact.
 An outage of Gmail or Google search engine will probably stop most of the business activities around the world.
 Service down of Amazon.com affect buyers and many businesses that sell products on its platform.
 
-In order to prevent such outages, preparing another web application cluster in a different location in the case for disasters is very important.
+In order to prevent such outages, preparing another web application cluster in a different location in the \replaced[id=5th]{event of a disaster}{case for disasters} is very important.
 For that purpose, it is desirable if a web application cluster can be easily migrated to a different data center.
 Migration of a web application cluster becomes more realistic by making the web application itself portable with the use of Linux container technology, which is explained later.
 
@@ -208,7 +208,7 @@ For example, container tools restore a file system from an archive file every ti
 Container tools also set up separate network interfaces with separate IP addresses in the container's namespace.
 
 The fact that each container has its own file system that is restored from a single archive file brings a significant benefit, i.e. a program binary and shared libraries are always exactly the same regardless of the base infrastructure.
-\replaced[id=5th]{A}{Therefore a} process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
+Therefore a process in a container is guaranteed to behave exactly the same manner, even if totally different data centers or cloud providers are used.
 This was not easy when there was no container technology.
 Because there are many flavors of Linux distributions, and even if the same distribution is used, there was always a chance that a slight difference in a program binary version or library versions would break the expected behavior.
 
@@ -483,7 +483,7 @@ The author implements the novel load balancer using eXpress Data Path (XDP) tech
 
 \subsection{Contribution}
 
-Contributions of this thesis can be summarized as follows:
+Contributions of this \replaced[id=5th]{dissertation}{thesis} can be summarized as follows:
 1) The author proposes a cluster of software load balancer containers that is deployed as a part of web applications.
 By removing the dependencies on external load balancers provided by infrastructures, users can deploy their web applications in the same manner regardless of the infrastructure, which will improve the portability of web applications.
 2) The author implements a proof of concept system using Open Source Software (OSS), which means that anyone can test drive the proposed load balancers and use them in production for free.
@@ -505,7 +505,7 @@ Chapter~\ref{chapter:Background} provides explanations of the following technolo
   2) Multicore packet processing
   3) IPVS load balancer
   4) XDP technology.
-  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this \replaced[id=5th]{dissertation}{thesis}.
 
 Chapter~\ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
 One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
@@ -537,7 +537,7 @@ The author presents related work regarding the following subjects:
 
 %
 %\subsubsection{Chapter~\ref{chapter:Conclusion and future work}}
-Chapter~\ref{chapter:Conclusion and future work} presents conclusion of this study.
+\added[id=5th]{And finally, }Chapter~\ref{chapter:Conclusion and future work} presents \added[id=5th]{the} conclusion of this study.
 
 
 

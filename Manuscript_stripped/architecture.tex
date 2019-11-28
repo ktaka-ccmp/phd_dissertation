@@ -1,6 +1,6 @@
 \mytodo[inline]{Refine Intro of this chapter}
 
-One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
+One of the most \replaced[id=5th]{critical}{important} problems of existing container orchestrators is that none of them \replaced[id=5th]{can fully automate the setup of}{has full support for automatically setting up} routes for ingress traffic in a redundant and scalable manner.
 In order to solve this problem, the author proposes a cluster of software load balancer in containers, which is deployed as a part of the web application clusters.
 Key features required for such load balancers are;
 1) to implement a mechanism where the routing table of the upstream router is updated automatically so that the router can forward ingress traffic to running load balances.
@@ -10,7 +10,8 @@ This chapter provides a discussion of such load balancer architecture.
 First, the author discusses problems of conventional architecture in Section~\ref{Problem of Conventional Architecture}.
 Then the author proposes a portable software load balancer in a container in Section~\ref{Load balancer in container}, and discusses redundancy architecture using ECMP in Section~\ref{Redundancy with ECMP}.
 %
-The author also presents an implementation of the proof of the concept system for the proposed load balancer architecture in detail.
+\replaced[id=5th]{After the discussion of load balancer architecture, the}{
+The} author also presents an implementation of the proof of the concept \added[id=5th]{load balancer} system \deleted[id=5th]{for the proposed load balancer architecture }in detail.
 The first overall architecture is explained in Section~\ref{sec:poc}.
 Then IPVS containerization is explained in detail in Section~\ref{sec:ipvs}.
 Finally, the implementation of BGP software container is explained in Section~\ref{sec:bgp}.
@@ -72,9 +73,9 @@ These include the hardware load balancers for on-premise data centers.
 Imagine a situation in which the DNAT table on one of the nodes malfunctions.
 In such a case, only occasional timeouts would be observed, and hence it would be very difficult to find out which node is malfunctioning.   
 3) The ingress traffic is distributed to all the existing nodes in the Kubernetes cluster. 
-If there are 1,000 nodes and one of the web applications only uses 10 nodes, distributing the ingress traffic to all of the 1,000 nodes seems inefficient and complicated.
+If there are 1,000 nodes and one of the web applications only uses 10 nodes, distributing the ingress traffic to all of the 1,000 nodes seems \replaced[id=5th]{complex and inefficient}{inefficient and complicated}.
 
-Regarding the first problem, if there is no load balancer that is supported by Kubernetes, users must manually set up the static route on the upstream router, every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
+Regarding the first problem, if there is no load balancer that is supported by Kubernetes, users must manually set up the static route on the upstream router\deleted[id=5th]{,} every time they launch the web application clusters, as is shown in Figure~\ref{fig:K8sConventional_bm}.
 The traffic will be routed to \replaced[id=5th]{one of the nodes}{a node} and then distributed by the DNAT rules on the node to the designated {\em pods}.
 In cases where the upstream router is administered by a data center company, users must always negotiate with them about adding a route to their new application cluster.
 This approach significantly lacks simplicity, and degrades the portability of container clusters.

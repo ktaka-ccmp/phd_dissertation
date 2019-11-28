@@ -5,7 +5,7 @@
   2) Multicore packet processing
   3) IPVS load balancer
   4) XDP technology.
-  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this \replaced[id=5th]{dissertation}{thesis}.
 
 
 
@@ -44,7 +44,7 @@ The explanation of XDP technology is necessary to understand why it is supposed 
 
 There are several types of container network including, veth \cite{bhattiprolu2008virtual}, MACVLAN \cite{rathore2010performance}, IPVLAN \cite{ipvlan}, host network.
 There are good reviews of these network in  \cite{Marmol2015,claassen2016linux,struye2017assessing}.
-The author uses the container network that uses bridge and veth because of the popularity and easiness of the setups.
+The author uses the container network that uses \added[id=5th]{a network} bridge and veth \added[id=5th]{pairs} because of the popularity and easiness of the setups.
 Here the setup used in the experiments is explained.
 
 Figure~\ref{fig:bridge+veth} shows a schematic diagram of the container network used in this study.
@@ -70,7 +70,7 @@ and optionally translated using iptables Masquerade or Source Network Address Tr
       Each of the pairs acts like a pipe.
       The veth0 and veth1 are placed in the host (node) network namespace, and connected to the docker0 bridge.
       The eth0s are placed in respective container namespaces.
-      (b) Communication between network namespace 1 and 2 is through the docker0.
+      (b) Communication between network namespace \replaced[id=5th]{0}{1} and \replaced[id=5th]{1}{2} is through the docker0.
       Communication with the outside of the node follows the routing table inside the kernel.
     }
     \label{fig:bridge+veth}
@@ -86,20 +86,22 @@ The kernel normally does not know this, but if there is the help of overlay netw
 
 There are several choices for the overlay networks with popular ones being flannel \cite{CoreOSFlannel}, calico \cite{ProjectCalico}, weave \cite{WeaveNet}, etc.
 The author used flannel throughout this study because of its popularity and easiness.
-Flannel has three types of backend, {\it i.e.}, operating modes, host-gw, vxlan, and udp \cite{CoreOSFlannelBackend}.
+Flannel has three types of backend, {\it i.e.}, \replaced[id=5th]{operation}{operating} modes, host-gw, vxlan\deleted[id=5th]{,} and udp \cite{CoreOSFlannelBackend}.
 These are explained here.
 
 \subsubsection{host-gw mode}
 
 In the host-gw mode, the flanneld installed on a node simply configures the routing table in the kernel 
-based on the IP address assignment information of the overlay network, which is stored in the etcd \cite{CoreOSEtcd} on the master node of Kubernetes.
+based on the IP address assignment information of the overlay network, which is \replaced[id=5th]{retrieved from}{stored in} the etcd \cite{CoreOSEtcd} on the master node of Kubernetes.
 When {\em pod1} on the node1 sends out an IP packet to {\em pod2} on the different node, node2, 
 the node1 consults its routing table and learn that the IP packet to {\em pod2} should be sent out to the node2.
 Then, the node1 forms Ethernet frames containing the destination MAC address of the node2 
 without changing the IP header, and send them out.
 Since packets are not encapsulated in the host-gw mode, the MTU size remains 1500 bytes.
 
-\begin{figure}[h]
+
+%\begin{figure}[h]
+\begin{figure}
   \centering
   \includegraphics[width=0.95\columnwidth]{Figs/flannel-host-gw}
 
@@ -180,11 +182,11 @@ There are caveats in using overlay network.
 The author explains two of them that are identified in the course of this study.
 
 
-  The first is that overlay network without encapsulation has issues when used in cloud environments.
+  The first \added[id=5th]{caveat} is that overlay network without encapsulation has issues when used in cloud environments.
   There are chances when there is a gateway host without a knowledge of the overlay network between two containers.
-  When such gateway host receives a packet destined to a container without encapsulation, it simply drops the packet because it does not know where to send it.
+  When such \added[id=5th]{a} gateway host receives a packet destined to a container without encapsulation, it simply drops the packet because it does not know where to \replaced[id=5th]{forward}{send} it.
 
-  The second is that there is an issue when two containers communicate with a host without knowledge of the ovelay network.
+  The second \added[id=5th]{caveat} is that there is an issue when two containers communicate with a host without knowledge of the ovelay network.
   Since the packets are translated using SNAT, the host can not identify if the two connections are coming from a single container or from two containers only by looking into IP and TCP headers.
 
 
@@ -573,7 +575,7 @@ Use cases for XDP include DDoS protection, packet forwarding, and load balancing
 \section{Summary}
 
 This chapter provided explanations of the following technologies; 1) Overlay network 2) Multicore packet processing 3) IPVS load balancer 4) XDP technology.
-These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this \replaced[id=5th]{dissertation}{thesis}.
 
 Overlay networks are used to deploy Kubernetes clusters, and its operation mode greatly affects the throughput of the load balancers.
 Therefore, they have been explained here.

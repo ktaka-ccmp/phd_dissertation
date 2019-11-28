@@ -263,7 +263,7 @@ The load balancers only need to be able to handle at most 293K [req/sec] equival
 Even if the load balancer is capable of handling 500K [req/sec], the throughput of the system is ultimately determined by the bottleneck at the entrance, that is 293K [req/sec].
 The maximum throughput in 1 Gbps, i.e., 293K [req/seq] is already achieved by single IPVS-TUN (293K [req/seq]) or two of IPVS load balancers (193K x 2 [req/seq]) with ECMP redundancy.
 
-In the case of 10 Gbps network, the maximum throughput determined by the bottleneck at the entrance is 2.9M [req/sec].
+In the case of 10 Gbps network, the maximum throughput determined by the bottleneck at the entrance \replaced[id=5th]{becomes}{is} 2.9M [req/sec].
 Single IPVS-TUN cannnot handle this much of the traffic.
 However, this is still  achievable without much of the hassle by using four of IPVS-TUN (731K x 4 [req/seq]) or nine of IPVS load balancers (335K x 9 [req/seq]) with ECMP redundancy.
 
@@ -396,8 +396,8 @@ The author considers that both of these should be improved in future work.
 
 
 
-As an effort to improve the efficiency of the software load balancer, 
-the author has implemented a software load balancer, xlb, using XDP technology, and presented the preliminary experimental result.
+As an effort to improve the efficiency of the software load balancer \added[id=5th]{itself}, 
+the author has implemented a \added[id=5th]{novel} software load balancer, xlb, using XDP technology, and presented the preliminary experimental result.
 The obtained throughput 390K [req/sec] with single core packet processing is very promising.
 The author estimates that about five of the software load balancer using this technology with 16 core packet processing can provide sufficient throughput, 29M [req/sec] in 100 Gbps environments in the future. 
 

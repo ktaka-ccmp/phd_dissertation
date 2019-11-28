@@ -16,7 +16,7 @@ Then the author verifies the feasibility of the proposed load balancer through e
       There are nodes on which nginx pods are deployed as web servers.
       There is another node where IPVS pod and nginx pod are deployed.
       Iptables DNAT rules exist on every Kubernetes node as an internal load balancer.
-      Throughput measurements are performed against IPVS pod, nginx pod, and iptables DNAT rules.
+      Throughput measurements are performed \replaced[id=5th]{for}{against} IPVS pod, nginx pod, and iptables DNAT rules.
       Each of the load balancers distributes the packets from the wrk to the nginx web servers.
       The response packets from the nginx web servers follow the same route as the request packets.  
     }
@@ -391,7 +391,7 @@ For example, the throughput of IPVS-TUN is about 1.5 times higher than those of 
 %% 
 The saturated throughput indicates the maximum performance level of the load balancer, which is determined by network bandwidth at the benchmark client, or by CPU performance of either load balancer node or benchmark client.
 In the case of IPVS-TUN, it turned out that the maximum throughput is limited by the bandwidth at the benchmark client.
-Multipling the maxium throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
+\replaced[id=5th]{This is because multiplying the maximum}{Multipling the maxium} throughput of about 290K [req/sec] with the response packet size 450[byte/req] (Appendix~\ref{appendix:performance_limit}) and 8 [bit/byte] results in 972M [bit/sec] .
 The fact that the load balancer itself is not the performance limiting factor means that proposed load balancer has sufficient performance levels in 1 Gbps network.
   
 
@@ -553,6 +553,7 @@ After that, in order to explore the scalability, the author also measured the th
    Memory: 32GB
    NIC: Broadcom BCM5720 with 4 rx-queues, 1 Gbps
    (Node x 6, Load Balancer x 4)
+
    CPU: Xeon E5-2450 2.10GHz x 8 (with Hyper Threading)
    Memory: 32GB
    NIC: Intel X550
@@ -664,18 +665,18 @@ These load balancers share the same group of nodes, i.e., (10.0.0.105,10.0.0.106
 \end{table}
 
 First, the author examined ECMP functionality by monitoring the routing table on the benchmark client.
-Table~\ref{tab:exabgp_routing_table}~(\subref{tab:single}) shows the routing table entry on the router when a single load balancer pod exists.
+Table~\ref{tab:single} shows the routing table entry on the router when a single load balancer pod exists.
 From this entry, it is seen that packets toward 10.1.1.0/24 are forwarded to 10.0.0.106 where the load balancer pod is running.
 It also shows that this routing rule is updated by zebra.
 %
-The routing table entry in Table~\ref{tab:exabgp_routing_table}~(\subref{tab:three}) is seen when the number of the load balancer pods is increased to three.
+The routing table entry in Table~\ref{tab:three} is seen when the number of the load balancer pods is increased to three.
 There are three next hops towards 10.1.1.0/24, each of which is the node where the load balancer pods are running.
 The weights of the three next-hops are all 1.
 The update of the routing entry was almost instant as the author increased the number of the load balancers.
 %
-Table~\ref{tab:exabgp_routing_table}~(\subref{tab:double_svc}) shows the case where the author additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
+Table~\ref{tab:double_svc} shows the case where the author additionally started new service with two load balancer pods with service addresses in 10.1.2.0/24 range.
 It was possible to accommodate two services with different service IPs on the same group of nodes(10.0.0.105, 10.0.0.106, 10.0.0.107). 
-The one has three load balancers and the other has two load balancers.
+\replaced[id=5th]{One}{The one} has three load balancers\added[id=5th]{,} and the other has two load balancers.
 The update of the routing entry was almost instant as the author started the load balancers for the second service.
 
 As far as the route withdrawal is concerned, if an exabgp is killed by SIGKILL or SIGTERM the kernel of the node close the BGP connection by sending out a packet with FIN flag to the peer gobgpd on the route reflector, and thus the route is withdrawn immediately.
