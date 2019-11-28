@@ -47,7 +47,7 @@ The maximum performance level of a cluster of load balancers has scaled linearly
 The maximum aggregated throughput obtained through the experiment is 780k [req/sec], which is limited by the CPU performance of the benchmark client and can be improved using better hardware in the future experiment.
 Therefore the author has proved that proposed load balancer has the capability of the automatic setup of ingress traffic in a redundant and scalable manner.
 
-Sooner or later, the day when the network in a data center becomes all 100 Gbps will come.
+Sooner or later, the day when the network \added[id=5th]{speed} in a data center becomes all 100 Gbps will come.
   Therefore, it is essential to improve the performance of the portable load balancers in future work.
   The author has started to implement a novel software load balancer using eXpress Data Path(XDP) technology.
   The preliminary result, where the maximum throughput is about 390K [req/sec] with single-core packet processing, indicates that this technology is very promising.
@@ -61,5 +61,5 @@ As a consequence, the proposed architecture with this load balancer will help im
 
 The outcome of this study will benefit users who want to improve the portability of web applications and deploy them anywhere they want.
 Moreover, the result of this study will potentially benefit users who want to use a group of different cloud providers and on-premise data centers across the globe seamlessly.
-In other words, users will become being able to deploy a complex web service on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
+In other words, users will become being able to deploy a complex web \replaced[id=5th]{application}{service} on aggregated computing resources on the earth, as if they were starting a single process on a single computer.
 

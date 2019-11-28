@@ -9,7 +9,7 @@ For example, people use these devices to look up web pages, emails, social media
 These services are often called web applications or web services, where information is delivered using Hyper Text Transfer Protocols (HTTP) or Hypertext Transfer Protocol Secure (HTTPS) from servers at the other end of the Internet.
 Web applications are provided by various organizations, including commercial companies, government, non-profitable organizations, etc.
 
-For example, Google provides a variety of web services including, Gmail, Search engines, Google Suite, etc.
+For example, Google provides a variety of web  \replaced[id=5th]{application}{service}s including, Gmail, Search engines, Google Suite, etc.
 Facebook provides social media service, Amazon provides shopping sites.
 Governments provides information regarding the service they provide to their citizens.
 Schools often provide a syllabus to their students, which is important for campus life.
@@ -60,7 +60,7 @@ Outages of web applications by giant companies can have an even bigger impact.
 An outage of Gmail or Google search engine will probably stop most of the business activities around the world.
 Service down of Amazon.com affect buyers and many businesses that sell products on its platform.
 
-In order to prevent such outages, preparing another web application cluster in a different location in the case for disasters is very important.
+In order to prevent such outages, preparing another web application cluster in a different location in the \replaced[id=5th]{event of a disaster}{case for disasters} is very important.
 For that purpose, it is desirable if a web application cluster can be easily migrated to a different data center.
 Migration of a web application cluster becomes more realistic by making the web application itself portable with the use of Linux container technology, which is explained later.
 
@@ -117,11 +117,15 @@ Important data are stored in globally consistent data storage, which is similar 
 The traffic is routed to the closest data center using anycast \cite{rfc1546,weiden2010anycast}.
 
 Each of these features is important, and research efforts are on-going in many institutions.
+\deleted[id=5th]{
 In this study, the author focuses on the research regarding container orchestrator as a common middleware.
+}
 %
 By realizing global container infrastructure portability of web application will be significantly improved, and web application providers will be able to deploy their web applications whenever and wherever they want.
 Also, they will be able to move their web applications quickly depending on a variety of circumstances, including disaster recovery, cost performance optimization, and compliance to government regulations due to trade wars, etc.
-
+\added[id=5th]{
+In this study, the author focuses on the research regarding container orchestrator as a common middleware.
+}
 
 \section{Infrastructure for web applications}
 
@@ -166,9 +170,7 @@ In short, cloud computing brought users agility, flexibility, and cost-effective
   \centering
   \begin{minipage}{0.95\columnwidth}
     \caption[Bare Metal, Virtual Machine and Container technology]{
-      \added[id=4th]{
-        Bare Metal, Virtual Machine and Container technology
-      }
+      Bare Metal, Virtual Machine and Container technology
       The difference in physical server usage between (a) Bare Metal servers, (b) Virtual Machine and (c) Container technology.
       (a) Bare Metal servers is a word to describe conventional physical servers in contrast to Virtual Machines.
       On top of a Bare Metal server, an operating system and application programs are running.
@@ -198,7 +200,7 @@ Therefore, it is possible to configure processes as if they were running in diff
 While a VM needs to run a full OS on top of a hypervisor and hence imposes extra overhead, a process in Linux container is merely a process with a dedicated namespace and hence expected to impose much less extra overhead \cite{felter2015updated}.
 
 The Linux container can run on any Linux systems including physical servers and VMs.
-Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for migrations.
+Due to the widespread usage of Linux systems, the Linux container can run in most of the cloud infrastructures and on-premise data centers, which is beneficial for \replaced[id=5th]{interoperability}{migrations}.
 
 Several management tools are available for Linux containers, including LXC \cite{noronha2018performance}, systemd-nspawn \cite{jedge2013} and Docker \cite{merkel2014docker}.
 These tools assign an appropriate namespace to a process upon the launch and make it look like running in its own virtual Linux system.
@@ -212,7 +214,7 @@ Because there are many flavors of Linux distributions, and even if the same dist
 
 In addition to that, containers can have own version of libraries in their respective filesystems, in other words, libraries in any container can be independently updated without influencing other containers and host OSs.
 In conventional technologies, processes on a single server are dependent on common shared libraries, and hence updates of the library sometimes have caused unexpected side effects to those programs that depend on that library.
-Container tools alleviate these problems by packing necessary libraries into archives. 
+Container tools alleviate these problems by packing necessary libraries \added[id=5th]{for each program separately} into \added[id=5th]{respective} archives. 
 
 Thanks to these benefits, container technologies are very attractive for improving the portability of the web applications and hence, facilitating their migrations.
 Considerable efforts in utilizing container technologies for web applications are ongoing.
@@ -279,7 +281,7 @@ The swarm manager is responsible for controlling the deployment and the life cyc
 
 \paragraph{Mesos/Marathon}
 Mesos \cite{hindman2011mesos} is a common resource sharing layer for different type of applications like Hadoop, MPI jobs, and Spark in a Data Center. 
-By using Mesos user does not need to have dedicated physical server cluster for each applications.
+By using Mesos user does not need to have \added[id=5th]{a} dedicated physical server cluster for each application\deleted[id=5th]{s}.
 Marathon is a framework which uses Mesos in order to orchestrate Docker containers.
 Because of the broader scope of applications, an out of box Mesos might not be particularly suited for web applications.
 
@@ -319,7 +321,7 @@ Only Kubernetes has the functionality to manage cloud load balancer so that ingr
  this functionality is applicable only for a few cloud environments.
 
 To the best knowledge of the author, none of the existing container orchestrators fully supports features that automatically set up ingress routing in a redundant and scalable manner.
-The author believes solving this problem is an open and important topic for research and development, and therefore intends to pursue it.
+The author believes solving this problem is an open and important topic for research and development, and therefore intends to pursue it\added[id=5th]{ in this study}.
 
 \FloatBarrier
 
@@ -481,7 +483,7 @@ The author implements the novel load balancer using eXpress Data Path (XDP) tech
 
 \subsection{Contribution}
 
-Contributions of this thesis can be summarized as follows:
+Contributions of this \replaced[id=5th]{dissertation}{thesis} can be summarized as follows:
 1) The author proposes a cluster of software load balancer containers that is deployed as a part of web applications.
 By removing the dependencies on external load balancers provided by infrastructures, users can deploy their web applications in the same manner regardless of the infrastructure, which will improve the portability of web applications.
 2) The author implements a proof of concept system using Open Source Software (OSS), which means that anyone can test drive the proposed load balancers and use them in production for free.
@@ -498,12 +500,12 @@ In other words, users will become being able to deploy a complex web application
 
 The rest of the paper is organized as follows;
 
-\replaced[id=4th]{Chapter~\ref{chapter:Background}}{This chapter} provides explanations of the following technologies;
+Chapter~\ref{chapter:Background} provides explanations of the following technologies;
   1) Overlay network
   2) Multicore packet processing
   3) IPVS load balancer
   4) XDP technology.
-  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this thesis.
+  These are the underlying technologies used in this study, and knowledge of these is necessary to understand the contents of this \replaced[id=5th]{dissertation}{thesis}.
 
 Chapter~\ref{chapter:Architecture and Implementation} provides discussion of load balancer architecture suitable for container clusters.
 One of the most important problems of existing container orchestrators is that none of them has full support for automatically setting up routes for ingress traffic in a redundant and scalable manner.
@@ -519,7 +521,7 @@ The author verifies the feasibility of the proposed load balancer through experi
 3) Performance: whether the load balancer has sufficient throughput for 1 Gbps network.
 
 %\subsubsection{Chapter~\ref{chapter:Further Improvement}}
-In the previous chapter, the author evaluated the feasibility of the proposed load balancer in 1Gbps network.
+In \replaced[id=5th]{Chapter~\ref{chapter:Performance Evaluation}}{the previous chapter}, the author evaluate\replaced[id=5th]{s}{d} the feasibility of the proposed load balancer in \added[id=5th]{the} 1Gbps network.
 In Chapter~\ref{chapter:Further Improvement}, the author shows that the proposed load balancer has sufficient throughput in 10Gbps network.
 The author also discusses how to improve the performance levels in faster networks, e.g., 100 Gbps and finds that there are rooms for improvements in both the container network and the software load balancer itself.
 Although these should be explored further in the future work, the author presents preliminary experimental results of a novel software load balancer using eXpress Data Plane (XDP) technology.
@@ -535,7 +537,7 @@ The author presents related work regarding the following subjects:
 
 %
 %\subsubsection{Chapter~\ref{chapter:Conclusion and future work}}
-Chapter~\ref{chapter:Conclusion and future work} presents conclusion of this study.
+\added[id=5th]{And finally, }Chapter~\ref{chapter:Conclusion and future work} presents \added[id=5th]{the} conclusion of this study.
 
 
 

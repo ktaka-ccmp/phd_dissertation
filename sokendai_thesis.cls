@@ -49,9 +49,10 @@
 \usepackage{caption}
 %\DeclareCaptionFormat{listing}{\colorbox{white}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{#1#2#3}}}
 %\captionsetup[lstlisting]{format=listing}
-\usepackage{subcaption}
+\usepackage[labelformat=simple]{subcaption}
 \captionsetup{compatibility=false}
 \renewcommand\thesubfigure{(\alph{subfigure})}
+\renewcommand\thesubtable{(\alph{subtable})}
 
 \usepackage{fancyvrb}
 
@@ -277,16 +278,21 @@ in partial fulfillment of the requirements for the degree of
 
 \newpage
 \begin{center}
-{\Large \bfseries Committee}
+{\it \Large \bfseries Ph.D. Committee}
 \end{center}
 
 \begin{center}
   \begin{tabular}{ll}
-    Kento Aida(Chair)      & National Institute of Informatics / Sokendai \\
-    Atsuko Takefusa      & National Institute of Informatics / Sokendai \\
-    Michihiro Koibuchi   & National Institute of Informatics / Sokendai \\
-    Takashi Kurimoto     & National Institute of Informatics / Sokendai \\
-    Shigetoshi Yokoyama  & National Institute of Informatics / Gunma University
+    \\
+    \textit{Kento Aida (Chair)} & \multicolumn{1}{r}{\textit{\begin{tabular}[c]{@{}r@{}}National Institute of Informatics\\ The Graduate University for Advanced Studies\end{tabular}}} \\
+    \\
+    \textit{Atsuko Takefusa} & \multicolumn{1}{r}{\textit{\begin{tabular}[c]{@{}r@{}}National Institute of Informatics\\ The Graduate University for Advanced Studies\end{tabular}}} \\
+    \\
+    \textit{Michihiro Koibuchi} & \multicolumn{1}{r}{\textit{\begin{tabular}[c]{@{}r@{}}National Institute of Informatics\\ The Graduate University for Advanced Studies\end{tabular}}} \\
+    \\
+    \textit{Takashi Kurimoto} & \multicolumn{1}{r}{\textit{\begin{tabular}[c]{@{}r@{}}National Institute of Informatics\\ The Graduate University for Advanced Studies\end{tabular}}} \\
+    \\
+    \textit{Shigetoshi Yokoyama} & \multicolumn{1}{r}{\textit{\begin{tabular}[c]{@{}r@{}}National Institute of Informatics\\ Gunma University\end{tabular}}} \\
   \end{tabular}
 \end{center}
 \thispagestyle{empty}
